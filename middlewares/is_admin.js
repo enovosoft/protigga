@@ -9,7 +9,10 @@ const is_admin = async (req, res, next) => {
     });
 
     let is_admin = find_role.some((role) => role.role_code === 100);
-    if (is_admin) return next();
+    req.is_admin = is_admin;
+    if (is_admin) {
+      return next();
+    }
     if (!is_admin)
       return responseGenerator(401, res, {
         success: false,
