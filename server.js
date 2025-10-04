@@ -51,11 +51,25 @@ const allowedOrigins = [`${process.env.ALLOWEDHOST1}`];
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: function (origin, callback) {
+      // origin == undefined mane Postman/Server side request, allow kora optional
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 );
+// app.use(
+//   cors({
+//     origin: 'http://localhost:5173',
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//     credentials: true,
+//   })
+// );
 // ---
 app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
