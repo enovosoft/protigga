@@ -116,6 +116,7 @@ model Order{ // for admin and user: admin can see all details but user will not 
   id        Int      @id @default(autoincrement())
   order_id String @unique
   product_name String
+  user_id String
   product_price Int
   dicount Int
   promo_code String
@@ -127,7 +128,7 @@ model Order{ // for admin and user: admin can see all details but user will not 
   Txn_ID String
   payment_method String
   confirmed Boolean
-  user User @relation(fields: [phone],references: [phone])
+  user User @relation(fields: [user_id],references: [user_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -135,11 +136,12 @@ model Order{ // for admin and user: admin can see all details but user will not 
 model Enrollment { // ony for course
   id        Int      @id @default(autoincrement())
   enrollment_id String @unique
+  user_id String
   phone String 
   course_id String
   access_type String // online/hybrid
   expiry_date DateTime
-  user User @relation(fields: [phone],references: [phone])
+  user User @relation(fields: [user_id],references: [user_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

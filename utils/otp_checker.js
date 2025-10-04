@@ -25,6 +25,7 @@ const otp_checker = async (data, res) => {
     error.statusCode = 404; // custom HTTP status
     throw error;
   }
+  return find_otp;
 };
 
 module.exports = otp_checker;
