@@ -29,48 +29,14 @@ app.use(
 );
 //===================== allow list ======================
 const allowedOrigins = [`${process.env.ALLOWEDHOST1}`];
-
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       const allowed = allowedOrigins.includes(origin);
-//       console.log(
-//         `request coming from ${origin} and access status: ${allowed}`
-//       );
-//       if (!origin || allowed) {
-//         // if (allowed) {
-//         callback(null, true);
-//       } else {
-//         return callback(new Error('Too many request'));
-//       }
-//     },
-
-//     credentials: true,
-//   })
-// );
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // origin == undefined mane Postman/Server side request, allow kora optional
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 );
-// app.use(
-//   cors({
-//     origin: 'http://localhost:5173',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     credentials: true,
-//   })
-// );
-// ---
+
 app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined')); // production-friendly format
