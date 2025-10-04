@@ -58,9 +58,9 @@ const registration_controller = async (req, res, next) => {
       await prisma.otp.create({
         data: {
           otp_id: shortid.generate(),
+          otp_type: 'registration',
           otp: bcrypt.hashSync(String(otp), 10),
           phone: normalizedPhone,
-          otp_type: 'registration',
           expiry_date: new Date(Date.now() + 5 * 60 * 1000), //--- for 5 min
         },
       });
