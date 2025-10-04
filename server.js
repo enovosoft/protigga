@@ -92,13 +92,24 @@ app.get('/', async (_req, res) => {
 app.get('/api/v1', async (req, res) => {
   res.json({ hi: 'sd' });
 });
+app.get('/api/health', async (req, res) => {
+  res.json({ message: 'hello' });
+});
 
 // ================== global error handle =====================
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;
+  // message decision
+  let message = err.message || 'Something went wrong.';
+  // ===check : if in production
+  if (process.env.NODE_ENV === 'production') {
+    if (message?.includes('prisma')) {
+      message = 'You declined the database rules';
+    }
+  }
   return res.status(status).json({
     status,
-    message: err.message || 'Something went wrong.',
+    message,
     errors: err.errors || null,
     success: false,
     error: true,

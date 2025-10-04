@@ -6,7 +6,7 @@ const validate = require('../../validators/utils/validate');
 const login_route = require('express').Router();
 
 login_route.post(
-  '/login',
+  '/auth/login',
   validate(login_validation),
   check_verified_user,
   login_controller

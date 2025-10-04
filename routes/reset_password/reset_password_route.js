@@ -8,13 +8,13 @@ const validate = require('../../validators/utils/validate');
 const reset_password_route = require('express').Router();
 
 reset_password_route.post(
-  '/reset-password/send-otp',
+  '/auth/reset-password/send-otp',
   validate(send_reset_otp_validation),
   check_verified_user,
   send_reset_password_controller
 );
 reset_password_route.post(
-  '/reset-password',
+  '/auth/reset-password',
   validate(reset_password_validation),
   check_verified_user,
   reset_password_controller

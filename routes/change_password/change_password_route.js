@@ -6,7 +6,7 @@ const validate = require('../../validators/utils/validate');
 const change_password_route = require('express').Router();
 
 change_password_route.post(
-  '/change-password',
+  '/auth/change-password',
   validate(change_password_validation),
   check_verified_user,
   change_password_controller

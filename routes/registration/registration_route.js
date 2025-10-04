@@ -4,7 +4,7 @@ const validate = require('../../validators/utils/validate');
 
 const registration_route = require('express').Router();
 registration_route.post(
-  '/registration',
+  '/auth/registration',
   validate(registration_validation),
   registration_controller
 );

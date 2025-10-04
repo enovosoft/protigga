@@ -5,7 +5,7 @@ const verify_otp_validation = require('../../validators/verifyOTP/verify_otp_val
 const verify_otp_route = require('express').Router();
 
 verify_otp_route.post(
-  '/verify/otp',
+  '/auth/verify/otp',
   validate(verify_otp_validation),
   verify_otp_controller
 );
