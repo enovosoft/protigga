@@ -26,31 +26,58 @@ model Course{
   course_id String @unique
   batch String @default("_")
   course_title String
+  currilulumns Currilulumn[] 
   slug String @unique
   Price Int @default(500)
   thumbnail String @default("localhost://schema.com")
+  course_details Course_details?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-model course_details{
+model Course_details{
   id        Int      @id @default(autoincrement())
   course_id String @unique
   slug String @unique
-  course_details_id String 
+  course_details_id String  @unique
   academy_name String 
   published_date DateTime
   language String
   description String
-  currilulumn String // to be modified
   related_book String
   quiz_count Int
   assessment Boolean
   expire String
   skill_level String
+  currilulumns Currilulumn[] 
+  course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model Currilulumn{
+    id        Int      @id @default(autoincrement())
+    curriculumn_id String @unique
+    course_details_id String
+    course_id String 
+    title String
+    course Course @relation(fields: [course_id],references: [course_id])
+    course_details Course_details @relation(fields: [course_details_id], references: [course_details_id])
+    topics Currilulumn_topic[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Currilulumn_topic{
+   id        Int      @id @default(autoincrement())
+  currilulumn_topic_id String @unique
+  curriculumn_id String
+  title String 
+  slug String @unique
+  youtube_url String
+  currilulumn Currilulumn @relation(fields: [curriculumn_id],references: [curriculumn_id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 model Book{
   id        Int      @id @default(autoincrement())
   book_id String @unique
@@ -61,7 +88,7 @@ model Book{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-model book_details{
+model Book_details{
   id        Int      @id @default(autoincrement())
   book_id String @unique
   slug String @unique
@@ -131,7 +158,7 @@ model Promo_code{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-model otp{
+model Otp{
   id        Int      @id @default(autoincrement())
   otp_id String @unique
   otp String // hashed
