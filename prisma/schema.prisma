@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  user_id String @unique
+  name      String   @default(".........")
+  phone     String   @unique
+  password  String  // hashed
+  is_verified Boolean @default(false)
+  is_blocked Boolean  @default(false)
+  orders Order[]
+  enrollments Enrollment[]
+  roles Role[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Course{
+  id        Int      @id @default(autoincrement())
+  course_id String @unique
+  batch String @default("_")
+  course_title String
+  slug String @unique
+  Price Int @default(500)
+  thumbnail String @default("localhost://schema.com")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model course_details{
+  id        Int      @id @default(autoincrement())
+  course_id String @unique
+  slug String @unique
+  course_details_id String 
+  academy_name String 
+  published_date DateTime
+  language String
+  description String
+  currilulumn String // to be modified
+  related_book String
+  quiz_count Int
+  assessment Boolean
+  expire String
+  skill_level String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Book{
+  id        Int      @id @default(autoincrement())
+  book_id String @unique
+  slug String @unique
+  book_image String
+  title String
+  price Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model book_details{
+  id        Int      @id @default(autoincrement())
+  book_id String @unique
+  slug String @unique
+  writter String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // ref_book_writters  // to be added leter
+}
+
+model Note{
+  id        Int      @id @default(autoincrement())
+  note_id String @unique
+  slug String @unique
+  note_name String
+  note_desc String 
+  note_file_link String
+  shared_by String // author name
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order{ // for admin and user: admin can see all details but user will not see just basic data will seee user
+// book and course both are in there
+  id        Int      @id @default(autoincrement())
+  order_id String @unique
+  product_name String
+  product_price Int
+  dicount Int
+  promo_code String
+  promo_code_id String
+  phone String
+  orderer_name String
+  address String
+  status String
+  Txn_ID String
+  payment_method String
+  confirmed Boolean
+  user User @relation(fields: [phone],references: [phone])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enrollment { // ony for course
+  id        Int      @id @default(autoincrement())
+  enrollment_id String @unique
+  phone String 
+  course_id String
+  access_type String // online/hybrid
+  expiry_date DateTime
+  user User @relation(fields: [phone],references: [phone])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Promo_code{
+  id        Int      @id @default(autoincrement())
+  promo_code_id String @unique
+  promocode_for String // book/course
+  promo_code String @unique
+  Discount_type String // fixed or percentage
+  Discount Int //percentage/fixed taka defined from discount type field
+  Max_discount_amount Int
+  Min_purchase_amount Int
+  expiry_date DateTime
+  status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model otp{
+  id        Int      @id @default(autoincrement())
+  otp_id String @unique
+  otp String // hashed
+  otp_type String @default("none")// registration, change_pass, 
+  phone String
+  expiry_date DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Role {
+  id        Int      @id @default(autoincrement())
+  role_id String @unique
+  user_id String
+  phone String
+  role String @default("student")
+  role_code Int @default(200) // 100 admin, 200 user
+  user User @relation(fields: [phone],references: [phone])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

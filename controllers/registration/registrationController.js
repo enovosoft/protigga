@@ -1,0 +1,93 @@
+const shortid = require('shortid');
+const prisma = require('../../config/db');
+const bcrypt = require('bcrypt');
+
+const checkUserExists = require('../../utils/checkUserExists');
+const normalizePhoneNumber = require('../../utils/normalize_phone_number');
+
+const responseGenerator = require('../../utils/responseGenerator');
+const sendOTP = require('../../utils/sendOTP');
+const generate6DigitOtp = require('../../utils/six_digit_otp_generator');
+
+const registration_controller = async (req, res, next) => {
+  try {
+    const { name, phone, password } = req.validatedData; // Zod validated data
+    const normalizedPhone = normalizePhoneNumber(phone);
+
+    // ============= Check if user exists=============
+    const { exist, user } = await checkUserExists({ phone: normalizedPhone });
+    if (exist) {
+      const safeUser = { ...user };
+      // ==================== delete sansetive property ===========
+      delete safeUser.id;
+      delete safeUser.password;
+      delete safeUser.createdAt;
+      delete safeUser.updatedAt;
+      //============== reponse  :( ================
+      return responseGenerator(409, res, {
+        success: false,
+        message: 'User already exists',
+        user: safeUser,
+      });
+    }
+    const user_id = shortid.generate();
+    // ============== Create new  user ============
+    const created_user = await prisma.user.create({
+      data: {
+        name,
+        user_id,
+        phone: normalizedPhone,
+        password: bcrypt.hashSync(password, 10),
+        is_verified: false,
+        is_blocked: false,
+      },
+    });
+
+    // ======================== decision maker ====================
+    const decision = {
+      is_create_user: false,
+      is_send_otp: false,
+    };
+    // ========================= send otp =========================
+    const otp = generate6DigitOtp();
+    const otp_response = await sendOTP(`your OTP is ${otp}`);
+    if (otp_response) {
+      // ------- update decision
+      decision.is_send_otp = true;
+      // -------- otp save on db
+      await prisma.otp.create({
+        data: {
+          otp_id: shortid.generate(),
+          otp: bcrypt.hashSync(String(otp), 10),
+          phone: normalizedPhone,
+          otp_type: 'registration',
+          expiry_date: new Date(Date.now() + 5 * 60 * 1000), //--- for 5 min
+        },
+      });
+    }
+    if (created_user.phone) {
+      decision.is_create_user = true;
+      // ======= set role
+      await prisma.role.create({
+        data: {
+          role_id: shortid.generate(),
+          user_id,
+          phone,
+        },
+      });
+    }
+    // ===================== hide sensitive data ===============
+    const { password: _, ...userWithoutPassword } = created_user;
+
+    return responseGenerator(201, res, {
+      success: true,
+      message: 'User registered successfully',
+      user: userWithoutPassword,
+      otp,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = registration_controller;
