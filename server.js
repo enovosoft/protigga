@@ -46,12 +46,6 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
-app.use((_, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
-  res.header('Access-Control-Allow-Headers', '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined')); // production-friendly format
