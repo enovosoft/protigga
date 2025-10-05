@@ -10,9 +10,14 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   //   path: '/', // root path
   //   ...options,
   // });
-  res.cookie(cookieName, token, {
-    maxAge: options?.maxAge || 1000 * 60 * 60 * 24,
-  });
+
+  const cookieConfigs = {
+    httpOnly: true,
+    sameSite: isInDevelopment ? false : 'none',
+    secure: isInDevelopment ? false : true,
+    maxAge: options?.maxAge || 365 * 24 * 60 * 60 * 1000, // one year
+  };
+  res.cookie(cookieName, token, cookieConfigs);
 };
 
 module.exports = cookie_setter;
