@@ -136,6 +136,7 @@ model Order{ // for admin and user: admin can see all details but user will not 
 model Enrollment { // ony for course
   id        Int      @id @default(autoincrement())
   enrollment_id String @unique
+  enrollment_type String @default("online") // hybrid
   user_id String
   phone String 
   course_id String
