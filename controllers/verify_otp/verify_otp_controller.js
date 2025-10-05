@@ -7,7 +7,13 @@ const verify_otp_controller = async (req, res, next) => {
     const { otp, phone } = req.body || {};
     // otp checker
     const find_otp = await otp_checker({ otp, phone }, res);
-
+    // check: if not exist
+    if (!find_otp.otp_id)
+      return responseGenerator(404, res, {
+        message: 'Please follow your website rules',
+        error: true,
+        success: false,
+      });
     // ================ update: field : is_verifed
     await prisma.user.update({
       where: {

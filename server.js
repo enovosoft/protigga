@@ -17,6 +17,8 @@ const note_route = require('./routes/note/note_route');
 const promo_code_route = require('./routes/promo_code/promo_code_route');
 const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
 const prisma = require('./config/db');
+const sslcommerz_route = require('./routes/sslcommerz/sslcommerz_route');
+const book_route = require('./routes/book/book_route');
 
 // ================== main =================
 
@@ -34,6 +36,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_PROD,
+  process.env.SSLCOMMERZ_URL,
 ];
 
 // 1️⃣ Handle all non-OPTIONS requests with CORS
@@ -82,6 +85,8 @@ app.use('/api/v1', file_meterial_router);
 app.use('/api/v1', note_route);
 app.use('/api/v1', promo_code_route);
 app.use('/api/v1', resend_otp_route);
+app.use('/api/v1', sslcommerz_route);
+app.use('/api/v1', book_route);
 
 app.get('/', async (_req, res) => {
   res.json({ hi: 'sd' });

@@ -9,7 +9,7 @@ const normalizePhoneNumber = require('../../utils/normalize_phone_number');
 
 const resend_otp_controller = async (req, res, next) => {
   try {
-    const { phone } = req.body || {};
+    const { phone, otp_type } = req.body || {};
     // ============== check in db
     const { exist } = await checkUserExists({ phone });
     if (!exist)
@@ -37,7 +37,7 @@ const resend_otp_controller = async (req, res, next) => {
       const created_otp = await prisma.otp.create({
         data: {
           otp_id: shortid.generate(),
-          otp_type: 'registration',
+          otp_type: otp_type || 'registration',
           otp: bcrypt.hashSync(String(otp), 10),
           phone: normalizePhoneNumber(phone),
           expiry_date: new Date(Date.now() + 5 * 60 * 1000), //--- for 5 min

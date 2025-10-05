@@ -1,4 +1,3 @@
-const prisma = require('../config/db');
 const checkUserExists = require('../utils/checkUserExists');
 const responseGenerator = require('../utils/responseGenerator');
 
@@ -16,7 +15,7 @@ const check_verified_user = async (req, res, next) => {
       });
     //============= check: user verified or
     if (!find_user?.is_verified) {
-      return responseGenerator(401, res, {
+      return responseGenerator(403, res, {
         message: 'Account not verified yet!',
         success: false,
         error: true,

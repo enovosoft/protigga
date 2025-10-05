@@ -17,6 +17,7 @@ const resend_otp_validation = z.object({
       },
       { message: 'Invalid Bangladeshi phone number' }
     ),
+  otp_type: z.string().nonempty({ message: 'otp type misssing' }),
 });
 
 module.exports = resend_otp_validation;

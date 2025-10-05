@@ -6,8 +6,35 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+enum Enrollment_type{
+  online
+  hybrid
+}
+enum Otp_type{
+  none
+  registration
+  reset_password
+  change_password
+  forget_password
+}
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+  CANCELLED
+}
 
-model User {
+enum PaymentMethod {
+  BKASH
+  NAGAD
+  STRIPE
+  SSL_COMMERZ
+  CASH
+  OTHER
+}
+
+model User { 
   id        Int      @id @default(autoincrement())
   user_id String @unique
   name      String   @default(".........")
@@ -15,9 +42,10 @@ model User {
   password  String  // hashed
   is_verified Boolean @default(false)
   is_blocked Boolean  @default(false)
-  orders Order[]
   enrollments Enrollment[]
   roles Role[]
+  payments Payment[]
+  book_orders Book_order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -49,7 +77,7 @@ model Course_details{
   expire String
   skill_level String
   currilulumns Currilulumn[] 
-    book               Book         @relation(fields: [related_book], references: [book_id])
+  book               Book         @relation(fields: [related_book], references: [book_id])
   course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -86,22 +114,15 @@ model Book{
   book_image String
   title String
   price Int
+  writter String
+  description String
   courses   Course_details[] // back relation
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-model Book_details{
-  id        Int      @id @default(autoincrement())
-  book_id String @unique
-  slug String @unique
-  writter String
-  description String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // ref_book_writters  // to be added leter
-}
 
-model Note{
+
+model Note{ 
   id        Int      @id @default(autoincrement())
   note_id String @unique
   slug String @unique
@@ -113,16 +134,15 @@ model Note{
   updatedAt DateTime @updatedAt
 }
 
-model Order{ // for admin and user: admin can see all details but user will not see just basic data will seee user
-// book and course both are in there
+model Book_order{ 
   id        Int      @id @default(autoincrement())
   order_id String @unique
   product_name String
-  user_id String
+  user_id String?
   product_price Int
-  dicount Int
-  promo_code String
-  promo_code_id String
+  dicount Int?
+  promo_code String?
+  promo_code_id String?
   phone String
   orderer_name String
   address String
@@ -130,7 +150,7 @@ model Order{ // for admin and user: admin can see all details but user will not 
   Txn_ID String
   payment_method String
   confirmed Boolean
-  user User @relation(fields: [user_id],references: [user_id])
+  user          User?    @relation(fields: [user_id], references: [user_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -138,11 +158,10 @@ model Order{ // for admin and user: admin can see all details but user will not 
 model Enrollment { // ony for course
   id        Int      @id @default(autoincrement())
   enrollment_id String @unique
-  enrollment_type String @default("online") // hybrid
+  enrollment_type Enrollment_type @default(online) // hybrid
   user_id String
   phone String 
   course_id String
-  access_type String // online/hybrid
   expiry_date DateTime
   status String // active/inactive/
   active_inactive_reason String // example: due payment
@@ -150,6 +169,29 @@ model Enrollment { // ony for course
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Payment {
+  id              String   @id @default(cuid())
+  // Relation to User
+  user_id          String
+  user            User     @relation(fields: [user_id], references: [user_id])
+  // Payment Details
+  amount          Float
+  currency        String   @default("BDT")
+  status          PaymentStatus @default(PENDING)
+  method          PaymentMethod
+  transactionId   String?  @unique
+  paymentGateway  String?  // e.g. "bkash", "stripe", "sslcommerz", etc.
+  // Metadata
+  purpose         String   // e.g. "Course purchase", "Subscription", "Book order"
+  referenceId     String?  // courseId or orderId or enrollmentId etc.
+  remarks         String?  // optional note
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
 
 model Promo_code{
   id        Int      @id @default(autoincrement())
@@ -169,7 +211,7 @@ model Otp{
   id        Int      @id @default(autoincrement())
   otp_id String @unique
   otp String // hashed
-  otp_type String @default("none")// registration, change_pass, 
+  otp_type Otp_type @default(none)
   phone String
   expiry_date DateTime
   createdAt DateTime @default(now())
