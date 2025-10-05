@@ -43,12 +43,13 @@ model Course_details{
   published_date DateTime
   language String
   description String
-  related_book String
+  related_book String // it will be id
   quiz_count Int
   assessment Boolean
   expire String
   skill_level String
   currilulumns Currilulumn[] 
+    book               Book         @relation(fields: [related_book], references: [book_id])
   course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -85,6 +86,7 @@ model Book{
   book_image String
   title String
   price Int
+  courses   Course_details[] // back relation
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
