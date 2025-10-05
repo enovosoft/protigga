@@ -11,10 +11,10 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   //   ...options,
   // });
   res.cookie(cookieName, token, {
-    httpOnly: false, // JS থেকে access
-    secure: false, // allow http
-    sameSite: 'lax', // simple behavior
-    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    secure: true, // Render is HTTPS → required for cross-site
+    sameSite: 'none', // allow cross-site
+    maxAge: options?.maxAge || 1000 * 60 * 60 * 24,
     path: '/',
   });
 };
