@@ -11,7 +11,7 @@ const send_reset_password_controller = async (req, res, next) => {
     const { phone } = req.body || {};
     const otp = generate6DigitOtp();
     const sender_otp_details = await sendOTP(`your otp is ${otp} `);
-    if (sender_otp_details) {
+    if (sender_otp_details.success) {
       // ====== save  to db
       await prisma.otp.create({
         data: {

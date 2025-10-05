@@ -7,6 +7,7 @@ const verify_otp_controller = async (req, res, next) => {
     const { otp, phone } = req.body || {};
     // otp checker
     const find_otp = await otp_checker({ otp, phone }, res);
+
     // ================ update: field : is_verifed
     await prisma.user.update({
       where: {

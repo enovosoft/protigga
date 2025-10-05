@@ -1,4 +1,5 @@
 const add_promo_code_controller = require('../../controllers/promo_code/add_promo_code_controller');
+const check_promo_code_controller = require('../../controllers/promo_code/check_promo_code_controller');
 const delete_promocode_controller = require('../../controllers/promo_code/delete_promocode_controller');
 const update_promocode_controller = require('../../controllers/promo_code/update_promocode_controller');
 const auth_middleware = require('../../middlewares/auth_middleware');
@@ -8,12 +9,18 @@ const is_admin = require('../../middlewares/is_admin');
 const token_regenerator = require('../../middlewares/token_regenerator');
 const add_promo_code_validation = require('../../validators/promo_code/add_promo_code_validarion');
 const delete_promocode_validation = require('../../validators/promo_code/delete_promo_code_validation');
+const promo_code_validation = require('../../validators/promo_code/promo_code_validation');
 const update_promo_code_validarion = require('../../validators/promo_code/update_promo_code_validarion');
 
 const validate = require('../../validators/utils/validate');
 
 const promo_code_route = require('express').Router();
 
+promo_code_route.get(
+  '/check-promo-code',
+  validate(promo_code_validation),
+  check_promo_code_controller
+);
 promo_code_route.post(
   '/promo-code',
   validate(add_promo_code_validation),

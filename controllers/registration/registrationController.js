@@ -51,7 +51,7 @@ const registration_controller = async (req, res, next) => {
     // ========================= send otp =========================
     const otp = generate6DigitOtp();
     const otp_response = await sendOTP(`your OTP is ${otp}`);
-    if (otp_response) {
+    if (otp_response.success) {
       // ------- update decision
       decision.is_send_otp = true;
       // -------- otp save on db

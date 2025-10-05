@@ -15,6 +15,8 @@ const reset_password_route = require('./routes/reset_password/reset_password_rou
 const file_meterial_router = require('./routes/file_meterial/file_meterial_route');
 const note_route = require('./routes/note/note_route');
 const promo_code_route = require('./routes/promo_code/promo_code_route');
+const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
+const prisma = require('./config/db');
 
 // ================== main =================
 
@@ -79,6 +81,7 @@ app.use('/api/v1', reset_password_route);
 app.use('/api/v1', file_meterial_router);
 app.use('/api/v1', note_route);
 app.use('/api/v1', promo_code_route);
+app.use('/api/v1', resend_otp_route);
 
 app.get('/', async (_req, res) => {
   res.json({ hi: 'sd' });

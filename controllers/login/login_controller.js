@@ -7,7 +7,24 @@ const login_controller = async (req, res, next) => {
   try {
     const { phone, password } = req.body || {};
     //================= find :u ser
-    const find_user = await prisma.user.findFirst({ where: { phone } });
+    const find_user = await prisma.user.findFirst({
+      where: { phone },
+      select: {
+        user_id: true,
+        name: true,
+        phone: true,
+        is_verified: true,
+        is_blocked: true,
+        password: true,
+        roles: {
+          select: {
+            role: true,
+            role_code: true,
+          },
+        },
+      },
+    });
+    console.log(find_user);
     //  ================= check : password
     const isMatch = await bcrypt.compare(password, find_user.password);
     if (!isMatch)
@@ -17,10 +34,8 @@ const login_controller = async (req, res, next) => {
         success: false,
       });
     // ============ remove sensitive data
-    delete find_user.id;
     delete find_user.password;
-    delete find_user.createdAt;
-    delete find_user.updatedAt;
+
     // ============ token=====
     const access_token = token_generator(
       find_user,
