@@ -14,7 +14,7 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   const cookieConfigs = {
     httpOnly: false,
     sameSite: 'none',
-    secure: false,
+    secure: true,
     maxAge: options?.maxAge || 365 * 24 * 60 * 60 * 1000, // one year
   };
   res.cookie(cookieName, token, cookieConfigs);
