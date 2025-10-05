@@ -29,16 +29,16 @@ app.use(
 );
 app.use(cookieParser());
 //===================== allow list ======================
-
 const allowedOrigins = [
-  'https://protigga.netlify.app',
-  'http://localhost:5173',
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_PROD,
 ];
 
+// 1️⃣ Handle all non-OPTIONS requests with CORS
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); // curl/postman
       if (allowedOrigins.includes(origin)) return callback(null, true);
       callback(new Error('Not allowed by CORS'));
     },
@@ -46,6 +46,19 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
+
+// 2️⃣ Handle OPTIONS preflight requests
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    cors({
+      origin: allowedOrigins,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    })(req, res, next);
+  } else {
+    next();
+  }
+});
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined')); // production-friendly format
