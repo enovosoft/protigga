@@ -12,9 +12,9 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   // });
 
   const cookieConfigs = {
-    httpOnly: true,
-    sameSite: !isProduction ? false : 'none',
-    secure: !isProduction ? false : true,
+    httpOnly: false,
+    sameSite: 'none',
+    secure: false,
     maxAge: options?.maxAge || 365 * 24 * 60 * 60 * 1000, // one year
   };
   res.cookie(cookieName, token, cookieConfigs);
