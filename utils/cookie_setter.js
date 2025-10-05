@@ -13,8 +13,8 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
 
   const cookieConfigs = {
     httpOnly: true,
-    sameSite: isInDevelopment ? false : 'none',
-    secure: isInDevelopment ? false : true,
+    sameSite: !isProduction ? false : 'none',
+    secure: !isProduction ? false : true,
     maxAge: options?.maxAge || 365 * 24 * 60 * 60 * 1000, // one year
   };
   res.cookie(cookieName, token, cookieConfigs);
