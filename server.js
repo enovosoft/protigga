@@ -27,11 +27,12 @@ app.use(
     // { limit: '10kb' }
     ()
 );
+app.use(cookieParser());
 //===================== allow list ======================
 
 app.use(
   cors({
-    origin: process.envFRONTEND_URL_PROD,
+    origin: process.env.FRONTEND_URL_PROD,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
@@ -43,7 +44,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev')); // colorful, short format for dev
 }
 
-app.use(cookieParser());
 // Set security HTTP headers
 app.use(helmet());
 // Rate limiting
