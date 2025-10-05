@@ -46,18 +46,11 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
-
-// 2️⃣ Handle OPTIONS preflight requests
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    cors({
-      origin: allowedOrigins,
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    })(req, res, next);
-  } else {
-    next();
-  }
+app.use((_, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
 });
 
 if (process.env.NODE_ENV === 'production') {
