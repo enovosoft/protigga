@@ -14,7 +14,7 @@ const get_single_note = async (req, res, next) => {
         success: false,
       });
     // ================= check : success renponse
-    return responseGenerator(404, res, {
+    return responseGenerator(200, res, {
       message: 'Note found',
       error: false,
       success: true,

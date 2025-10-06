@@ -21,6 +21,7 @@ enum OrderStatus {
   pending
   confirmed
   cancelled
+  failed
 }
 
 enum PaymentStatus {

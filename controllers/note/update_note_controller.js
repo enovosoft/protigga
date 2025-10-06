@@ -41,7 +41,7 @@ const update_note_controller = async (req, res, next) => {
       });
     //=================== successfully updated response
     if (updated_note?.id)
-      return responseGenerator(200, res, {
+      return responseGenerator(201, res, {
         message: 'successfully updated',
         success: true,
         error: false,

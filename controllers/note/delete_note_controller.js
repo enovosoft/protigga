@@ -29,7 +29,7 @@ const delete_note_controller = async (req, res, next) => {
       });
     // ============== check : if deleted
     if (deleted_note)
-      return responseGenerator(500, res, {
+      return responseGenerator(204, res, {
         message: 'note deleted successfully',
         success: true,
         error: false,

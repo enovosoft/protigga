@@ -3,16 +3,11 @@ const express = require('express');
 const {
   createPayment,
   ipnListener,
-  paymentSuccess,
-  paymentFail,
-  paymentCancel,
 } = require('../../controllers/sslcommerz/sslcommerz_controller');
 
 const failed_sslcommerz_controller = require('../../controllers/sslcommerz/failed_sslcommerz_controller');
 const cancel_sslcommerz_controller = require('../../controllers/sslcommerz/cancel_sslcommerz_controller');
 const success_sslcommerz_controller = require('../../controllers/sslcommerz/success_sslcommerz_controller');
-const validate = require('../../validators/utils/validate');
-const success_sslcommerz_validation = require('../../validators/sslcommerz/success_sslcommerz_validation');
 const sslcommerz_route = express.Router();
 
 sslcommerz_route.post('/payment/init', createPayment);

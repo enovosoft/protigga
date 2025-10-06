@@ -27,7 +27,7 @@ const add_note_controller = async (req, res, next) => {
 
     //================== response : created
     if (added_data?.id)
-      return responseGenerator(200, res, {
+      return responseGenerator(201, res, {
         message: 'Note created successfully',
         success: true,
         error: false,
