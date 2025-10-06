@@ -4,7 +4,10 @@ require('dotenv').config();
 
 const createPayment = async (req, res) => {
   try {
-    const { amount, tran_id, customer } = req.body;
+    const { amount, tran_id, customer, meterial_type, delevery_type } =
+      req.body;
+    // make decision: by meterial_type, by delevery_type
+
     const data = {
       total_amount: amount,
       currency: 'BDT',

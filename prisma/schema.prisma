@@ -141,6 +141,7 @@ model Book_order{
   user_id String?
   product_price Int
   dicount Int?
+  quantity Int @default(1)
   promo_code String?
   promo_code_id String?
   phone String
@@ -164,12 +165,27 @@ model Enrollment { // ony for course
   course_id String
   expiry_date DateTime
   status String // active/inactive/
-  active_inactive_reason String // example: due payment
+  active_inactive_reason String? // example: due payment
+  exams Exam[]
   user User @relation(fields: [user_id],references: [user_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model Exam{
+  id        Int      @id @default(autoincrement())
+  exam_id String
+  enrollment_id String?
+  exam_title String
+  exam_start_time DateTime
+  exam_end_time DateTime
+  exam_topic String
+  exam_description String
+  exam_link String
+  enrollment Enrollment? @relation(fields: [enrollment_id],references: [enrollment_id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 model Payment {
   id              String   @id @default(cuid())
   // Relation to User
@@ -177,6 +193,8 @@ model Payment {
   user            User     @relation(fields: [user_id], references: [user_id])
   // Payment Details
   amount          Float
+  paid_amount     Float
+  due_amount      Float
   currency        String   @default("BDT")
   status          PaymentStatus @default(PENDING)
   method          PaymentMethod
