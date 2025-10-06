@@ -5,7 +5,7 @@ const validate = (schema) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
       // Clean and readable errors
-      const result = schema.safeParse(req.body);
+      const result = schema.safeParse(req.body || req.params || req.query);
 
       if (!result.success) {
         // Access all issues
@@ -24,7 +24,7 @@ const validate = (schema) => {
       }
       const errors = result.error;
 
-      return res.status(400).json({
+      return responseGenerator(400, res, {
         success: false,
         message: 'Validation failed',
         errors,

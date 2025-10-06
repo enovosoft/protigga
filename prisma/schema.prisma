@@ -17,6 +17,12 @@ enum Otp_type{
   change_password
   forget_password
 }
+enum OrderStatus {
+  pending
+  confirmed
+  cancelled
+}
+
 enum PaymentStatus {
   PENDING
   SUCCESS
@@ -140,17 +146,15 @@ model Book_order{
   product_name String
   user_id String?
   product_price Int
-  dicount Int?
+  discount Int?
   quantity Int @default(1)
   promo_code String?
   promo_code_id String?
-  phone String
-  orderer_name String
   address String
-  status String
-  Txn_ID String
-  payment_method String
-  confirmed Boolean
+  status OrderStatus @default(pending)
+  Txn_ID String? 
+  payment_method String?
+  confirmed Boolean @default(false)
   user          User?    @relation(fields: [user_id], references: [user_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
