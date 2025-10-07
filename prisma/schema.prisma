@@ -140,43 +140,6 @@ model Note{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-model Book_order{ 
-  id        Int      @id @default(autoincrement())
-  order_id String @unique
-  product_name String
-  user_id String?
-  product_price Int
-  discount Int?
-  quantity Int @default(1)
-  promo_code String?
-  promo_code_id String?
-  address String
-  status OrderStatus @default(pending)
-  Txn_ID String? 
-  payment_method String?
-  confirmed Boolean @default(false)
-  user          User?    @relation(fields: [user_id], references: [user_id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Enrollment { // ony for course
-  id        Int      @id @default(autoincrement())
-  enrollment_id String @unique
-  enrollment_type Enrollment_type @default(online) // hybrid
-  user_id String
-  phone String 
-  course_id String
-  expiry_date DateTime
-  status String // active/inactive/
-  active_inactive_reason String? // example: due payment
-  exams Exam[]
-  user User @relation(fields: [user_id],references: [user_id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Exam{
   id        Int      @id @default(autoincrement())
   exam_id String
@@ -191,25 +154,73 @@ model Exam{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Book_order{ 
+  id        Int      @id @default(autoincrement())
+  order_id String @unique
+  product_name String
+  user_id String?
+  product_price Int
+  alternative_phone String
+  quantity Int @default(1)
+  address String
+  Txn_ID String @unique
+  status OrderStatus @default(pending)
+  confirmed Boolean @default(false)
+  payment Payment?
+  user          User?    @relation(fields: [user_id], references: [user_id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enrollment { // ony for course
+  id        Int      @id @default(autoincrement())
+  enrollment_id String @unique
+  enrollment_type Enrollment_type @default(online) // hybrid
+  user_id String
+  phone String 
+  course_id String
+  expiry_date DateTime
+  is_deleted Boolean @default(false)
+  status String // active/inactive/
+  enrollment_status String? @default("pending") // failed, success, cancelled etc . (from ssl controllers)
+  active_inactive_reason String? // example: due payment
+  exams Exam[]
+  user User @relation(fields: [user_id],references: [user_id])
+    // Optional Payment relation
+  payment Payment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Payment {
   id              String   @id @default(cuid())
+  payment_id String @unique
+
   // Relation to User
   user_id          String
   user            User     @relation(fields: [user_id], references: [user_id])
   // Payment Details
   amount          Float
+  discount_amount  Float?         // ছাড়ের পরিমাণ
   paid_amount     Float
   due_amount      Float
   currency        String   @default("BDT")
   status          PaymentStatus @default(PENDING)
-  method          PaymentMethod
-  transactionId   String?  @unique
-  paymentGateway  String?  // e.g. "bkash", "stripe", "sslcommerz", etc.
+  method          PaymentMethod @default(SSL_COMMERZ)
+  Txn_ID   String?  @unique
+  paymentGateway  String?  @default("sslcommerz") // e.g. "bkash", "stripe", "sslcommerz", etc.
+    // Promo info (optional)
+  promo_code_id    String? 
+  promo_code      Promo_code?    
+
   // Metadata
   purpose         String   // e.g. "Course purchase", "Subscription", "Book order"
-  referenceId     String?  // courseId or orderId or enrollmentId etc.
+  book_order_id     String?  @unique //  order_id or enrollment_id etc.
+  enrollment_id     String?  @unique //  order_id or enrollment_id etc.
   remarks         String?  // optional note
-  
+  course_enrollment Enrollment? @relation(fields: [enrollment_id],references: [enrollment_id])
+  book_order Book_order? @relation(fields: [book_order_id],references: [order_id])
   // Timestamps
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -227,6 +238,8 @@ model Promo_code{
   Min_purchase_amount Int
   expiry_date DateTime
   status String
+  payment  Payment?    @relation(fields: [payment_id], references: [payment_id])
+  payment_id          String?     @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

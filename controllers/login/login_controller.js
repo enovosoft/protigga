@@ -24,7 +24,6 @@ const login_controller = async (req, res, next) => {
         },
       },
     });
-    console.log(find_user);
     //  ================= check : password
     const isMatch = await bcrypt.compare(password, find_user.password);
     if (!isMatch)

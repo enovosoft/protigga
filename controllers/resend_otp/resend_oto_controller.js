@@ -45,7 +45,7 @@ const resend_otp_controller = async (req, res, next) => {
       });
       //  ====== response back
       if (created_otp?.otp_id)
-        return responseGenerator(500, res, {
+        return responseGenerator(200, res, {
           message: 'OTP sended successfully',
           error: false,
           success: true,

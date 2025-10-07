@@ -2,6 +2,7 @@ const shortid = require('shortid');
 const { initPayment, validatePayment } = require('../../utils/payment.utils');
 const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
+const transaction_id_generator = require('../../utils/transaction_id_generator');
 
 require('dotenv').config();
 
@@ -10,7 +11,7 @@ const createPayment = async (req, res, next) => {
     const { amount, customer, meterial_type, delevery_type, meterial_details } =
       req.body;
     // ========== transection id: as tran_id: generate
-    const tran_id = shortid.generate();
+    const tran_id = transaction_id_generator();
     // make decision: by meterial_type, by delevery_type
     // ==================== decision : by meterial type -> and create order or enrollment
     let is_saved_data = false;
@@ -33,6 +34,7 @@ const createPayment = async (req, res, next) => {
         message: message_,
         error: true,
       });
+
     const data = {
       total_amount: amount,
       currency: 'BDT',

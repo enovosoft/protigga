@@ -16,7 +16,7 @@ const file_meterial_router = require('./routes/file_meterial/file_meterial_route
 const note_route = require('./routes/note/note_route');
 const promo_code_route = require('./routes/promo_code/promo_code_route');
 const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
-const prisma = require('./config/db');
+
 const sslcommerz_route = require('./routes/sslcommerz/sslcommerz_route');
 const book_route = require('./routes/book/book_route');
 

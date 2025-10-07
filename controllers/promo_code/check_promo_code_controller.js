@@ -16,7 +16,6 @@ const check_promo_code_controller = async (req, res, next) => {
       },
     });
 
-    console.log(promo);
     // return console.log(origina_promo_code);
     if (!promo) {
       // Generic message to avoid info leak

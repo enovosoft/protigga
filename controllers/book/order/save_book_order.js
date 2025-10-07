@@ -26,10 +26,8 @@ const save_book_order = async (material_details, res, next) => {
       product_name,
       user_id,
       product_price,
-      discount,
+      alternative_phone,
       quantity,
-      promo_code,
-      promo_code_id,
       address,
       Txn_ID,
     } = material_details || {};
@@ -42,19 +40,32 @@ const save_book_order = async (material_details, res, next) => {
         success: false,
       });
     //     ================= save order
+    const order_id = shortid.generate();
     const created_order = await prisma.book_order.create({
       data: {
-        order_id: shortid.generate(),
+        order_id,
         product_name,
-        user_id,
         product_price,
-        discount,
+        alternative_phone,
         quantity,
-        promo_code,
-        promo_code_id,
-        address,
         Txn_ID,
-        payment_method: 'sslcommerz',
+        address,
+        user: {
+          connect: { user_id },
+        },
+        payment: {
+          create: {
+            payment_id: shortid.generate(),
+            user_id,
+            discount_amount: 1000,
+            amount: product_price,
+            paid_amount: product_price,
+            due_amount: 0,
+            Txn_ID,
+            purpose: 'book order',
+            remarks: 'Book order',
+          },
+        },
       },
     });
     // =============== return : if failed to data saved

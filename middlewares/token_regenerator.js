@@ -2,13 +2,14 @@ const jwt = require('jsonwebtoken');
 const getCookieFromReq = require('../utils/getCookieFromReq');
 const { token_generator } = require('../utils/token_generator');
 const cookie_setter = require('../utils/cookie_setter');
-const checkUserExists = require('../utils/checkUserExists');
+
+const prisma = require('../config/db');
+const responseGenerator = require('../utils/responseGenerator');
 
 const token_regenerator = async (req, res, next) => {
   try {
     const access_token = getCookieFromReq(req, 'access_token');
     const refresh_token = getCookieFromReq(req, 'refresh_token');
-
     if (!access_token && !refresh_token) {
       return responseGenerator(401, res, {
         success: false,
@@ -28,7 +29,7 @@ const token_regenerator = async (req, res, next) => {
         if (err.name === 'TokenExpiredError') {
           return responseGenerator(401, res, {
             success: false,
-            message: 'Refresh token expired, login required',
+            message: 'token expired, login required',
           });
         }
         return responseGenerator(401, res, {
@@ -40,7 +41,22 @@ const token_regenerator = async (req, res, next) => {
 
     // ======== generate: access token
     if (decodedRefresh) {
-      const find_user = await checkUserExists({ phone: decodedRefresh?.phone });
+      const find_user = await prisma.user.findFirst({
+        where: { phone: decodedRefresh.phone },
+        select: {
+          user_id: true,
+          name: true,
+          phone: true,
+          is_verified: true,
+          is_blocked: true,
+          roles: {
+            select: {
+              role: true,
+              role_code: true,
+            },
+          },
+        },
+      });
       // ============ token=====
       const access_token = token_generator(
         find_user,

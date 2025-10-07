@@ -18,7 +18,7 @@ const get_single_book_controller = async (req, res, next) => {
         error: true,
       });
     //  ====
-    return responseGenerator(404, res, {
+    return responseGenerator(200, res, {
       message: 'book found',
       success: true,
       error: false,
