@@ -1,4 +1,5 @@
 const checkUserExists = require('../utils/checkUserExists');
+const clearCookie = require('../utils/clearCookie');
 const responseGenerator = require('../utils/responseGenerator');
 
 const check_verified_user = async (req, res, next) => {
@@ -7,12 +8,15 @@ const check_verified_user = async (req, res, next) => {
     // ================= find: user
     const { exist, user: find_user } = await checkUserExists({ phone });
     // ================ check: user exist or not
-    if (!exist)
+    if (!exist) {
+      clearCookie(res, 'access_token');
+      clearCookie(res, 'refresh_token');
       return responseGenerator(404, res, {
         message: 'User not found',
         error: true,
         success: false,
       });
+    }
     //============= check: user verified or
     if (!find_user?.is_verified) {
       return responseGenerator(403, res, {
