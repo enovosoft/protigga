@@ -1,6 +1,7 @@
 const add_course_controller = require('../../controllers/course/add_course_controller');
 const delete_course_controller = require('../../controllers/course/delete_course_controller');
-const get_all_courses_controller = require('../../controllers/course/get_all_courses_controller copy');
+const get_all_courses_controller = require('../../controllers/course/get_all_courses_controller');
+
 const get_single_course_controller = require('../../controllers/course/get_single_course_controller');
 
 const update_course_controller = require('../../controllers/course/update_course_controller');

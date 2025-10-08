@@ -1,6 +1,7 @@
 const add_promo_code_controller = require('../../controllers/promo_code/add_promo_code_controller');
 const check_promo_code_controller = require('../../controllers/promo_code/check_promo_code_controller');
 const delete_promocode_controller = require('../../controllers/promo_code/delete_promocode_controller');
+const get_all_promocode_controller = require('../../controllers/promo_code/get_all_promocode_controller');
 const update_promocode_controller = require('../../controllers/promo_code/update_promocode_controller');
 const auth_middleware = require('../../middlewares/auth_middleware');
 const check_verified_user = require('../../middlewares/check_verified_user');
@@ -20,6 +21,15 @@ promo_code_route.post(
   '/check-promo-code',
   validate(promo_code_validation),
   check_promo_code_controller
+);
+promo_code_route.get(
+  '/promocodes',
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  auth_middleware,
+  is_admin,
+  get_all_promocode_controller
 );
 promo_code_route.post(
   '/promo-code',
