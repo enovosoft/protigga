@@ -12,6 +12,7 @@ const get_all_books_controller = async (req, res, next) => {
         slug: true,
         writter: true,
         createdAt: true,
+        updatedAt: true,
       },
     });
     if (all_books)
