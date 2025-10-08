@@ -35,14 +35,6 @@ const delete_course_controller = async (req, res, next) => {
       data: { deleted_course, deleted_course_details },
     });
   } catch (error) {
-    // Handle not found errors gracefully
-    if (error.code === 'P2025') {
-      return responseGenerator(404, res, {
-        message: `Course with slug "${req.params.slug}" not found`,
-        success: false,
-        error: true,
-      });
-    }
     return next(error);
   }
 };
