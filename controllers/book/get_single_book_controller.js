@@ -4,13 +4,11 @@ const find_book = require('./utils/find_book');
 const get_single_book_controller = async (req, res, next) => {
   try {
     const { slug } = req.params || '';
+
     //  ============ find book
-    const { exist, book } = await find_book(
-      {
-        slug,
-      },
-      { include: { courses: true } }
-    );
+    const { exist, book } = await find_book({
+      slug,
+    });
     if (!exist)
       return responseGenerator(404, res, {
         message: 'Book info found',
