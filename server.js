@@ -19,6 +19,7 @@ const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
 
 const sslcommerz_route = require('./routes/sslcommerz/sslcommerz_route');
 const book_route = require('./routes/book/book_route');
+const course_route = require('./routes/course/course_route');
 // ================== main =================
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
@@ -38,18 +39,24 @@ const allowedOrigins = [
 ];
 
 // 1️⃣ Handle all non-OPTIONS requests with CORS
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin) return callback(null, true); // curl/postman
+//       if (allowedOrigins.includes(origin)) return callback(null, true);
+//       callback(new Error('Not allowed by CORS'));
+//     },
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   })
+// );
+
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // curl/postman
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      callback(new Error('Not allowed by CORS'));
-    },
+    origin: 'http://localhost:5173', // তোমার frontend origin
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
-
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined')); // production-friendly format
 } else {
@@ -85,6 +92,7 @@ app.use('/api/v1', promo_code_route);
 app.use('/api/v1', resend_otp_route);
 app.use('/api/v1', sslcommerz_route);
 app.use('/api/v1', book_route);
+app.use('/api/v1', course_route);
 
 app.get('/', async (_req, res) => {
   res.json({ hi: 'sd' });

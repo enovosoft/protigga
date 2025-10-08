@@ -4,13 +4,7 @@ const responseGenerator = require('../../../utils/responseGenerator');
 
 const save_order_object_validation_schema = require('./save_order_object_validation');
 const validate_schema = require('../../../validators/utils/validate_schema');
-const save_book_order = async (
-  material_details,
-  user,
-
-  res,
-  next
-) => {
+const save_book_order = async (material_details, user, res, next) => {
   try {
     const { success, message, errors } = validate_schema(
       save_order_object_validation_schema,

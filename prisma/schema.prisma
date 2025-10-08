@@ -63,7 +63,7 @@ model Course{
   course_title String
   currilulumns Currilulumn[] 
   slug String @unique
-  Price Float @default(0)
+  price Float @default(0)
   thumbnail String @default("localhost://schema.com")
   course_details Course_details?
   createdAt DateTime @default(now())
@@ -78,13 +78,11 @@ model Course_details{
   published_date DateTime
   language String
   description String
-  related_book String // it will be id
-  quiz_count Int
-  assessment Boolean
-  expire String
+  // related_book String  @default("") // it will be id
+  quiz_count Int @default(0)
+  assessment Boolean  @default(false)
   skill_level String
   currilulumns Currilulumn[] 
-  book               Book         @relation(fields: [related_book], references: [book_id])
   course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -123,7 +121,7 @@ model Book{
   price Float
   writter String
   description String
-  courses   Course_details[] // back relation
+  // course Course_details? @relation(fields: [book_id],references: [related_book])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

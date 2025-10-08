@@ -4,7 +4,7 @@ const { z } = require('zod');
 const bdPhone = z.string().regex(/^\+8801[3-9][0-9]{8}$/);
 
 const MaterialType = z.enum(['book', 'course', 'stationery']);
-const DeliveryType = z.enum(['COD', 'Prepaid', 'Pickup', 'none']);
+const DeliveryType = z.enum(['COD', 'Prepaid', 'none']);
 
 const CustomerSchema = z.object({
   name: z.string().min(2, 'minimum length of name is 2').max(100),
