@@ -52,6 +52,18 @@ const createPayment = async (req, res, next) => {
       is_saved_data = success;
       message_ = message;
     }
+    if (String(meterial_type).toLowerCase() === 'course') {
+      // ---------------- create an order: book
+      const { success, message } = await save_book_order(
+        meterial_details,
+        user,
+        res,
+        next
+      );
+      is_saved_data = success;
+      message_ = message;
+    }
+    // ===============
     if (!is_saved_data)
       return responseGenerator(400, res, {
         success: is_saved_data,
