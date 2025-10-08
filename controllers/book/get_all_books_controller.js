@@ -10,6 +10,8 @@ const get_all_books_controller = async (req, res, next) => {
         price: true,
         book_image: true,
         slug: true,
+        writter: true,
+        createdAt: true,
       },
     });
     if (all_books)

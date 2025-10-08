@@ -73,13 +73,13 @@ const createPayment = async (req, res, next) => {
       product_profile: meterial_type,
       cus_name: user.name,
       cus_phone: user.phone,
-      cus_email: customer.email,
-      cus_add1: customer.address,
+      cus_email: '-',
+      cus_add1: '-',
       ship_name: '-',
       ship_add1: '-',
       ship_city: '-',
       ship_state: '-',
-      ship_postcode: '1000',
+      ship_postcode: '0000',
       ship_country: 'Bangladesh',
     };
 
