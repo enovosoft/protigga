@@ -1,4 +1,3 @@
-const getCookieFromReq = require('../utils/getCookieFromReq');
 const responseGenerator = require('../utils/responseGenerator');
 
 const auth_middleware = async (req, res, next) => {

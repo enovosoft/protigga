@@ -3,7 +3,6 @@ const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
 const price_calculation_through_promocode = require('../promo_code/utils/price_calculation_through_promocode');
-const checkUserExists = require('../../utils/checkUserExists');
 
 require('dotenv').config();
 

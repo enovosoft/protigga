@@ -13,7 +13,7 @@ const token_regenerator = async (req, res, next) => {
     if (!access_token && !refresh_token) {
       return responseGenerator(401, res, {
         success: false,
-        message: 'No tokens found in cookies',
+        message: 'Please login first',
       });
     }
     // ================= ==== = = = == = ==
@@ -57,6 +57,7 @@ const token_regenerator = async (req, res, next) => {
           },
         },
       });
+
       // ============ token=====
       const access_token = token_generator(
         find_user,

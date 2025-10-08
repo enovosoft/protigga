@@ -58,7 +58,7 @@ const save_book_order = async (
             amount: after_calulated_data.after_discounted_amount, // after discount
             discount_amount: after_calulated_data.discount, // discount amount
             paid_amount: after_calulated_data.after_discounted_amount,
-            due_amount: 0,
+            due_amount: after_calulated_data.due_amount,
             user_id,
             Txn_ID,
             purpose: 'book order',

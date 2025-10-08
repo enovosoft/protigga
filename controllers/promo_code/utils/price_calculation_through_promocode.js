@@ -33,6 +33,7 @@ const price_calculation_through_promocode = async (
     let original_amount = 0;
     let calculated_amount = 0;
     let after_discounted_amount = 0;
+    let due_amount = 0;
     let meterial_name = '';
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
@@ -65,13 +66,17 @@ const price_calculation_through_promocode = async (
       if (inside_dhaka && !outside_dhaka && !sundarban_courier) {
         calculated_amount = ADVANCE_AMOUNT + INSIDE_DHAKA_CHARGE;
         last_promocode = default_promo_code_info;
+        due_amount = original_amount - ADVANCE_AMOUNT;
       } else if (outside_dhaka && !sundarban_courier && !inside_dhaka) {
         calculated_amount = ADVANCE_AMOUNT + OUTSIDE_DHAKA_CHARGE;
         last_promocode = default_promo_code_info;
+        due_amount = original_amount - ADVANCE_AMOUNT;
       } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
         calculated_amount = original_amount + SUNDORBAN_CHARGE;
+        due_amount = 0;
       } else {
         calculated_amount = original_amount;
+        due_amount = 0;
       }
     }
 
@@ -94,9 +99,10 @@ const price_calculation_through_promocode = async (
 
     return {
       original_amount: Math.ceil(original_amount),
-      after_discounted_amount: Math.ceil(after_discounted_amount),
+      after_discounted_amount: Math.floor(after_discounted_amount),
       discount: Math.ceil(discount),
       meterial_name,
+      due_amount,
     };
   } catch (error) {
     console.log(error);

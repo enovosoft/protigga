@@ -11,7 +11,6 @@ const token_regenerator = require('../../middlewares/token_regenerator');
 const add_book_validation = require('../../validators/book/add_book_validation');
 const delete_book_validation = require('../../validators/book/delete_book_validation');
 const update_book_validation = require('../../validators/book/update_book_validation');
-const update_note_validation = require('../../validators/note/update_note_valudation');
 const validate = require('../../validators/utils/validate');
 
 const book_route = require('express').Router();
