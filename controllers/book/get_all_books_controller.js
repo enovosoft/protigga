@@ -6,6 +6,7 @@ const get_all_books_controller = async (req, res, next) => {
     // ========= search
     const all_books = await prisma.book.findMany({
       select: {
+        book_id: true,
         title: true,
         price: true,
         book_image: true,
