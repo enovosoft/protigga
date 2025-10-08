@@ -1,56 +1,87 @@
-const shortid = require('shortid');
 const { initPayment, validatePayment } = require('../../utils/payment.utils');
 const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
+const price_calculation_through_promocode = require('../promo_code/utils/price_calculation_through_promocode');
+const checkUserExists = require('../../utils/checkUserExists');
 
 require('dotenv').config();
 
 const createPayment = async (req, res, next) => {
   try {
-    const { amount, customer, meterial_type, delevery_type, meterial_details } =
-      req.body;
+    const {
+      customer,
+      meterial_type,
+      delevery_type,
+      inside_dhaka,
+      outside_dhaka,
+      sundarban_courier,
+      meterial_details,
+    } = req.body;
     // ========== transection id: as tran_id: generate
     const tran_id = transaction_id_generator();
-    // make decision: by meterial_type, by delevery_type
+    // ============= check promocode and calculation
+    const after_calulated_data = await price_calculation_through_promocode(
+      req.body,
+      delevery_type,
+      inside_dhaka,
+      outside_dhaka,
+      sundarban_courier,
+      res
+    );
+
+    // // ============== check: user
+    const user = req.decoded_user;
+
     // ==================== decision : by meterial type -> and create order or enrollment
     let is_saved_data = false;
     let message_ = null;
+
     meterial_details.Txn_ID = tran_id;
+    meterial_details.product_price = parseFloat(
+      after_calulated_data.after_discounted_amount
+    );
+    meterial_details.after_calulated_data = after_calulated_data;
     if (String(meterial_type).toLowerCase() === 'book') {
       // ---------------- create an order: book
       const { success, message } = await save_book_order(
         meterial_details,
+        user,
         res,
         next
       );
       is_saved_data = success;
       message_ = message;
     }
-
     if (!is_saved_data)
       return responseGenerator(400, res, {
         success: is_saved_data,
         message: message_,
         error: true,
       });
-
     const data = {
-      total_amount: amount,
+      total_amount: after_calulated_data.after_discounted_amount || 0,
       currency: 'BDT',
       tran_id: tran_id, // unique transaction id
       success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}`,
       fail_url: `${process.env.BASE_URL}/api/v1/payment/fail?tran_id=${tran_id}&meterial_type=${meterial_type}`,
       cancel_url: `${process.env.BASE_URL}/api/v1/payment/cancel?tran_id=${tran_id}&meterial_type=${meterial_type}`,
       ipn_url: `${process.env.BASE_URL}/api/v1/payment/ipn`,
-      shipping_method: 'NO',
-      product_name: 'Course / Book Purchase',
+      shipping_method:
+        String(meterial_type).toLowerCase() === 'book' ? 'COURIER' : 'NO',
+      product_name: after_calulated_data.meterial_name,
       product_category: 'Education',
-      product_profile: 'general',
-      cus_name: customer.name,
+      product_profile: meterial_type,
+      cus_name: user.name,
+      cus_phone: user.phone,
       cus_email: customer.email,
       cus_add1: customer.address,
-      cus_phone: customer.phone,
+      ship_name: '-',
+      ship_add1: '-',
+      ship_city: '-',
+      ship_state: '-',
+      ship_postcode: '1000',
+      ship_country: 'Bangladesh',
     };
 
     const apiResponse = await initPayment(data);

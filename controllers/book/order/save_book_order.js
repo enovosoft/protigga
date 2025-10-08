@@ -4,9 +4,13 @@ const responseGenerator = require('../../../utils/responseGenerator');
 
 const save_order_object_validation_schema = require('./save_order_object_validation');
 const validate_schema = require('../../../validators/utils/validate_schema');
-const checkUserExists = require('../../../utils/checkUserExists');
+const save_book_order = async (
+  material_details,
+  user,
 
-const save_book_order = async (material_details, res, next) => {
+  res,
+  next
+) => {
   try {
     const { success, message, errors } = validate_schema(
       save_order_object_validation_schema,
@@ -30,15 +34,9 @@ const save_book_order = async (material_details, res, next) => {
       quantity,
       address,
       Txn_ID,
+      after_calulated_data,
     } = material_details || {};
-    // ============== check: user
-    const { exist } = await checkUserExists({ user_id });
-    if (!exist)
-      return responseGenerator(404, res, {
-        message: 'Please registration first',
-        error: true,
-        success: false,
-      });
+
     //     ================= save order
     const order_id = shortid.generate();
     const created_order = await prisma.book_order.create({
@@ -56,11 +54,12 @@ const save_book_order = async (material_details, res, next) => {
         payment: {
           create: {
             payment_id: shortid.generate(),
-            user_id,
-            discount_amount: 1000,
-            amount: product_price,
-            paid_amount: product_price,
+            meterial_price: after_calulated_data.original_amount,
+            amount: after_calulated_data.after_discounted_amount, // after discount
+            discount_amount: after_calulated_data.discount, // discount amount
+            paid_amount: after_calulated_data.after_discounted_amount,
             due_amount: 0,
+            user_id,
             Txn_ID,
             purpose: 'book order',
             remarks: 'Book order',
@@ -74,6 +73,7 @@ const save_book_order = async (material_details, res, next) => {
         success: false,
         error: true,
         message: 'faile to place order',
+        user: user?.user_id ? user : null,
       };
     }
 
@@ -82,6 +82,7 @@ const save_book_order = async (material_details, res, next) => {
       success: true,
       error: false,
       message: 'order placed successfully',
+      user: user?.user_id ? user : null,
     };
   } catch (error) {
     return next(error);

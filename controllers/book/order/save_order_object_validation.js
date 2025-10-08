@@ -9,9 +9,7 @@ const save_order_object_validation_schema = z.object({
   promo_code: z.string().optional().nullable(),
   promo_code_id: z.string().optional().nullable(),
   address: z.string({ message: 'address is missing' }),
-  status: z.string({ message: 'status is missing' }),
   Txn_ID: z.string({ message: 'Txn_ID is missing' }),
-  payment_method: z.string({ message: 'payment_method is missing' }),
 });
 
 module.exports = save_order_object_validation_schema;

@@ -9,7 +9,14 @@ const update_book_order = async (finder_obj, update_obj) => {
       data: {
         payment: {
           update: {
-            status: update_obj.status == 'confirmed' ? 'SUCCESS' : 'PENDING',
+            status:
+              update_obj.status === 'confirmed'
+                ? 'SUCCESS'
+                : update_obj.status === 'cancelled'
+                ? 'CANCELLED'
+                : update_obj.status === 'failed'
+                ? 'FAILED'
+                : 'PENDING',
           },
         },
         ...update_obj,

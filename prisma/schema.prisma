@@ -63,7 +63,7 @@ model Course{
   course_title String
   currilulumns Currilulumn[] 
   slug String @unique
-  Price Int @default(500)
+  Price Float @default(0)
   thumbnail String @default("localhost://schema.com")
   course_details Course_details?
   createdAt DateTime @default(now())
@@ -120,7 +120,7 @@ model Book{
   slug String @unique
   book_image String
   title String
-  price Int
+  price Float
   writter String
   description String
   courses   Course_details[] // back relation
@@ -160,7 +160,7 @@ model Book_order{
   order_id String @unique
   product_name String
   user_id String?
-  product_price Int
+  product_price Float
   alternative_phone String
   quantity Int @default(1)
   address String
@@ -201,8 +201,9 @@ model Payment {
   user_id          String
   user            User     @relation(fields: [user_id], references: [user_id])
   // Payment Details
-  amount          Float
+  meterial_price Float
   discount_amount  Float?         // ছাড়ের পরিমাণ
+  amount          Float
   paid_amount     Float
   due_amount      Float
   currency        String   @default("BDT")

@@ -5,6 +5,9 @@ const find_promocode = async (search_details) => {
     where: {
       ...search_details,
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
   return {
     exist: alreadt_exist.length > 0 ? true : false,

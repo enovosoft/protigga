@@ -16,7 +16,7 @@ const validate = require('../../validators/utils/validate');
 
 const promo_code_route = require('express').Router();
 
-promo_code_route.get(
+promo_code_route.post(
   '/check-promo-code',
   validate(promo_code_validation),
   check_promo_code_controller

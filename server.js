@@ -19,9 +19,7 @@ const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
 
 const sslcommerz_route = require('./routes/sslcommerz/sslcommerz_route');
 const book_route = require('./routes/book/book_route');
-
 // ================== main =================
-
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
 // ================== middleware =================
@@ -120,6 +118,6 @@ app.use((err, _req, res, _next) => {
   });
 });
 // =================== app listener ==============
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Example app listening on port ${port}`);
 });

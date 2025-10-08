@@ -8,9 +8,19 @@ const {
 const failed_sslcommerz_controller = require('../../controllers/sslcommerz/failed_sslcommerz_controller');
 const cancel_sslcommerz_controller = require('../../controllers/sslcommerz/cancel_sslcommerz_controller');
 const success_sslcommerz_controller = require('../../controllers/sslcommerz/success_sslcommerz_controller');
+const validate = require('../../validators/utils/validate');
+const ssl_int_validation = require('../../validators/sslcommerz/init_validation');
+const check_verified_user = require('../../middlewares/check_verified_user');
+const cookie_decoder = require('../../middlewares/cookie_decoder');
 const sslcommerz_route = express.Router();
 
-sslcommerz_route.post('/payment/init', createPayment);
+sslcommerz_route.post(
+  '/payment/init',
+  validate(ssl_int_validation),
+  cookie_decoder,
+  check_verified_user,
+  createPayment
+);
 sslcommerz_route.post('/payment/ipn', ipnListener);
 sslcommerz_route.post('/payment/success', success_sslcommerz_controller);
 sslcommerz_route.post('/payment/fail', failed_sslcommerz_controller);
