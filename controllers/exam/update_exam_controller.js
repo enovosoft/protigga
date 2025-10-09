@@ -1,6 +1,9 @@
+const prisma = require('../../config/db');
+
 const update_exam_controller = async (req, res, next) => {
   try {
     const {
+      exam_id,
       course_id,
       exam_title,
       exam_start_time,
@@ -10,10 +13,11 @@ const update_exam_controller = async (req, res, next) => {
       exam_link,
     } = req.body || {};
 
-    const created_exam = await prisma.exam.create({
+    const updated_exam = await prisma.exam.update({
+      where: {
+        exam_id,
+      },
       data: {
-        exam_id: shortid.generate(),
-        course_id,
         exam_title,
         exam_start_time,
         exam_end_time,
@@ -22,14 +26,14 @@ const update_exam_controller = async (req, res, next) => {
         exam_link,
       },
     });
-    if (!created_exam?.exam_id)
+    if (!updated_exam?.exam_id)
       return responseGenerator(500, res, {
         message: 'something went wrong',
         success: false,
         error: true,
       });
     //     ============ if : created
-    if (created_exam?.exam_id)
+    if (updated_exam?.exam_id)
       return responseGenerator(201, res, {
         message: 'Saved successfully',
         success: true,

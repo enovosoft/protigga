@@ -182,7 +182,7 @@ model Enrollment { // ony for course
 }
 model Exam{
   id        Int      @id @default(autoincrement())
-  exam_id String
+  exam_id String @unique
   course_id String
   exam_title String
   exam_start_time DateTime

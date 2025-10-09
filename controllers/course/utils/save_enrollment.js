@@ -59,11 +59,17 @@ const save_enrollment = async (material_details, user, res, next) => {
             due_amount: after_calulated_data.due_amount,
             user_id,
             Txn_ID,
-            promo_code: {
-              connect: {
-                promo_code_id,
-              },
-            },
+            // ✅ Only connect promo_code if it exists
+            ...(promo_code_id
+              ? {
+                  promo_code: {
+                    connect: { promo_code_id },
+                  },
+                  promo_code_id,
+                }
+              : {
+                  promo_code_id: null, // no code used
+                }),
             purpose: 'online course purchase',
             remarks: 'online course purchase',
           },

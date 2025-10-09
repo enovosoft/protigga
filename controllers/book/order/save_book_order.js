@@ -56,11 +56,17 @@ const save_book_order = async (material_details, user, res, next) => {
             due_amount: after_calulated_data.due_amount,
             user_id,
             Txn_ID,
-            promo_code: {
-              connect: {
-                promo_code_id,
-              },
-            },
+            // ✅ Only connect promo_code if it exists
+            ...(promo_code_id
+              ? {
+                  promo_code: {
+                    connect: { promo_code_id },
+                  },
+                  promo_code_id,
+                }
+              : {
+                  promo_code_id: null, // no code used
+                }),
             promo_code_id,
             purpose: 'book order',
             remarks: 'Book order',
