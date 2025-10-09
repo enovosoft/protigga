@@ -1,6 +1,7 @@
 const { default: z } = require('zod');
 
-const add_exam_validation = z.object({
+const update_exam_validation = z.object({
+  exam_id: z.string({ message: 'exam id missing' }),
   course_id: z.string('course id must be given'),
   exam_title: z.string('exam title missing'),
   exam_start_time: z.iso.datetime('exam start time missing'),
@@ -10,4 +11,4 @@ const add_exam_validation = z.object({
   exam_link: z.string('exam link missing'),
 });
 
-module.exports = add_exam_validation;
+module.exports = update_exam_validation;

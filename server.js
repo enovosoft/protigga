@@ -20,6 +20,7 @@ const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
 const sslcommerz_route = require('./routes/sslcommerz/sslcommerz_route');
 const book_route = require('./routes/book/book_route');
 const course_route = require('./routes/course/course_route');
+const exam_route = require('./routes/exam/exam_route');
 // ================== main =================
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
@@ -93,6 +94,7 @@ app.use('/api/v1', resend_otp_route);
 app.use('/api/v1', sslcommerz_route);
 app.use('/api/v1', book_route);
 app.use('/api/v1', course_route);
+app.use('/api/v1', exam_route);
 
 app.get('/', async (_req, res) => {
   res.json({ hi: 'sd' });

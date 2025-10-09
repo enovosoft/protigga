@@ -67,6 +67,8 @@ model Course{
   thumbnail String @default("localhost://schema.com")
   course_details Course_details?
   createdAt DateTime @default(now())
+  enrollments Enrollment[]
+  exams Exam[]
   updatedAt DateTime @updatedAt
 }
 model Course_details{
@@ -139,20 +141,7 @@ model Note{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-model Exam{
-  id        Int      @id @default(autoincrement())
-  exam_id String
-  enrollment_id String?
-  exam_title String
-  exam_start_time DateTime
-  exam_end_time DateTime
-  exam_topic String
-  exam_description String
-  exam_link String
-  enrollment Enrollment? @relation(fields: [enrollment_id],references: [enrollment_id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+
 
 model Book_order{ 
   id        Int      @id @default(autoincrement())
@@ -184,10 +173,24 @@ model Enrollment { // ony for course
   status String // active/inactive/
   enrollment_status String? @default("pending") // failed, success, cancelled etc . (from ssl controllers)
   active_inactive_reason String? // example: due payment
-  exams Exam[]
   user User @relation(fields: [user_id],references: [user_id])
+  course Course? @relation(fields: [course_id],references: [course_id])
     // Optional Payment relation
   payment Payment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Exam{
+  id        Int      @id @default(autoincrement())
+  exam_id String
+  course_id String
+  exam_title String
+  exam_start_time DateTime
+  exam_end_time DateTime
+  exam_topic String
+  exam_description String
+  exam_link String
+  course Course? @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
