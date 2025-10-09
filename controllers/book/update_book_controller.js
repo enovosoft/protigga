@@ -5,7 +5,7 @@ const find_book = require('./utils/find_book');
 
 const update_book_controller = async (req, res, next) => {
   try {
-    let { book_id, book_image, title, price, writter, description } =
+    let { book_id, book_image, title, price, writter, description, batch } =
       req.body || {};
 
     //  =========== find book
@@ -35,6 +35,7 @@ const update_book_controller = async (req, res, next) => {
         book_image,
         title,
         price,
+        batch,
         writter,
         description,
       },

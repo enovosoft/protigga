@@ -6,7 +6,8 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const add_book_controller = async (req, res, next) => {
   try {
-    const { book_image, title, price, writter, description } = req.body || {};
+    const { book_image, title, price, writter, description, batch } =
+      req.body || {};
     //============== generate_slug
     let slug = slug_generator(title);
     //============= check: uniqueness of slug
@@ -19,6 +20,7 @@ const add_book_controller = async (req, res, next) => {
         slug,
         book_image,
         title,
+        batch,
         price,
         writter,
         description,

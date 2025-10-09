@@ -102,6 +102,7 @@ const createPayment = async (req, res, next) => {
 
     return responseGenerator(200, res, {
       status: 'SUCCESS',
+      message: 'redirecting',
       payment_url: apiResponse.GatewayPageURL,
       error: false,
       success: true,

@@ -1,6 +1,7 @@
 const shortid = require('shortid');
 const prisma = require('../../config/db');
 const responseGenerator = require('../../utils/responseGenerator');
+const find_course_by_slug = require('../course/utils/find_course_by_slug');
 
 const add_exam_controller = async (req, res, next) => {
   try {
@@ -14,6 +15,16 @@ const add_exam_controller = async (req, res, next) => {
       exam_link,
     } = req.body || {};
 
+    const { exist } = await find_course_by_slug({ course_id });
+    // check : if not exist
+    if (!exist)
+      return responseGenerator(404, res, {
+        message: 'Invalid course data',
+        success: false,
+        error: true,
+      });
+
+    // =========== save data
     const created_exam = await prisma.exam.create({
       data: {
         exam_id: shortid.generate(),
