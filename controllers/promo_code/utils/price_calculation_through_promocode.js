@@ -123,7 +123,6 @@ const price_calculation_through_promocode = async (
       promocode: last_promocode,
     };
   } catch (error) {
-    console.log(error);
     throw new Error('calculation error/database error');
   }
 };

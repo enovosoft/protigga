@@ -12,7 +12,7 @@ const get_all_courses_controller = async (req, res, next) => {
         thumbnail: true,
       },
     });
-    console.log(courses);
+
     //     --------- response
     return responseGenerator(200, res, {
       message: courses.length > 0 ? 'Course found' : 'Not course available',

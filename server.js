@@ -127,5 +127,5 @@ app.use((err, _req, res, _next) => {
 });
 // =================== app listener ==============
 app.listen(port, async () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`app listening on port ${port}`);
 });
