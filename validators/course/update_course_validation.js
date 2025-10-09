@@ -12,5 +12,6 @@ const update_course_validation = z.object({
   quiz_count: z.number('Quiz count missing'),
   assessment: z.boolean('assesment missing'),
   skill_level: z.string('skill level missing'),
+  expired_date: z.string('expired date  missing'),
 });
 module.exports = update_course_validation;

@@ -13,7 +13,7 @@ const delete_course_controller = async (req, res, next) => {
       });
     }
 
-    const { exist } = await find_course_by_slug(slug);
+    const { exist } = await find_course_by_slug({ slug });
     if (!exist) {
       return responseGenerator(404, res, {
         message: 'Course not found',

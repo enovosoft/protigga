@@ -1,5 +1,6 @@
 const responseGenerator = require('../../../utils/responseGenerator');
 const find_book = require('../../book/utils/find_book');
+const find_course_by_slug = require('../../course/utils/find_course_by_slug');
 const find_promocode = require('./find_promocode');
 
 const default_promo_code_info = {
@@ -26,6 +27,7 @@ const price_calculation_through_promocode = async (
       promo_code_id: promo_code_id ? promo_code_id : '',
       promocode_for: meterial_type,
     });
+
     //     ================= check : if promocode exist
     let last_promocode =
       promocodes[promocodes.length - 1] || default_promo_code_info;
@@ -51,14 +53,17 @@ const price_calculation_through_promocode = async (
       if (exist) {
         original_amount = book.price;
         meterial_name = book.title;
+        calculated_amount = book.price;
+        after_discounted_amount = book.price;
       }
     }
 
-    // -------------------- if meterial_type === book & delevery_type == COD
+    // book part and cod
     if (
       meterial_type === 'book' &&
       String(delevery_type).toLowerCase() == 'cod'
     ) {
+      // -------------------- if meterial_type === book & delevery_type == COD
       let ADVANCE_AMOUNT = Number(process.env.ADVANCE_AMOUNT);
       const OUTSIDE_DHAKA_CHARGE = Number(process.env.OUTSIDE_DHAKA_CHARGE);
       const INSIDE_DHAKA_CHARGE = Number(process.env.INSIDE_DHAKA_CHARGE);
@@ -76,7 +81,20 @@ const price_calculation_through_promocode = async (
         due_amount = 0;
       } else {
         calculated_amount = original_amount;
+
         due_amount = 0;
+      }
+    }
+    // ----------- course part
+    if (meterial_type === 'course') {
+      const { exist, searched_data } = await find_course_by_slug({
+        course_id: meterial_details.product_id,
+      });
+
+      if (exist) {
+        original_amount = searched_data.price;
+        calculated_amount = searched_data.price;
+        meterial_name = searched_data.course_title;
       }
     }
 
@@ -96,13 +114,13 @@ const price_calculation_through_promocode = async (
     }
     //     ===== after discount
     after_discounted_amount = calculated_amount - discount;
-
     return {
       original_amount: Math.ceil(original_amount),
       after_discounted_amount: Math.floor(after_discounted_amount),
       discount: Math.ceil(discount),
       meterial_name,
       due_amount,
+      promocode: last_promocode,
     };
   } catch (error) {
     console.log(error);

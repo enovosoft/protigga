@@ -3,6 +3,7 @@ const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
 const price_calculation_through_promocode = require('../promo_code/utils/price_calculation_through_promocode');
+const save_enrollment = require('../course/utils/save_enrollment');
 
 require('dotenv').config();
 
@@ -35,7 +36,7 @@ const createPayment = async (req, res, next) => {
     // ==================== decision : by meterial type -> and create order or enrollment
     let is_saved_data = false;
     let message_ = null;
-
+    let enrollment_id_ = null;
     meterial_details.Txn_ID = tran_id;
     meterial_details.product_price = parseFloat(
       after_calulated_data.after_discounted_amount
@@ -54,7 +55,7 @@ const createPayment = async (req, res, next) => {
     }
     if (String(meterial_type).toLowerCase() === 'course') {
       // ---------------- create an order: book
-      const { success, message } = await save_book_order(
+      const { success, message, enrollment_id } = await save_enrollment(
         meterial_details,
         user,
         res,
@@ -62,6 +63,7 @@ const createPayment = async (req, res, next) => {
       );
       is_saved_data = success;
       message_ = message;
+      enrollment_id_ = enrollment_id;
     }
     // ===============
     if (!is_saved_data)
@@ -70,13 +72,14 @@ const createPayment = async (req, res, next) => {
         message: message_,
         error: true,
       });
+
     const data = {
-      total_amount: after_calulated_data.after_discounted_amount || 0,
+      total_amount: Number(after_calulated_data.after_discounted_amount) || 0,
       currency: 'BDT',
       tran_id: tran_id, // unique transaction id
-      success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}`,
-      fail_url: `${process.env.BASE_URL}/api/v1/payment/fail?tran_id=${tran_id}&meterial_type=${meterial_type}`,
-      cancel_url: `${process.env.BASE_URL}/api/v1/payment/cancel?tran_id=${tran_id}&meterial_type=${meterial_type}`,
+      success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
+      fail_url: `${process.env.BASE_URL}/api/v1/payment/fail?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
+      cancel_url: `${process.env.BASE_URL}/api/v1/payment/cancel?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
       ipn_url: `${process.env.BASE_URL}/api/v1/payment/ipn`,
       shipping_method:
         String(meterial_type).toLowerCase() === 'book' ? 'COURIER' : 'NO',
@@ -96,6 +99,7 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
+    console.log(apiResponse);
     return responseGenerator(200, res, {
       status: 'SUCCESS',
       payment_url: apiResponse.GatewayPageURL,

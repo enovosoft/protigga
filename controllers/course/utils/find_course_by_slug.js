@@ -1,9 +1,9 @@
 const prisma = require('../../../config/db');
 
-const find_course_by_slug = async (slug) => {
+const find_course_by_slug = async (search_data) => {
   const searched_data = await prisma.course.findFirst({
     where: {
-      slug,
+      ...search_data,
     },
   });
 

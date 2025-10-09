@@ -83,6 +83,7 @@ model Course_details{
   assessment Boolean  @default(false)
   skill_level String
   currilulumns Currilulumn[] 
+  expired_date DateTime
   course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -176,10 +177,10 @@ model Enrollment { // ony for course
   enrollment_id String @unique
   enrollment_type Enrollment_type @default(online) // hybrid
   user_id String
-  phone String 
+  // phone String 
   course_id String
   expiry_date DateTime
-  is_deleted Boolean @default(false)
+  is_expired Boolean @default(false)
   status String // active/inactive/
   enrollment_status String? @default("pending") // failed, success, cancelled etc . (from ssl controllers)
   active_inactive_reason String? // example: due payment
@@ -191,7 +192,7 @@ model Enrollment { // ony for course
   updatedAt DateTime @updatedAt
 }
 
-model Payment {
+model Payment { 
   id              String   @id @default(cuid())
   payment_id String @unique
 
@@ -237,6 +238,7 @@ model Promo_code{
   Min_purchase_amount Int
   expiry_date DateTime
   status String
+  is_deleted Boolean @default(false)
   payment  Payment?    @relation(fields: [payment_id], references: [payment_id])
   payment_id          String?     @unique
   createdAt DateTime @default(now())

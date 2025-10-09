@@ -1,13 +1,13 @@
 const shortid = require('shortid');
 const prisma = require('../../../config/db');
+const save_enromment_validation_schema = require('./save_enrollment_validation');
+const validate_schema = require('../../../validators/utils/validate_schema');
 const responseGenerator = require('../../../utils/responseGenerator');
 
-const save_order_object_validation_schema = require('./save_order_object_validation');
-const validate_schema = require('../../../validators/utils/validate_schema');
-const save_book_order = async (material_details, user, res, next) => {
+const save_enrollment = async (material_details, user, res, next) => {
   try {
     const { success, message, errors } = validate_schema(
-      save_order_object_validation_schema,
+      save_enromment_validation_schema,
       material_details
     );
     //     schema validation error and thorugh response
@@ -19,33 +19,36 @@ const save_book_order = async (material_details, user, res, next) => {
         errors,
       });
     }
+    // ================= searching course with course_details
+    const course_data = await prisma.course.findUnique({
+      where: { course_id: material_details.product_id },
+      include: { course_details: true },
+    });
+    // check and response
+    if (!course_data?.course_id)
+      return responseGenerator(404, res, {
+        message: 'course not found',
+        error: true,
+        succc: false,
+      });
+
     // ================= Extract data
-    const {
-      product_name,
-      user_id,
-      product_price,
-      alternative_phone,
-      quantity,
-      address,
-      Txn_ID,
-      after_calulated_data,
-      promo_code_id,
-    } = material_details || {};
+    const { user_id, Txn_ID, after_calulated_data } = material_details || {};
 
     //     ================= save order
-    const order_id = shortid.generate();
-    const created_order = await prisma.book_order.create({
+    const enrollment_id = shortid.generate();
+    const created_enrollment = await prisma.enrollment.create({
       data: {
-        order_id,
-        product_name,
-        product_price,
-        alternative_phone,
-        quantity,
-        Txn_ID,
-        address,
+        enrollment_id,
+        enrollment_type: 'online',
+        course_id: material_details.product_id,
         user: {
           connect: { user_id },
         },
+        expiry_date: course_data.course_details.expired_date,
+        is_expired: false,
+        status: 'active',
+        enrollment_status: 'pending',
         payment: {
           create: {
             payment_id: shortid.generate(),
@@ -61,15 +64,14 @@ const save_book_order = async (material_details, user, res, next) => {
                 promo_code_id,
               },
             },
-            promo_code_id,
-            purpose: 'book order',
-            remarks: 'Book order',
+            purpose: 'online course purchase',
+            remarks: 'online course purchase',
           },
         },
       },
     });
     // =============== return : if failed to data saved
-    if (!created_order?.order_id) {
+    if (!created_enrollment?.enrollment_id) {
       return {
         success: false,
         error: true,
@@ -84,10 +86,11 @@ const save_book_order = async (material_details, user, res, next) => {
       error: false,
       message: 'order placed successfully',
       user: user?.user_id ? user : null,
+      enrollment_id,
     };
   } catch (error) {
     return next(error);
   }
 };
 
-module.exports = save_book_order;
+module.exports = save_enrollment;

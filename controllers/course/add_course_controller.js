@@ -14,15 +14,15 @@ const add_course_controller = async (req, res, next) => {
       academy_name,
       description,
       related_book,
+      expired_date,
       quiz_count,
       assessment,
       skill_level,
     } = req.body || {};
-
     // =============== generate slug
     let slug = slug_generator(course_title);
     //================== search by slug
-    const { exist, searched_data } = await find_course_by_slug(slug);
+    const { exist, searched_data } = await find_course_by_slug({ slug });
     if (searched_data?.id) slug = slug_generator(course_title, false);
 
     // ===================== create course.
@@ -45,6 +45,7 @@ const add_course_controller = async (req, res, next) => {
             quiz_count,
             assessment,
             skill_level,
+            expired_date,
           },
         },
       },

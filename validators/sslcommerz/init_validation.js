@@ -14,10 +14,10 @@ const CustomerSchema = z.object({
 
 const MaterialDetailsSchema = z.object({
   product_name: z.string().min(1),
-  product_id: z.string().min(1),
-  user_id: z.string().min(1),
+  product_id: z.string('product id missing'),
+  user_id: z.string('user id missing'),
   quantity: z.number().int().min(1, 'Min order count 1'),
-  promo_code_id: z.string().min(1).optional(),
+  promo_code_id: z.string().optional(),
 });
 
 const ssl_int_validation = z.object({

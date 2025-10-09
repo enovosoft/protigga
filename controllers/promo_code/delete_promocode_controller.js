@@ -13,8 +13,11 @@ const delete_promocode_controller = async (req, res, next) => {
         success: false,
         error: true,
       });
-    const deleted_promocode = await prisma.promo_code.delete({
+    const deleted_promocode = await prisma.promo_code.update({
       where: { promo_code_id },
+      data: {
+        is_deleted: true,
+      },
     });
     //  ============ check : if not deleted
     if (!deleted_promocode?.id)

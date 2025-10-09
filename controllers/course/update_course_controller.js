@@ -19,7 +19,7 @@ const update_course_controller = async (req, res, next) => {
       skill_level,
     } = req.body || {};
 
-    const { exist, searched_data } = await find_course_by_slug(slug);
+    const { exist, searched_data } = await find_course_by_slug({ slug });
     // --------------- if not exist
     if (!exist)
       return responseGenerator(404, res, {
@@ -30,7 +30,7 @@ const update_course_controller = async (req, res, next) => {
     //  ====================== check: if exist -> update
     let new_slug = slug_generator(course_title);
     if (searched_data?.course_title !== course_title) {
-      const { exist: exis_new } = await find_course_by_slug(new_slug);
+      const { exist: exis_new } = await find_course_by_slug({ slug: new_slug });
       if (exis_new) new_slug = slug_generator(course_title, false);
     }
 
