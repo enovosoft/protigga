@@ -1,23 +1,17 @@
 const shortid = require('shortid');
 const prisma = require('../../../config/db');
-const responseGenerator = require('../../../utils/responseGenerator');
-
 const save_order_object_validation_schema = require('./save_order_object_validation');
 const validate_schema = require('../../../validators/utils/validate_schema');
-const save_book_order = async (material_details, user, res, next) => {
+const save_book_order = async (material_details, next) => {
   try {
     const { success, message, errors } = validate_schema(
       save_order_object_validation_schema,
       material_details
     );
+
     //     schema validation error and thorugh response
     if (!success) {
-      return responseGenerator(400, res, {
-        success,
-        message,
-        error: true,
-        errors,
-      });
+      return { success, message, error: true, errors };
     }
     // ================= Extract data
     const {
@@ -43,6 +37,9 @@ const save_book_order = async (material_details, user, res, next) => {
         quantity,
         Txn_ID,
         address,
+        status: after_calulated_data?.status
+          ? after_calulated_data?.status
+          : 'pending',
         user: {
           connect: { user_id },
         },
@@ -74,13 +71,14 @@ const save_book_order = async (material_details, user, res, next) => {
         },
       },
     });
+
     // =============== return : if failed to data saved
     if (!created_order?.order_id) {
       return {
         success: false,
         error: true,
         message: 'faile to place order',
-        user: user?.user_id ? user : null,
+        errors,
       };
     }
 
@@ -89,7 +87,7 @@ const save_book_order = async (material_details, user, res, next) => {
       success: true,
       error: false,
       message: 'order placed successfully',
-      user: user?.user_id ? user : null,
+      errors,
     };
   } catch (error) {
     return next(error);

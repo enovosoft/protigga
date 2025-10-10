@@ -6,13 +6,23 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const add_book_controller = async (req, res, next) => {
   try {
-    const { book_image, title, price, writter, description, batch } =
-      req.body || {};
+    const {
+      book_image,
+      is_featured,
+      title,
+      price,
+      writter,
+      description,
+      batch,
+    } = req.body || {};
     //============== generate_slug
-    let slug = slug_generator(title);
-    //============= check: uniqueness of slug
-    const { exist } = await find_book({ slug });
-    if (exist) slug = slug_generator(title, false);
+    let slug = slug_generator(title, true);
+    let { exist } = await find_book({ slug });
+    while (exist) {
+      slug = slug_generator(title, false);
+      const { exist: exist_ } = await find_book({ slug });
+      exist = exist_;
+    }
     // ============= save book data
     const added_book = await prisma.book.create({
       data: {
@@ -23,6 +33,7 @@ const add_book_controller = async (req, res, next) => {
         batch,
         price,
         writter,
+        is_featured,
         description,
       },
     });

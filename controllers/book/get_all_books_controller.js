@@ -15,6 +15,9 @@ const get_all_books_controller = async (req, res, next) => {
         createdAt: true,
         updatedAt: true,
       },
+      where: {
+        is_deleted: false,
+      },
     });
     if (all_books)
       return responseGenerator(200, res, {

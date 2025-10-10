@@ -10,7 +10,6 @@ require('dotenv').config();
 const createPayment = async (req, res, next) => {
   try {
     const {
-      customer,
       meterial_type,
       delevery_type,
       inside_dhaka,
@@ -29,7 +28,6 @@ const createPayment = async (req, res, next) => {
       sundarban_courier,
       res
     );
-
     // // ============== check: user
     const user = req.decoded_user;
 
@@ -37,21 +35,23 @@ const createPayment = async (req, res, next) => {
     let is_saved_data = false;
     let message_ = null;
     let enrollment_id_ = null;
+    let errors = null;
     meterial_details.Txn_ID = tran_id;
+    meterial_details.user_id = user?.user_id;
     meterial_details.product_price = parseFloat(
       after_calulated_data.after_discounted_amount
     );
     meterial_details.after_calulated_data = after_calulated_data;
     if (String(meterial_type).toLowerCase() === 'book') {
       // ---------------- create an order: book
-      const { success, message } = await save_book_order(
-        meterial_details,
-        user,
-        res,
-        next
-      );
+      const {
+        success,
+        message,
+        errors: errors_,
+      } = await save_book_order(meterial_details, next);
       is_saved_data = success;
       message_ = message;
+      errors = errors_;
     }
     if (String(meterial_type).toLowerCase() === 'course') {
       // ---------------- create an order: book
@@ -71,6 +71,7 @@ const createPayment = async (req, res, next) => {
         success: is_saved_data,
         message: message_,
         error: true,
+        errors,
       });
 
     const data = {
@@ -122,9 +123,9 @@ const ipnListener = async (req, res) => {
     const { val_id } = req.body;
     const validation = await validatePayment(val_id);
     console.log('IPN Validated:', validation);
-    res.status(200).json({ message: 'IPN received', validation });
+    return res.status(200).json({ message: 'IPN received', validation });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 

@@ -7,6 +7,7 @@ const get_single_course_controller = async (req, res, next) => {
     const course = await prisma.course.findFirst({
       where: {
         slug,
+        is_deleted: false,
       },
       include: {
         course_details: true,

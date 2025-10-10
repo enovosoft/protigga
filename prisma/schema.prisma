@@ -64,6 +64,7 @@ model Course{
   currilulumns Currilulumn[] 
   slug String @unique
   price Float @default(0)
+  is_deleted Boolean @default(false)
   thumbnail String @default("localhost://schema.com")
   course_details Course_details?
   createdAt DateTime @default(now())
@@ -125,6 +126,8 @@ model Book{
   price Float
   writter String
   description String
+  is_deleted Boolean @default(false)
+  is_featured Boolean  @default(false)
   // course Course_details? @relation(fields: [book_id],references: [related_book])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,7 +153,7 @@ model Book_order{
   product_name String
   user_id String?
   product_price Float
-  alternative_phone String
+  alternative_phone String?
   quantity Int @default(1)
   address String
   Txn_ID String @unique
@@ -174,7 +177,7 @@ model Enrollment { // ony for course
   status String // active/inactive/
   enrollment_status String? @default("pending") // failed, success, cancelled etc . (from ssl controllers)
   active_inactive_reason String? // example: due payment
-  user User @relation(fields: [user_id],references: [user_id])
+  user User? @relation(fields: [user_id],references: [user_id])
   course Course? @relation(fields: [course_id],references: [course_id])
     // Optional Payment relation
   payment Payment?

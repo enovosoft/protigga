@@ -5,11 +5,19 @@ const find_book = require('./utils/find_book');
 
 const update_book_controller = async (req, res, next) => {
   try {
-    let { book_id, book_image, title, price, writter, description, batch } =
-      req.body || {};
+    let {
+      book_id,
+      book_image,
+      is_featured,
+      title,
+      price,
+      writter,
+      description,
+      batch,
+    } = req.body || {};
 
     //  =========== find book
-    const { exist, book } = await find_book({ book_id });
+    let { exist, book } = await find_book({ book_id });
 
     // ========== check : if not exist
     if (!exist)
@@ -19,10 +27,13 @@ const update_book_controller = async (req, res, next) => {
         success: false,
       });
     //  =========== new slug
-    let new_slug = slug_generator(title);
-    if (book?.title !== title) {
-      const { exist: exis_new } = await find_book({ slug: new_slug });
-      if (exis_new) new_slug = slug_generator(title, false);
+    let slug = slug_generator(title);
+    let { exist_ } = await find_book({ slug });
+    exist = exist_;
+    while (exist) {
+      slug = slug_generator(title, false);
+      const { exist: exist_ } = await find_book({ slug });
+      exist = exist_;
     }
 
     // =========== update : book object
@@ -31,13 +42,14 @@ const update_book_controller = async (req, res, next) => {
         book_id,
       },
       data: {
-        slug: new_slug,
+        slug,
         book_image,
         title,
         price,
         batch,
         writter,
         description,
+        is_featured,
       },
     });
     //=================== check : if update failed

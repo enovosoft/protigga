@@ -6,7 +6,7 @@ const delete_book_controller = async (req, res, next) => {
   try {
     const { book_id } = req.body || {};
     //============ find book
-    const { exist } = await find_book({ book_id });
+    const { exist, book } = await find_book({ book_id });
     if (!exist)
       return responseGenerator(404, res, {
         message: 'book not found',
@@ -14,9 +14,12 @@ const delete_book_controller = async (req, res, next) => {
         error: true,
       });
     // ======== delete : book
-    const deleted_book = await prisma.book.delete({
+    const deleted_book = await prisma.book.update({
       where: {
-        book_id,
+        book_id: book.book_id,
+      },
+      data: {
+        is_deleted: true,
       },
     });
     //=================== if failed to delete

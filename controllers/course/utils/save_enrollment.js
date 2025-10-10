@@ -11,6 +11,7 @@ const save_enrollment = async (material_details, user, res, next) => {
       material_details
     );
     //     schema validation error and thorugh response
+
     if (!success) {
       return responseGenerator(400, res, {
         success,
@@ -33,7 +34,8 @@ const save_enrollment = async (material_details, user, res, next) => {
       });
 
     // ================= Extract data
-    const { user_id, Txn_ID, after_calulated_data } = material_details || {};
+    const { user_id, Txn_ID, after_calulated_data, promo_code_id } =
+      material_details || {};
 
     //     ================= save order
     const enrollment_id = shortid.generate();
@@ -41,7 +43,11 @@ const save_enrollment = async (material_details, user, res, next) => {
       data: {
         enrollment_id,
         enrollment_type: 'online',
-        course_id: material_details.product_id,
+        course: {
+          connect: {
+            course_id: material_details.product_id,
+          },
+        },
         user: {
           connect: { user_id },
         },

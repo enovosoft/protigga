@@ -1,0 +1,52 @@
+const shortid = require('shortid');
+const save_book_order = require('../book/order/save_book_order');
+const responseGenerator = require('../../utils/responseGenerator');
+const manual_book_order_controller = async (req, res, next) => {
+  try {
+    const {
+      product_name,
+      user_id,
+      product_price,
+      quantity,
+      address,
+      alternative_phone,
+      discount_amount,
+      due_amount,
+      after_discounted_amount,
+      discount,
+      book_order_status,
+      payment_status,
+    } = req.body || {};
+    const { success, error, errors } = await save_book_order(
+      {
+        product_name,
+        user_id,
+        product_price,
+        alternative_phone,
+        quantity,
+        address,
+        Txn_ID: `MANUAL-${shortid.generate()}`,
+        after_calulated_data: {
+          original_amount: product_price,
+          discount_amount,
+          discount,
+          after_discounted_amount,
+          due_amount,
+          status: book_order_status,
+          payment_status,
+        },
+      },
+      next
+    );
+    return responseGenerator(success ? 201 : 500, res, {
+      message: success ? 'Order saved' : 'failed or save order',
+      success,
+      error,
+      errors,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = manual_book_order_controller;

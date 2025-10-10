@@ -13,7 +13,7 @@ const delete_course_controller = async (req, res, next) => {
       });
     }
 
-    const { exist } = await find_course_by_slug({ slug });
+    const { exist, searched_data } = await find_course_by_slug({ slug });
     if (!exist) {
       return responseGenerator(404, res, {
         message: 'Course not found',
@@ -22,17 +22,21 @@ const delete_course_controller = async (req, res, next) => {
       });
     }
 
-    // Delete both course_details and course in a transaction
-    const [deleted_course_details, deleted_course] = await prisma.$transaction([
-      prisma.course_details.delete({ where: { slug } }),
-      prisma.course.delete({ where: { slug } }),
-    ]);
-
+    const deleted_data = await prisma.course.update({
+      where: {
+        course_id: searched_data?.course_id,
+      },
+      data: {
+        is_deleted: true,
+      },
+    });
     return responseGenerator(200, res, {
-      message: 'Successfully deleted',
-      error: false,
-      success: true,
-      data: { deleted_course, deleted_course_details },
+      message: deleted_data.course_id
+        ? 'Successfully deleted'
+        : 'Unable to delete',
+      error: deleted_data.course_id ? false : true,
+      success: !deleted_data.course_id ? false : true,
+      course: deleted_data,
     });
   } catch (error) {
     return next(error);
