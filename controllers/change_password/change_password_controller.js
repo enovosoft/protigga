@@ -2,12 +2,15 @@ const prisma = require('../../config/db');
 const bcrypt = require('bcrypt');
 const checkUserExists = require('../../utils/checkUserExists');
 const responseGenerator = require('../../utils/responseGenerator');
+const normalizePhoneNumber = require('../../utils/normalize_phone_number');
 const change_password_controller = async (req, res, next) => {
   try {
     const { phone, password, prev_password } = req.body || {};
 
     //================== check: prev password correct or not
-    const { user } = await checkUserExists({ phone });
+    const { user } = await checkUserExists({
+      phone: normalizePhoneNumber(phone),
+    });
     //================== compare: passwrod
     const isMatch = bcrypt.compareSync(prev_password, user.password);
 

@@ -5,8 +5,6 @@ const transaction_id_generator = require('../../utils/transaction_id_generator')
 const price_calculation_through_promocode = require('../promo_code/utils/price_calculation_through_promocode');
 const save_enrollment = require('../course/utils/save_enrollment');
 
-require('dotenv').config();
-
 const createPayment = async (req, res, next) => {
   try {
     const {
@@ -16,7 +14,10 @@ const createPayment = async (req, res, next) => {
       outside_dhaka,
       sundarban_courier,
       meterial_details,
+      address,
+      alternative_phone,
     } = req.body;
+
     // ========== transection id: as tran_id: generate
     const tran_id = transaction_id_generator();
     // ============= check promocode and calculation
@@ -37,6 +38,8 @@ const createPayment = async (req, res, next) => {
     let enrollment_id_ = null;
     let errors = null;
     meterial_details.Txn_ID = tran_id;
+    meterial_details.address = address;
+    meterial_details.alternative_phone = alternative_phone;
     meterial_details.user_id = user?.user_id;
     meterial_details.product_price = parseFloat(
       after_calulated_data.after_discounted_amount
@@ -90,12 +93,12 @@ const createPayment = async (req, res, next) => {
       cus_name: user.name,
       cus_phone: user.phone,
       cus_email: '-',
-      cus_add1: '-',
-      ship_name: '-',
-      ship_add1: '-',
-      ship_city: '-',
-      ship_state: '-',
-      ship_postcode: '0000',
+      cus_add1: req.body?.address || '-',
+      ship_name: user?.name || '-',
+      ship_add1: req.body?.address || '-',
+      ship_city: req.body?.address?.split(',')[1] || '-',
+      ship_state: req.body?.address?.split(',')[2] || '-',
+      ship_postcode: req.body?.address?.split(',')[4] || '-',
       ship_country: 'Bangladesh',
     };
 

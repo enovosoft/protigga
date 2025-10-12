@@ -1,6 +1,7 @@
 const shortid = require('shortid');
 const save_book_order = require('../book/order/save_book_order');
 const responseGenerator = require('../../utils/responseGenerator');
+const transaction_id_generator = require('../../utils/transaction_id_generator');
 const manual_book_order_controller = async (req, res, next) => {
   try {
     const {
@@ -16,16 +17,17 @@ const manual_book_order_controller = async (req, res, next) => {
       discount,
       book_order_status,
       payment_status,
+      book_id,
     } = req.body || {};
     const { success, error, errors } = await save_book_order(
       {
-        product_name,
         user_id,
+        product_id: book_id,
         product_price,
         alternative_phone,
         quantity,
         address,
-        Txn_ID: `MANUAL-${shortid.generate()}`,
+        Txn_ID: `MANUAL-${transaction_id_generator()}`,
         after_calulated_data: {
           original_amount: product_price,
           discount_amount,

@@ -15,7 +15,6 @@ const save_book_order = async (material_details, next) => {
     }
     // ================= Extract data
     const {
-      product_name,
       user_id,
       product_price,
       alternative_phone,
@@ -24,6 +23,7 @@ const save_book_order = async (material_details, next) => {
       Txn_ID,
       after_calulated_data,
       promo_code_id,
+      product_id,
     } = material_details || {};
 
     //     ================= save order
@@ -31,11 +31,15 @@ const save_book_order = async (material_details, next) => {
     const created_order = await prisma.book_order.create({
       data: {
         order_id,
-        product_name,
         product_price,
         alternative_phone,
         quantity,
         Txn_ID,
+        book: {
+          connect: {
+            book_id: product_id,
+          },
+        },
         address,
         status: after_calulated_data?.status
           ? after_calulated_data?.status

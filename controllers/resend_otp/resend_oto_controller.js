@@ -11,7 +11,9 @@ const resend_otp_controller = async (req, res, next) => {
   try {
     const { phone, otp_type } = req.body || {};
     // ============== check in db
-    const { exist } = await checkUserExists({ phone });
+    const { exist } = await checkUserExists({
+      phone: normalizePhoneNumber(phone),
+    });
     if (!exist)
       return responseGenerator(404, res, {
         message: `User not found. we aren't able to resend otp`,

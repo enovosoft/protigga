@@ -11,6 +11,16 @@ const get_single_course_controller = async (req, res, next) => {
       },
       include: {
         course_details: true,
+        chapters: {
+          select: {
+            title: true,
+            topics: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',

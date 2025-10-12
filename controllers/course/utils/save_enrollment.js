@@ -4,7 +4,7 @@ const save_enromment_validation_schema = require('./save_enrollment_validation')
 const validate_schema = require('../../../validators/utils/validate_schema');
 const responseGenerator = require('../../../utils/responseGenerator');
 
-const save_enrollment = async (material_details, user, res, next) => {
+const save_enrollment = async (material_details, res, next) => {
   try {
     const { success, message, errors } = validate_schema(
       save_enromment_validation_schema,
@@ -34,15 +34,21 @@ const save_enrollment = async (material_details, user, res, next) => {
       });
 
     // ================= Extract data
-    const { user_id, Txn_ID, after_calulated_data, promo_code_id } =
-      material_details || {};
+    const {
+      user_id,
+      Txn_ID,
+      after_calulated_data,
+      promo_code_id,
+      enrollment_type = 'online',
+    } = material_details || {};
 
     //     ================= save order
     const enrollment_id = shortid.generate();
+
     const created_enrollment = await prisma.enrollment.create({
       data: {
         enrollment_id,
-        enrollment_type: 'online',
+        enrollment_type,
         course: {
           connect: {
             course_id: material_details.product_id,
@@ -51,20 +57,27 @@ const save_enrollment = async (material_details, user, res, next) => {
         user: {
           connect: { user_id },
         },
-        expiry_date: course_data.course_details.expired_date,
+        expiry_date: material_details?.expiry_date
+          ? material_details?.expiry_date
+          : course_data.course_details.expired_date,
         is_expired: false,
         status: 'active',
-        enrollment_status: 'pending',
+        enrollment_status: material_details?.enrollment_status || 'pending',
         payment: {
           create: {
             payment_id: shortid.generate(),
             meterial_price: after_calulated_data.original_amount,
             amount: after_calulated_data.after_discounted_amount, // after discount
             discount_amount: after_calulated_data.discount, // discount amount
-            paid_amount: after_calulated_data.after_discounted_amount,
+            paid_amount: after_calulated_data?.paid_amount
+              ? after_calulated_data?.paid_amount
+              : after_calulated_data.after_discounted_amount,
             due_amount: after_calulated_data.due_amount,
             user_id,
             Txn_ID,
+            status: material_details?.payment_status || 'PENDING',
+            method: material_details?.method || 'SSL_COMMERZ',
+            paymentGateway: material_details?.paymentGateway || 'SSL_COMMERZ',
             // ✅ Only connect promo_code if it exists
             ...(promo_code_id
               ? {
@@ -77,7 +90,9 @@ const save_enrollment = async (material_details, user, res, next) => {
                   promo_code_id: null, // no code used
                 }),
             purpose: 'online course purchase',
-            remarks: 'online course purchase',
+            remarks: material_details?.remarks
+              ? material_details?.remarks
+              : 'online course purchase',
           },
         },
       },
@@ -88,7 +103,7 @@ const save_enrollment = async (material_details, user, res, next) => {
         success: false,
         error: true,
         message: 'faile to place order',
-        user: user?.user_id ? user : null,
+        // user: user?.user_id ? user : null,
       };
     }
 
@@ -97,7 +112,7 @@ const save_enrollment = async (material_details, user, res, next) => {
       success: true,
       error: false,
       message: 'order placed successfully',
-      user: user?.user_id ? user : null,
+      // user: user?.user_id ? user : null,
       enrollment_id,
     };
   } catch (error) {

@@ -2,7 +2,7 @@ const prisma = require('../config/db');
 
 const checkUserExists = async (data) => {
   const user = await prisma.user.findFirst({
-    where: { phone: data.phone, ...data },
+    where: { ...data },
     select: {
       user_id: true,
       name: true,

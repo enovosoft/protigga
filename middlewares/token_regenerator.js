@@ -49,12 +49,7 @@ const token_regenerator = async (req, res, next) => {
           phone: true,
           is_verified: true,
           is_blocked: true,
-          roles: {
-            select: {
-              role: true,
-              role_code: true,
-            },
-          },
+          roles: true,
         },
       });
 

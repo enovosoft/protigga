@@ -5,6 +5,7 @@ const get_all_courses_controller = async (req, res, next) => {
   try {
     const courses = await prisma.course.findMany({
       select: {
+        course_id: true,
         batch: true,
         course_title: true,
         slug: true,

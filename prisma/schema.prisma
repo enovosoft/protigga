@@ -10,6 +10,10 @@ enum Enrollment_type{
   online
   hybrid
 }
+enum enrollment_access_type{
+  active
+  inactive
+}
 enum Otp_type{
   none
   registration
@@ -23,7 +27,13 @@ enum OrderStatus {
   cancelled
   failed
 }
-
+enum Enrollment_status{
+  pending
+  failed 
+  success
+  cancelled
+  refunded
+}
 enum PaymentStatus {
   PENDING
   SUCCESS
@@ -39,6 +49,7 @@ enum PaymentMethod {
   SSL_COMMERZ
   CASH
   OTHER
+  BANK
 }
 
 model User { 
@@ -61,10 +72,11 @@ model Course{
   course_id String @unique
   batch String @default("_")
   course_title String
-  currilulumns Currilulumn[] 
+  chapters Chapter[] 
   slug String @unique
   price Float @default(0)
   is_deleted Boolean @default(false)
+  is_featured Boolean @default(false)
   thumbnail String @default("localhost://schema.com")
   course_details Course_details?
   createdAt DateTime @default(now())
@@ -85,34 +97,34 @@ model Course_details{
   quiz_count Int @default(0)
   assessment Boolean  @default(false)
   skill_level String
-  currilulumns Currilulumn[] 
+  // currilulumns Curriculum[] 
   expired_date DateTime
   course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Currilulumn{
+model Chapter{
     id        Int      @id @default(autoincrement())
-    curriculumn_id String @unique
-    course_details_id String
+    chapter_id String @unique
+    // course_details_id String
     course_id String 
     title String
     course Course @relation(fields: [course_id],references: [course_id])
-    course_details Course_details @relation(fields: [course_details_id], references: [course_details_id])
-    topics Currilulumn_topic[]
+    // course_details Course_details @relation(fields: [course_details_id], references: [course_details_id])
+    topics Chapter_topic[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
-model Currilulumn_topic{
-   id        Int      @id @default(autoincrement())
-  currilulumn_topic_id String @unique
-  curriculumn_id String
+model Chapter_topic{
+  id        Int      @id @default(autoincrement())
+  chapter_topic_id String @unique
+  chapter_id String
   title String 
   slug String @unique
   youtube_url String
-  currilulumn Currilulumn @relation(fields: [curriculumn_id],references: [curriculumn_id])
+  chapters Chapter @relation(fields: [chapter_id],references: [chapter_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -128,6 +140,7 @@ model Book{
   description String
   is_deleted Boolean @default(false)
   is_featured Boolean  @default(false)
+  orders Book_order[]
   // course Course_details? @relation(fields: [book_id],references: [related_book])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,7 +163,7 @@ model Note{
 model Book_order{ 
   id        Int      @id @default(autoincrement())
   order_id String @unique
-  product_name String
+  book_id String
   user_id String?
   product_price Float
   alternative_phone String?
@@ -158,6 +171,7 @@ model Book_order{
   address String
   Txn_ID String @unique
   status OrderStatus @default(pending)
+  book Book? @relation(fields: [book_id],references: [book_id])
   confirmed Boolean @default(false)
   payment Payment?
   user          User?    @relation(fields: [user_id], references: [user_id])
@@ -174,8 +188,8 @@ model Enrollment { // ony for course
   course_id String
   expiry_date DateTime
   is_expired Boolean @default(false)
-  status String // active/inactive/
-  enrollment_status String? @default("pending") // failed, success, cancelled etc . (from ssl controllers)
+  status enrollment_access_type  @default(active)
+  enrollment_status Enrollment_status @default(pending) 
   active_inactive_reason String? // example: due payment
   user User? @relation(fields: [user_id],references: [user_id])
   course Course? @relation(fields: [course_id],references: [course_id])
@@ -216,7 +230,7 @@ model Payment {
   status          PaymentStatus @default(PENDING)
   method          PaymentMethod @default(SSL_COMMERZ)
   Txn_ID   String?  @unique
-  paymentGateway  String?  @default("sslcommerz") // e.g. "bkash", "stripe", "sslcommerz", etc.
+  paymentGateway  PaymentMethod  @default(SSL_COMMERZ)
     // Promo info (optional)
   promo_code_id    String? 
   promo_code      Promo_code?    

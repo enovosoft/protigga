@@ -16,8 +16,8 @@ const PaymentStatus = {
 };
 
 const manual_book_order_validation = z.object({
-  product_name: z.string('Product name is required'),
   user_id: z.string('User ID is required'),
+  book_id: z.string('User book is required'),
   product_price: z.number({
     invalid_type_error: 'Product price must be a number',
   }),

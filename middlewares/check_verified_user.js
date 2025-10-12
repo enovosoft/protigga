@@ -1,12 +1,16 @@
 const checkUserExists = require('../utils/checkUserExists');
 const clearCookie = require('../utils/clearCookie');
+const normalizePhoneNumber = require('../utils/normalize_phone_number');
 const responseGenerator = require('../utils/responseGenerator');
 
 const check_verified_user = async (req, res, next) => {
   try {
-    const { phone } = req.body || req.decoded_user || {};
+    const { phone } = req.decoded_user ? req.decoded_user : req.body || {};
+
     // ================= find: user
-    const { exist, user: find_user } = await checkUserExists({ phone });
+    const { exist, user: find_user } = await checkUserExists({
+      phone: normalizePhoneNumber(phone),
+    });
     // ================ check: user exist or not
     if (!exist) {
       clearCookie(res, 'access_token');
