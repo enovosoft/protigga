@@ -1,15 +1,21 @@
-const shortid = require('shortid');
-
 const update_book_order = require('../book/order/utils/update_book_order');
 const prisma = require('../../config/db');
 const update_enrollment_property = require('../course/utils/update_enrollment_property');
 
 const success_sslcommerz_controller = async (req, res) => {
-  const tran_id = req.query.tran_id || '';
+  const {
+    tran_id,
+    tran_date,
+    card_type,
+    card_issuer,
+    currency,
+    store_amount,
+    card_category,
+  } = req.body;
+
   const meterial_type = req.query.meterial_type || '';
   const product_id = req.query.product_id || '';
   const enrollment_id = req.query.enrollment_id || '';
-
   // ========== find: by tran_id
   const payment_details = await prisma.payment.findFirst({
     where: {
@@ -31,7 +37,15 @@ const success_sslcommerz_controller = async (req, res) => {
     if (payment_details?.Txn_ID) {
       await update_book_order(
         { order_id: payment_details.book_order_id },
-        { status: 'confirmed', confirmed: false }
+        { status: 'confirmed', confirmed: true },
+        {
+          tran_date,
+          card_type,
+          card_issuer,
+          currency,
+          store_amount,
+          card_category,
+        }
       );
       // ----------------- save payment on Payment table
     }
@@ -47,7 +61,15 @@ const success_sslcommerz_controller = async (req, res) => {
       //=========== check: check and update status and confiremed property also save payment info
       await update_enrollment_property(
         { enrollment_id },
-        { enrollment_status: 'confirmed' }
+        { enrollment_status: 'confirmed' },
+        {
+          tran_date,
+          card_type,
+          card_issuer,
+          currency,
+          store_amount,
+          card_category,
+        }
       );
       // ----------------- save payment on Payment table
     }

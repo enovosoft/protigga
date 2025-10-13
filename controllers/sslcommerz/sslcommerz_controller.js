@@ -103,14 +103,8 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
-
-    return responseGenerator(200, res, {
-      status: 'SUCCESS',
-      message: 'redirecting',
-      payment_url: apiResponse.GatewayPageURL,
-      error: false,
-      success: true,
-    });
+    console.log(apiResponse.GatewayPageURL);
+    res.redirect(apiResponse.GatewayPageURL);
   } catch (error) {
     return responseGenerator(500, res, {
       status: 'FAILED',
@@ -123,9 +117,6 @@ const createPayment = async (req, res, next) => {
 
 const ipnListener = async (req, res) => {
   try {
-    const { val_id } = req.body;
-    const validation = await validatePayment(val_id);
-    console.log('IPN Validated:', validation);
     return res.status(200).json({ message: 'IPN received', validation });
   } catch (err) {
     return res.status(400).json({ error: err.message });

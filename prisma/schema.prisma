@@ -226,6 +226,11 @@ model Payment {
   amount          Float
   paid_amount     Float
   due_amount      Float
+  tran_date String?
+  card_type String?
+  card_issuer String?
+  store_amount String?
+  card_category String?
   currency        String   @default("BDT")
   status          PaymentStatus @default(PENDING)
   method          PaymentMethod @default(SSL_COMMERZ)

@@ -3,6 +3,7 @@ const delete_course_controller = require('../../controllers/course/delete_course
 const get_all_courses_controller = require('../../controllers/course/get_all_courses_controller');
 
 const get_single_course_controller = require('../../controllers/course/get_single_course_controller');
+const see_all_enrollments_controller = require('../../controllers/course/see_all_enrollments_controller');
 
 const update_course_controller = require('../../controllers/course/update_course_controller');
 const auth_middleware = require('../../middlewares/auth_middleware');
@@ -18,6 +19,15 @@ const course_route = require('express').Router();
 
 course_route.get('/courses', get_all_courses_controller);
 course_route.get('/course/:slug', get_single_course_controller);
+course_route.get(
+  '/enrollments',
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  auth_middleware,
+  is_admin,
+  see_all_enrollments_controller
+);
 course_route.post(
   '/course',
   validate(add_course_validation),

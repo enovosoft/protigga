@@ -1,6 +1,10 @@
 const prisma = require('../../../config/db');
 
-const update_enrollment_property = async (finder_obj, update_obj = {}) => {
+const update_enrollment_property = async (
+  finder_obj = {},
+  update_obj = {},
+  update_payment_obj = {}
+) => {
   try {
     const updated_enrollment = await prisma.enrollment.update({
       where: {
@@ -17,6 +21,7 @@ const update_enrollment_property = async (finder_obj, update_obj = {}) => {
                 : update_obj.enrollment_status === 'failed'
                 ? 'FAILED'
                 : 'PENDING',
+            ...update_payment_obj,
           },
         },
         ...update_obj,

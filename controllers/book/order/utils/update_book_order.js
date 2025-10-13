@@ -1,6 +1,10 @@
 const prisma = require('../../../../config/db');
 
-const update_book_order = async (finder_obj, update_obj) => {
+const update_book_order = async (
+  finder_obj = {},
+  update_obj = {},
+  payment_update_obj = {}
+) => {
   try {
     const updated_order = await prisma.book_order.update({
       where: {
@@ -17,6 +21,7 @@ const update_book_order = async (finder_obj, update_obj) => {
                 : update_obj.status === 'failed'
                 ? 'FAILED'
                 : 'PENDING',
+            ...payment_update_obj,
           },
         },
         ...update_obj,

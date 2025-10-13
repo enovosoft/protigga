@@ -24,16 +24,13 @@ const exam_route = require('./routes/exam/exam_route');
 const manual_book_order_route = require('./routes/manual_action/manual_book_order_route');
 const manual_course_enrollment_route = require('./routes/manual_action/manual_course_enrollment_route');
 const chapter_route = require('./routes/chapter/chapter_route');
+const user_route = require('./routes/user/user_route');
 // ================== main =================
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
 // ================== middleware =================
-app.use(
-  express
-    .json
-    // { limit: '10kb' }
-    ()
-);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 //===================== allow list ======================
 const allowedOrigins = [
@@ -101,6 +98,7 @@ app.use('/api/v1', exam_route);
 app.use('/api/v1', manual_book_order_route);
 app.use('/api/v1', manual_course_enrollment_route);
 app.use('/api/v1', chapter_route);
+app.use('/api/v1', user_route);
 
 app.get('/', async (_req, res) => {
   res.json({ hi: 'sd' });
