@@ -25,6 +25,7 @@ const manual_book_order_route = require('./routes/manual_action/manual_book_orde
 const manual_course_enrollment_route = require('./routes/manual_action/manual_course_enrollment_route');
 const chapter_route = require('./routes/chapter/chapter_route');
 const user_route = require('./routes/user/user_route');
+const topic_route = require('./routes/topic/topic_route');
 // ================== main =================
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
@@ -99,6 +100,7 @@ app.use('/api/v1', manual_book_order_route);
 app.use('/api/v1', manual_course_enrollment_route);
 app.use('/api/v1', chapter_route);
 app.use('/api/v1', user_route);
+app.use('/api/v1', topic_route);
 
 app.get('/', async (_req, res) => {
   res.json({ hi: 'sd' });

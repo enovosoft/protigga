@@ -124,7 +124,7 @@ model Chapter_topic{
   title String 
   slug String @unique
   youtube_url String
-  chapters Chapter @relation(fields: [chapter_id],references: [chapter_id])
+  chapters Chapter? @relation(fields: [chapter_id],references: [chapter_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
