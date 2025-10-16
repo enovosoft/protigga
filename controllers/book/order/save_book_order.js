@@ -24,6 +24,8 @@ const save_book_order = async (material_details, next) => {
       after_calulated_data,
       promo_code_id,
       product_id,
+      wp_number = '--',
+      fb_name = '--',
     } = material_details || {};
 
     //     ================= save order
@@ -35,6 +37,8 @@ const save_book_order = async (material_details, next) => {
         alternative_phone,
         quantity,
         Txn_ID,
+        wp_number,
+        fb_name,
         book: {
           connect: {
             book_id: product_id,

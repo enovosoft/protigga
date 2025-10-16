@@ -168,6 +168,8 @@ model Book_order{
   user_id String?
   product_price Float
   alternative_phone String?
+  wp_number String?
+  fb_name String?
   quantity Int @default(1)
   address String
   Txn_ID String @unique
@@ -185,9 +187,11 @@ model Enrollment { // ony for course
   enrollment_id String @unique
   enrollment_type Enrollment_type @default(online) // hybrid
   user_id String
-  // phone String 
+  wp_number String?
+  fb_name String?
   course_id String
   expiry_date DateTime
+
   is_expired Boolean @default(false)
   status enrollment_access_type  @default(active)
   enrollment_status Enrollment_status @default(pending) 

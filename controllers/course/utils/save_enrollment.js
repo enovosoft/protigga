@@ -40,6 +40,8 @@ const save_enrollment = async (material_details, res, next) => {
       after_calulated_data,
       promo_code_id,
       enrollment_type = 'online',
+      wp_number = '--',
+      fb_name = '--',
     } = material_details || {};
 
     //     ================= save order
@@ -62,6 +64,8 @@ const save_enrollment = async (material_details, res, next) => {
           : course_data.course_details.expired_date,
         is_expired: false,
         status: 'active',
+        wp_number,
+        fb_name,
         enrollment_status: material_details?.enrollment_status || 'pending',
         payment: {
           create: {

@@ -16,7 +16,6 @@ const file_meterial_router = require('./routes/file_meterial/file_meterial_route
 const note_route = require('./routes/note/note_route');
 const promo_code_route = require('./routes/promo_code/promo_code_route');
 const resend_otp_route = require('./routes/resend_otp/resend_otp_route');
-
 const sslcommerz_route = require('./routes/sslcommerz/sslcommerz_route');
 const book_route = require('./routes/book/book_route');
 const course_route = require('./routes/course/course_route');
@@ -55,7 +54,7 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: 'http://localhost:5173', // তোমার frontend origin
+    origin: 'http://localhost:5173',
     credentials: true,
   })
 );
@@ -69,13 +68,13 @@ if (process.env.NODE_ENV === 'production') {
 app.use(helmet());
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
+  windowMs: 3 * 60 * 1000, // 3 minutes
   max: 100,
   keyGenerator: (req) => req?.body?.user_email || req?.body?.email || req?.ip,
   handler: (req, res, next) => {
     const error = new Error('Too many requests. Please try again later.');
     error.status = 429;
-    return next(error);
+    throw error;
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -103,15 +102,15 @@ app.use('/api/v1', user_route);
 app.use('/api/v1', topic_route);
 
 app.get('/', async (_req, res) => {
-  res.json({ hi: 'sd' });
+  return res.redirect(`${process.env.FRONTEND_URL}`);
 });
 
 // =======================================================
 app.get('/api/v1', async (req, res) => {
-  res.json({ hi: 'sd' });
+  return res.redirect(`${process.env.FRONTEND_URL}`);
 });
 app.get('/api/health', async (req, res) => {
-  res.json({ message: 'hello' });
+  return res.redirect(`${process.env.FRONTEND_URL}`);
 });
 
 // ================== global error handle =====================
@@ -135,5 +134,5 @@ app.use((err, _req, res, _next) => {
 });
 // =================== app listener ==============
 app.listen(port, async () => {
-  console.log(`app listening on port ${port}`);
+  console.log(`protigga server running/listening on port ${port}`);
 });

@@ -8,6 +8,8 @@ const save_order_object_validation_schema = z.object({
   quantity: z.number('quantity is missing'),
   promo_code_id: z.string().optional().nullable(),
   address: z.string({ message: 'address is missing' }),
+  wp_number: z.string('whatsapp number is missing').optional(),
+  fb_name: z.string('facebook name is missing').optional(),
   Txn_ID: z.string({ message: 'Txn_ID is missing' }),
 });
 
