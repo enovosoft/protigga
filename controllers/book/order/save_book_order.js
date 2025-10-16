@@ -2,6 +2,7 @@ const shortid = require('shortid');
 const prisma = require('../../../config/db');
 const save_order_object_validation_schema = require('./save_order_object_validation');
 const validate_schema = require('../../../validators/utils/validate_schema');
+const find_book = require('../utils/find_book');
 const save_book_order = async (material_details, next) => {
   try {
     const { success, message, errors } = validate_schema(
@@ -13,6 +14,7 @@ const save_book_order = async (material_details, next) => {
     if (!success) {
       return { success, message, error: true, errors };
     }
+
     // ================= Extract data
     const {
       user_id,
@@ -27,7 +29,15 @@ const save_book_order = async (material_details, next) => {
       wp_number = '--',
       fb_name = '--',
     } = material_details || {};
-
+    // ---------------- check: book exist or not
+    const { exist } = await find_book({ book_id: product_id });
+    if (!exist) {
+      return {
+        success: false,
+        error: true,
+        message: 'Invalid book details',
+      };
+    }
     //     ================= save order
     const order_id = shortid.generate();
     const created_order = await prisma.book_order.create({

@@ -1,9 +1,10 @@
 const prisma = require('../../../config/db');
 
-const find_book = async (data, options = {}) => {
+const find_book = async (data = {}, options = {}) => {
   try {
     const find_book = await prisma.book.findFirst({
       where: {
+        is_deleted: false,
         ...data,
       },
       ...options,

@@ -15,6 +15,7 @@ const get_all_books_controller = async (req, res, next) => {
         createdAt: true,
         updatedAt: true,
         batch: true,
+        stock: true,
       },
       where: {
         is_deleted: false,
