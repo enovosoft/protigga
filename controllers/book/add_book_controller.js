@@ -14,6 +14,7 @@ const add_book_controller = async (req, res, next) => {
       writter,
       description,
       batch,
+      stock,
     } = req.body || {};
     //============== generate_slug
     let slug = slug_generator(title, true);
@@ -33,6 +34,7 @@ const add_book_controller = async (req, res, next) => {
         batch,
         price,
         writter,
+        stock,
         is_featured,
         description,
       },

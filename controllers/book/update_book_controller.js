@@ -14,6 +14,7 @@ const update_book_controller = async (req, res, next) => {
       writter,
       description,
       batch,
+      stock,
     } = req.body || {};
 
     //  =========== find book
@@ -50,6 +51,7 @@ const update_book_controller = async (req, res, next) => {
         writter,
         description,
         is_featured,
+        stock,
       },
     });
     //=================== check : if update failed
