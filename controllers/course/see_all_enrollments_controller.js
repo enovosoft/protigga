@@ -13,6 +13,12 @@ const see_all_enrollments_controller = async (req, res, next) => {
       include: {
         payment: true,
         course: true,
+        user: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
       },
       take: page_size,
       skip,

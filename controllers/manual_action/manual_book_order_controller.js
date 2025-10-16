@@ -2,11 +2,11 @@ const shortid = require('shortid');
 const save_book_order = require('../book/order/save_book_order');
 const responseGenerator = require('../../utils/responseGenerator');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
+const checkUserExists = require('../../utils/checkUserExists');
 const manual_book_order_controller = async (req, res, next) => {
   try {
     const {
-      product_name,
-      user_id,
+      phone,
       product_price,
       quantity,
       address,
@@ -19,9 +19,19 @@ const manual_book_order_controller = async (req, res, next) => {
       payment_status,
       book_id,
     } = req.body || {};
+
+    // ------------ search by user
+    const { exist, user } = await checkUserExists({ phone });
+    if (!exist)
+      return responseGenerator(404, res, {
+        message: 'user not found',
+        error: true,
+        success: false,
+      });
+
     const { success, error, errors } = await save_book_order(
       {
-        user_id,
+        user_id: user.user_id,
         product_id: book_id,
         product_price,
         alternative_phone,

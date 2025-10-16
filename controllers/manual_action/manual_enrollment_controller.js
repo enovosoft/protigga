@@ -1,4 +1,5 @@
 const prisma = require('../../config/db');
+const checkUserExists = require('../../utils/checkUserExists');
 const responseGenerator = require('../../utils/responseGenerator');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
 const save_enrollment = require('../course/utils/save_enrollment');
@@ -7,7 +8,7 @@ const manual_enrollment_controller = async (req, res, next) => {
   try {
     let {
       enrollment_type,
-      user_id,
+      phone,
       course_id,
       expiry_date,
       product_price,
@@ -18,7 +19,19 @@ const manual_enrollment_controller = async (req, res, next) => {
       payment_status,
       enrollment_status,
       Txn_ID,
+      wp_number,
+      fb_name,
     } = req.body || {};
+
+    // ------------ search by user
+    const { exist, user } = await checkUserExists({ phone });
+    if (!exist)
+      return responseGenerator(404, res, {
+        message: 'user not found',
+        error: true,
+        success: false,
+      });
+
     //========================= enrollment create
     //     ------------- create required value
     Txn_ID = `${Txn_ID || ''}${
@@ -27,7 +40,7 @@ const manual_enrollment_controller = async (req, res, next) => {
 
     const { success, error } = await save_enrollment(
       {
-        user_id,
+        user_id: user?.user_id,
         Txn_ID,
         product_price,
         address: '',

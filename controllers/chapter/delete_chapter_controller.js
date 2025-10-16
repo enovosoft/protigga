@@ -23,8 +23,15 @@ const delete_chapter_controller = async (req, res, next) => {
       });
 
     //     ------------- delete
+    // -------------- relation delette
+    await prisma.chapter_topic.deleteMany({
+      where: {
+        chapter_id,
+      },
+    });
     const deleted_data = await prisma.chapter.delete({
       where: { chapter_id },
+      data: {},
     });
     //     reponse
     if (deleted_data?.chapter_id)

@@ -2,7 +2,7 @@ const { default: z } = require('zod');
 
 const manual_enrollment_validation = z.object({
   enrollment_type: z.enum(['online', 'hybrid']).optional().default('online'),
-  user_id: z.string('User id missing'),
+  phone: z.string('phone number missing'),
   course_id: z.string('course id missing'),
   expiry_date: z.string('Expiry date missing').optional().default(undefined),
   product_price: z.number('Product price missing'),
