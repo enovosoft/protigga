@@ -15,6 +15,7 @@ const cookie_decoder = require('../../middlewares/cookie_decoder');
 const token_regenerator = require('../../middlewares/token_regenerator');
 const auth_middleware = require('../../middlewares/auth_middleware');
 const validate_ssl_payment = require('../../middlewares/validate_ssl_payment');
+const is_blocked = require('../../middlewares/is_blocked');
 const sslcommerz_route = express.Router();
 
 sslcommerz_route.post(
@@ -23,6 +24,7 @@ sslcommerz_route.post(
   token_regenerator,
   cookie_decoder,
   check_verified_user,
+  is_blocked,
   auth_middleware,
   createPayment
 );
@@ -30,16 +32,33 @@ sslcommerz_route.post('/payment/ipn', validate_ssl_payment, ipnListener);
 sslcommerz_route.post(
   '/payment/success',
   validate_ssl_payment,
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  is_blocked,
+  auth_middleware,
   success_sslcommerz_controller
 );
 sslcommerz_route.post(
   '/payment/fail',
   validate_ssl_payment,
+  validate_ssl_payment,
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  is_blocked,
+  auth_middleware,
   failed_sslcommerz_controller
 );
 sslcommerz_route.post(
   '/payment/cancel',
   validate_ssl_payment,
+  validate_ssl_payment,
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  is_blocked,
+  auth_middleware,
   cancel_sslcommerz_controller
 );
 
