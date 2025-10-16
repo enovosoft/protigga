@@ -93,11 +93,10 @@ model Course_details{
   published_date DateTime
   language String
   description String
-  // related_book String  @default("") // it will be id
+  related_book String  @default("") // it will be id
   quiz_count Int @default(0)
   assessment Boolean  @default(false)
   skill_level String
-  // currilulumns Curriculum[] 
   expired_date DateTime
   course Course @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())

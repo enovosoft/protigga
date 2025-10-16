@@ -42,6 +42,7 @@ const add_course_controller = async (req, res, next) => {
             published_date: new Date(),
             language: 'Bangla',
             description,
+            // related_book,
             quiz_count,
             assessment,
             skill_level,
