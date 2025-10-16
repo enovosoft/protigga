@@ -42,6 +42,8 @@ const manual_enrollment_controller = async (req, res, next) => {
       {
         user_id: user?.user_id,
         Txn_ID,
+        wp_number,
+        fb_name,
         product_price,
         address: '',
         product_id: course_id,

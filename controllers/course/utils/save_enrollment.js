@@ -4,7 +4,7 @@ const save_enromment_validation_schema = require('./save_enrollment_validation')
 const validate_schema = require('../../../validators/utils/validate_schema');
 const responseGenerator = require('../../../utils/responseGenerator');
 
-const save_enrollment = async (material_details, res, next) => {
+const save_enrollment = async (material_details = {}, res, next) => {
   try {
     const { success, message, errors } = validate_schema(
       save_enromment_validation_schema,
