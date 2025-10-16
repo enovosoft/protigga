@@ -100,7 +100,9 @@ const createPayment = async (req, res, next) => {
     }
     // ---------- sslcommerz
     const data = {
-      total_amount: Number(after_calulated_data.after_discounted_amount) || 0,
+      total_amount:
+        Number(after_calulated_data.after_discounted_amount) *
+          Number(meterial_details.quantity) || 0,
       currency: 'BDT',
       tran_id: tran_id, // unique transaction id
       success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
