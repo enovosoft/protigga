@@ -17,7 +17,7 @@ const validate = require('../../validators/utils/validate');
 const book_route = require('express').Router();
 
 book_route.get('/books', get_all_books_controller);
-book_route.get('/book', get_single_book_controller);
+book_route.get('/book/:slug', get_single_book_controller);
 book_route.get(
   '/orders',
   token_regenerator,
