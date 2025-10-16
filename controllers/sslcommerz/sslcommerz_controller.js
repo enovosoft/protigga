@@ -4,6 +4,8 @@ const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
 const price_calculation_through_promocode = require('../promo_code/utils/price_calculation_through_promocode');
 const save_enrollment = require('../course/utils/save_enrollment');
+const update_book_order = require('../book/order/utils/update_book_order');
+const update_enrollment_property = require('../course/utils/update_enrollment_property');
 
 const createPayment = async (req, res, next) => {
   try {
@@ -37,6 +39,8 @@ const createPayment = async (req, res, next) => {
     let message_ = null;
     let enrollment_id_ = null;
     let errors = null;
+    let created_order = null;
+    let enrollme_course_details = null;
     meterial_details.Txn_ID = tran_id;
     meterial_details.address = address;
     meterial_details.alternative_phone = alternative_phone;
@@ -51,10 +55,12 @@ const createPayment = async (req, res, next) => {
         success,
         message,
         errors: errors_,
+        created_order: created_order_,
       } = await save_book_order(meterial_details, next);
       is_saved_data = success;
       message_ = message;
       errors = errors_;
+      created_order = created_order_;
     }
     if (String(meterial_type).toLowerCase() === 'course') {
       // ---------------- create an order: book
@@ -76,7 +82,23 @@ const createPayment = async (req, res, next) => {
         error: true,
         errors,
       });
-
+    // ============== if amount zero
+    if (after_calulated_data?.after_discounted_amount == 0) {
+      // -------- update book order
+      if (String(meterial_type).toLowerCase() === 'book')
+        await update_book_order(
+          { order_id: created_order?.order_id },
+          { status: 'confirmed', confirmed: true }
+        );
+      // ---------- update enrollment
+      if (String(meterial_type).toLowerCase() === 'course')
+        await update_enrollment_property(
+          { enrollment_id_ },
+          { enrollment_status: 'confirmed' }
+        );
+      return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
+    }
+    // ---------- sslcommerz
     const data = {
       total_amount: Number(after_calulated_data.after_discounted_amount) || 0,
       currency: 'BDT',
@@ -103,8 +125,7 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
-    console.log(apiResponse.GatewayPageURL);
-    res.redirect(apiResponse.GatewayPageURL);
+    return res.redirect(apiResponse.GatewayPageURL);
   } catch (error) {
     return responseGenerator(500, res, {
       status: 'FAILED',

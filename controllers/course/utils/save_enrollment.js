@@ -114,6 +114,7 @@ const save_enrollment = async (material_details, res, next) => {
       message: 'order placed successfully',
       // user: user?.user_id ? user : null,
       enrollment_id,
+      enrollme_course_details: created_enrollment,
     };
   } catch (error) {
     return next(error);
