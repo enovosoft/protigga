@@ -1,4 +1,4 @@
-const { initPayment, validatePayment } = require('../../utils/payment.utils');
+const { initPayment } = require('../../utils/payment.utils');
 const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
@@ -66,7 +66,6 @@ const createPayment = async (req, res, next) => {
       // ---------------- create an order: book
       const { success, message, enrollment_id } = await save_enrollment(
         meterial_details,
-        user,
         res,
         next
       );
@@ -127,7 +126,12 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
-    return res.redirect(apiResponse.GatewayPageURL);
+    return responseGenerator(200, res, {
+      status: 'SUCCESS',
+      error: false,
+      success: true,
+      payment_url: apiResponse?.GatewayPageURL,
+    });
   } catch (error) {
     return responseGenerator(500, res, {
       status: 'FAILED',
