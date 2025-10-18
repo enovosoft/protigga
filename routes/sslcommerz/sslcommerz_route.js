@@ -32,33 +32,16 @@ sslcommerz_route.post('/payment/ipn', validate_ssl_payment, ipnListener);
 sslcommerz_route.post(
   '/payment/success',
   validate_ssl_payment,
-  token_regenerator,
-  cookie_decoder,
-  check_verified_user,
-  is_blocked,
-  auth_middleware,
   success_sslcommerz_controller
 );
 sslcommerz_route.post(
   '/payment/fail',
   validate_ssl_payment,
-  validate_ssl_payment,
-  token_regenerator,
-  cookie_decoder,
-  check_verified_user,
-  is_blocked,
-  auth_middleware,
   failed_sslcommerz_controller
 );
 sslcommerz_route.post(
   '/payment/cancel',
   validate_ssl_payment,
-  validate_ssl_payment,
-  token_regenerator,
-  cookie_decoder,
-  check_verified_user,
-  is_blocked,
-  auth_middleware,
   cancel_sslcommerz_controller
 );
 

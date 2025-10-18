@@ -2,10 +2,11 @@ const { initPayment } = require('../../utils/payment.utils');
 const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
-const price_calculation_through_promocode = require('../promo_code/utils/price_calculation_through_promocode');
+
 const save_enrollment = require('../course/utils/save_enrollment');
 const update_book_order = require('../book/order/utils/update_book_order');
 const update_enrollment_property = require('../course/utils/update_enrollment_property');
+const price_calculation = require('../promo_code/utils/price_calculation');
 
 const createPayment = async (req, res, next) => {
   try {
@@ -23,7 +24,7 @@ const createPayment = async (req, res, next) => {
     // ========== transection id: as tran_id: generate
     const tran_id = transaction_id_generator();
     // ============= check promocode and calculation
-    const after_calulated_data = await price_calculation_through_promocode(
+    const after_calulated_data = await price_calculation(
       req.body,
       delevery_type,
       inside_dhaka,
@@ -46,7 +47,7 @@ const createPayment = async (req, res, next) => {
     meterial_details.alternative_phone = alternative_phone;
     meterial_details.user_id = user?.user_id;
     meterial_details.product_price = parseFloat(
-      after_calulated_data.after_discounted_amount
+      after_calulated_data.product_price
     );
     meterial_details.after_calulated_data = after_calulated_data;
     if (String(meterial_type).toLowerCase() === 'book') {
@@ -98,10 +99,9 @@ const createPayment = async (req, res, next) => {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     }
     // ---------- sslcommerz
+    console.log(after_calulated_data.after_discounted_amount);
     const data = {
-      total_amount:
-        Number(after_calulated_data.after_discounted_amount) *
-          Number(meterial_details.quantity) || 0,
+      total_amount: Number(after_calulated_data.product_price_with_quantity),
       currency: 'BDT',
       tran_id: tran_id, // unique transaction id
       success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,

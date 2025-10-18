@@ -4,6 +4,10 @@ const responseGenerator = require('../../utils/responseGenerator');
 const get_single_course_controller = async (req, res, next) => {
   try {
     const { slug } = req.params || '';
+    let flag = false; // for is_admin or not checking
+    String(req.query.flag).toLowerCase() == 'true'
+      ? (flag = true)
+      : (flag = false);
     const course = await prisma.course.findFirst({
       where: {
         slug,
@@ -13,9 +17,13 @@ const get_single_course_controller = async (req, res, next) => {
         course_details: true,
         chapters: {
           select: {
+            course_id: Boolean(flag),
+            chapter_id: Boolean(flag),
             title: true,
             topics: {
               select: {
+                chapter_id: Boolean(flag),
+                chapter_topic_id: Boolean(flag),
                 title: true,
               },
             },

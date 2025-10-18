@@ -221,16 +221,21 @@ model Exam{
 model Payment { 
   id              String   @id @default(cuid())
   payment_id String @unique
-
+  val_id String? @unique 
   // Relation to User
   user_id          String
   user            User     @relation(fields: [user_id], references: [user_id])
   // Payment Details
   meterial_price Float
+  product_price_with_quantity Float
   discount_amount  Float?         // ছাড়ের পরিমাণ
   amount          Float
   paid_amount     Float
   due_amount      Float
+  willCustomerGetAmount Boolean @default(false)
+  customer_receivable_amount Float @default(0)
+  delevery_charge Float @default(0)
+  advance_charge_amount Float @default(0)
   tran_date String?
   card_type String?
   card_issuer String?

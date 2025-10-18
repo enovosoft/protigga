@@ -19,6 +19,7 @@ const course_route = require('express').Router();
 
 course_route.get('/courses', get_all_courses_controller);
 course_route.get('/course/:slug', get_single_course_controller);
+
 course_route.get(
   '/enrollments',
   token_regenerator,

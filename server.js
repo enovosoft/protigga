@@ -40,24 +40,24 @@ const allowedOrigins = [
 ];
 
 // 1️⃣ Handle all non-OPTIONS requests with CORS
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin) return callback(null, true); // curl/postman
-//       if (allowedOrigins.includes(origin)) return callback(null, true);
-//       callback(new Error('Not allowed by CORS'));
-//     },
-//     credentials: true,
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//   })
-// );
-
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // curl/postman
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
+
+// app.use(
+//   cors({
+//     origin: 'http://localhost:5173',
+//     credentials: true,
+//   })
+// );
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined')); // production-friendly format
 } else {

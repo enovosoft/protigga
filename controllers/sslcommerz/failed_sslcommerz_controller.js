@@ -12,7 +12,7 @@ const failed_sslcommerz_controller = async (req, res) => {
     store_amount,
     card_category,
   } = req.body;
-
+  const { status, val_id } = req.sslValidated;
   const meterial_type = req.query.meterial_type || '';
   const product_id = req.query.product_id || '';
   const enrollment_id = req.query.enrollment_id || '';
@@ -26,50 +26,50 @@ const failed_sslcommerz_controller = async (req, res) => {
       createdAt: 'desc',
     },
   });
-  // ============= confirm: book order
-  if (String(meterial_type).toLowerCase() === 'book') {
-    //=========== check: check and update status and confiremed property
-    if (payment_details?.Txn_ID) {
-      await update_book_order(
-        { order_id: payment_details.book_order_id },
-        { status: 'failed', confirmed: false },
-        {
-          tran_id,
-          tran_date,
-          card_type,
-          card_issuer,
-          currency,
-          store_amount,
-          card_category,
-        }
-      );
+  if (!payment_details.val_id && status === 'INVALID_TRANSACTION') {
+    if (String(meterial_type).toLowerCase() === 'book') {
+      // ============= confirm: book order
+      //=========== check: check and update status and confiremed property
+      if (payment_details?.Txn_ID) {
+        await update_book_order(
+          { order_id: payment_details.book_order_id },
+          { status: 'failed', confirmed: false },
+          {
+            tran_date,
+            card_type,
+            card_issuer,
+            currency,
+            store_amount,
+            card_category,
+          }
+        );
+      }
+    }
+    // ============= cencelled: course enrollment
+    if (String(meterial_type).toLowerCase() === 'course') {
+      if (enrollment_id == 'undefined') {
+        return res.send(
+          `<h1 style="text-align:center">Warning for rules break</h1><br/><h3 style="color:red; text-align:center">Please follow our website rules, don't misuse it</h3>`
+        );
+      }
+      if (payment_details?.Txn_ID) {
+        //=========== check: check and update status and confiremed property also save payment info
+        await update_enrollment_property(
+          { enrollment_id },
+          { enrollment_status: 'failed' },
+          {
+            tran_id,
+            tran_date,
+            card_type,
+            card_issuer,
+            currency,
+            store_amount,
+            card_category,
+          }
+        );
+      }
     }
   }
-  // ============= cencelled: course enrollment
-  if (String(meterial_type).toLowerCase() === 'course') {
-    if (enrollment_id == 'undefined') {
-      return res.send(
-        `<h1 style="text-align:center">Warning for rules break</h1><br/><h3 style="color:red; text-align:center">Please follow our website rules, don't misuse it</h3>`
-      );
-    }
-    if (payment_details?.Txn_ID) {
-      //=========== check: check and update status and confiremed property also save payment info
-      await update_enrollment_property(
-        { enrollment_id },
-        { enrollment_status: 'failed' },
-        {
-          tran_id,
-          tran_date,
-          card_type,
-          card_issuer,
-          currency,
-          store_amount,
-          card_category,
-        }
-      );
-    }
-  }
-
   return res.redirect(`${process.env.FRONTEND_URL}/payment/fail`);
 };
 

@@ -30,7 +30,7 @@ const save_book_order = async (material_details, next) => {
       fb_name = '--',
     } = material_details || {};
     // ---------------- check: book exist or not
-    const { exist } = await find_book({ book_id: product_id });
+    const { exist, book } = await find_book({ book_id: product_id });
     if (!exist) {
       return {
         success: false,
@@ -38,12 +38,27 @@ const save_book_order = async (material_details, next) => {
         message: 'Invalid book details',
       };
     }
+    // =========== check stock
+    if (book.stock < quantity) {
+      return {
+        success: false,
+        error: true,
+        message: `Insufficient quantity exist. please purchase ${book.stock} item or order after re-stock`,
+      };
+    }
+    if (book.stock == 0) {
+      return {
+        success: false,
+        error: true,
+        message: 'Stocked out',
+      };
+    }
     //     ================= save order
     const order_id = shortid.generate();
     const created_order = await prisma.book_order.create({
       data: {
         order_id,
-        product_price,
+        product_price: after_calulated_data.product_price || product_price,
         alternative_phone,
         quantity,
         Txn_ID,
@@ -63,14 +78,19 @@ const save_book_order = async (material_details, next) => {
         },
         payment: {
           create: {
+            product_price_with_quantity:
+              after_calulated_data.product_price_with_quantity,
             payment_id: shortid.generate(),
-            meterial_price: after_calulated_data.original_amount,
-            amount:
-              Number(after_calulated_data.after_discounted_amount) *
-              Number(material_details.quantity), // after discount
+            meterial_price: parseFloat(after_calulated_data.product_price),
+            amount: Number(after_calulated_data.calculated_amount),
             discount_amount: after_calulated_data.discount, // discount amount
-            paid_amount: after_calulated_data.after_discounted_amount,
+            paid_amount: after_calulated_data.calculated_amount,
             due_amount: after_calulated_data.due_amount,
+            willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
+            customer_receivable_amount:
+              after_calulated_data?.customer_receivable_amount,
+            delevery_charge: after_calulated_data?.delevery_charge,
+            advance_charge_amount: after_calulated_data?.advance_charge_amount,
             user_id,
             Txn_ID,
             // ✅ Only connect promo_code if it exists
@@ -91,7 +111,15 @@ const save_book_order = async (material_details, next) => {
         },
       },
     });
-
+    // update stock
+    await prisma.book.update({
+      where: {
+        book_id: product_id,
+      },
+      data: {
+        stock: Number(book.stock) - Number(quantity),
+      },
+    });
     // =============== return : if failed to data saved
     if (!created_order?.order_id) {
       return {
