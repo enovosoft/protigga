@@ -44,7 +44,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // if (!origin) return callback(null, true); // curl/postman
+      if (!origin) return callback(null, true); // curl/postman
       if (allowedOrigins.includes(origin)) return callback(null, true);
       callback(new Error('Not allowed by CORS'));
     },
