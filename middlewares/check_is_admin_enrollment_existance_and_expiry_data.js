@@ -12,7 +12,18 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
     req.accessible = false;
 
     const { slug } = req.params || '';
-    const { searched_data: course } = await find_course_by_slug({ slug });
+    const { exist, searched_data: course } = await find_course_by_slug({
+      slug,
+    });
+    //
+    if (!exist)
+      return responseGenerator(404, res, {
+        message: 'course info not found',
+        error: true,
+        success: false,
+      });
+    // ===============================
+
     const decoded_user = req.decoded_user;
 
     // ============= find user data
