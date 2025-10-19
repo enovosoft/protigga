@@ -191,8 +191,7 @@ model Enrollment { // ony for course
   fb_name String?
   course_id String
   expiry_date DateTime
-
-  is_expired Boolean @default(false)
+  is_blocked Boolean @default(false)
   status enrollment_access_type  @default(active)
   enrollment_status Enrollment_status @default(pending) 
   active_inactive_reason String? // example: due payment

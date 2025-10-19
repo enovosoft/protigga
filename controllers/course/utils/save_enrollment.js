@@ -43,7 +43,22 @@ const save_enrollment = async (material_details = {}, res, next) => {
       wp_number = '--',
       fb_name = '--',
     } = material_details || {};
-
+    // ===================== check: is already enrolled course by user
+    const enrollment_data = await prisma.enrollment.findFirst({
+      where: {
+        user_id,
+        course_id: material_details.product_id,
+      },
+    });
+    //=============== reponse back for already enrolled course
+    if (enrollment_data?.enrollment_id) {
+      return {
+        success: false,
+        error: true,
+        message:
+          'You have already enrolled this course. please continue this course from your dashboard',
+      };
+    }
     //     ================= save order
     const enrollment_id = shortid.generate();
 
@@ -62,7 +77,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
         expiry_date: material_details?.expiry_date
           ? material_details?.expiry_date
           : course_data.course_details.expired_date,
-        is_expired: false,
+        is_blocked: false,
         status: 'active',
         wp_number,
         fb_name,
@@ -70,13 +85,20 @@ const save_enrollment = async (material_details = {}, res, next) => {
         payment: {
           create: {
             payment_id: shortid.generate(),
-            meterial_price: after_calulated_data.original_amount,
-            amount: after_calulated_data.after_discounted_amount, // after discount
+            meterial_price: after_calulated_data.product_price,
+            product_price_with_quantity:
+              after_calulated_data.product_price_with_quantity,
+            amount: after_calulated_data.calculated_amount, // after discount
             discount_amount: after_calulated_data.discount, // discount amount
             paid_amount: after_calulated_data?.paid_amount
               ? after_calulated_data?.paid_amount
-              : after_calulated_data.after_discounted_amount,
+              : after_calulated_data.calculated_amount,
             due_amount: after_calulated_data.due_amount,
+            willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
+            customer_receivable_amount:
+              after_calulated_data.customer_receivable_amount,
+            delevery_charge: after_calulated_data.delevery_charge,
+            advance_charge_amount: after_calulated_data.advance_charge_amount,
             user_id,
             Txn_ID,
             status: material_details?.payment_status || 'PENDING',

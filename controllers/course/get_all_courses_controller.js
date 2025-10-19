@@ -11,6 +11,7 @@ const get_all_courses_controller = async (req, res, next) => {
         slug: true,
         price: true,
         thumbnail: true,
+        exams: true,
       },
       where: { is_deleted: false },
     });

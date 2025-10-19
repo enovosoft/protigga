@@ -2,6 +2,7 @@ const get_all_users_controller = require('../../controllers/user/get_all_users_c
 
 const get_single_user_details_controller = require('../../controllers/user/get_single_user_details_controller');
 const search_user_controller = require('../../controllers/user/search_user_controller');
+const update_user_block_unblock_controller = require('../../controllers/user/update_user_block_unblock_controller');
 
 const auth_middleware = require('../../middlewares/auth_middleware');
 const check_verified_user = require('../../middlewares/check_verified_user');
@@ -33,7 +34,17 @@ user_route.get(
   cookie_decoder,
   check_verified_user,
   auth_middleware,
+  is_admin,
   search_user_controller
+);
+user_route.put(
+  '/user',
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  auth_middleware,
+  is_admin,
+  update_user_block_unblock_controller
 );
 
 module.exports = user_route;

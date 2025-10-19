@@ -17,6 +17,7 @@ const update_course_controller = async (req, res, next) => {
       quiz_count,
       assessment,
       skill_level,
+      expired_date,
     } = req.body || {};
 
     const { exist, searched_data } = await find_course_by_slug({ slug });
@@ -53,6 +54,7 @@ const update_course_controller = async (req, res, next) => {
             quiz_count,
             assessment,
             skill_level,
+            expired_date,
           },
         },
       },
