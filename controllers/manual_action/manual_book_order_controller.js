@@ -39,9 +39,11 @@ const manual_book_order_controller = async (req, res, next) => {
         address,
         Txn_ID: `MANUAL-${transaction_id_generator()}`,
         after_calulated_data: {
-          original_amount: product_price,
+          product_price,
           discount_amount,
+          product_price_with_quantity: product_price,
           discount,
+          calculated_amount: product_price,
           after_discounted_amount,
           due_amount,
           status: book_order_status,
