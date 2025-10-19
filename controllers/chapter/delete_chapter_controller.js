@@ -15,6 +15,7 @@ const delete_chapter_controller = async (req, res, next) => {
 
     //     check: valid chapter
     const { exist } = await check_chapter_existance({ chapter_id });
+
     if (!exist)
       return responseGenerator(404, res, {
         message: 'invalid chapter',
@@ -31,7 +32,6 @@ const delete_chapter_controller = async (req, res, next) => {
     });
     const deleted_data = await prisma.chapter.delete({
       where: { chapter_id },
-      data: {},
     });
     //     reponse
     if (deleted_data?.chapter_id)

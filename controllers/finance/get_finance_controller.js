@@ -25,7 +25,7 @@ const get_finance_controller = async (req, res, next) => {
 
     // ================== fetch all successful payments
     const all_payment_data = await prisma.payment.findMany({
-      where: { status: 'SUCCESS' },
+      where: { status: 'SUCCESS', ...whereCondition },
     });
 
     let total_book_sell_amount = 0;
@@ -57,7 +57,14 @@ const get_finance_controller = async (req, res, next) => {
     const book_sales = [];
     for (const book of books) {
       const orders = await prisma.book_order.findMany({
-        where: { book_id: book.book_id, ...whereCondition },
+        where: {
+          book_id: book.book_id,
+          ...whereCondition,
+          status: 'confirmed',
+          payment: {
+            status: 'SUCCESS',
+          },
+        },
         include: { payment: true },
       });
       const total_orders = orders.length;
@@ -77,7 +84,13 @@ const get_finance_controller = async (req, res, next) => {
     const course_sales = [];
     for (const course of courses) {
       const orders = await prisma.enrollment.findMany({
-        where: { course_id: course.course_id, ...whereCondition },
+        where: {
+          course_id: course.course_id,
+          ...whereCondition,
+          payment: {
+            status: 'SUCCESS',
+          },
+        },
         include: { payment: true },
       });
       const total_orders = orders.length;
