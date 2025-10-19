@@ -37,8 +37,7 @@ const manual_enrollment_controller = async (req, res, next) => {
     Txn_ID = `${Txn_ID || ''}${
       Txn_ID ? '-' : ''
     }MANUAL-${transaction_id_generator()}`;
-
-    const { success, error } = await save_enrollment(
+    const { success, error, message } = await save_enrollment(
       {
         user_id: user?.user_id,
         Txn_ID,
@@ -52,6 +51,9 @@ const manual_enrollment_controller = async (req, res, next) => {
         payment_status,
         enrollment_status,
         after_calulated_data: {
+          product_price,
+          product_price_with_quantity: product_price,
+          calculated_amount: product_price,
           original_amount: product_price,
           after_discounted_amount: product_price - discount_amount,
           paid_amount,
@@ -76,6 +78,12 @@ const manual_enrollment_controller = async (req, res, next) => {
         error,
       });
     }
+
+    return responseGenerator(200, res, {
+      message,
+      success,
+      error,
+    });
   } catch (error) {
     return next(error);
   }

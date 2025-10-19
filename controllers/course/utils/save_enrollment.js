@@ -10,6 +10,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
       save_enromment_validation_schema,
       material_details
     );
+
     //     schema validation error and thorugh response
 
     if (!success) {
@@ -25,6 +26,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
       where: { course_id: material_details.product_id },
       include: { course_details: true },
     });
+
     // check and response
     if (!course_data?.course_id)
       return responseGenerator(404, res, {
@@ -43,6 +45,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
       wp_number = '--',
       fb_name = '--',
     } = material_details || {};
+
     // ===================== check: is already enrolled course by user
     const enrollment_data = await prisma.enrollment.findFirst({
       where: {
@@ -50,6 +53,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
         course_id: material_details.product_id,
       },
     });
+
     //=============== reponse back for already enrolled course
     if (enrollment_data?.enrollment_id) {
       return {
@@ -123,6 +127,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
         },
       },
     });
+
     // =============== return : if failed to data saved
     if (!created_enrollment?.enrollment_id) {
       return {
