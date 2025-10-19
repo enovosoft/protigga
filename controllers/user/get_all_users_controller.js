@@ -5,43 +5,35 @@ const get_all_users_controller = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const page_size = 100;
   const skip = (page - 1) * page_size;
+
   try {
     const users = await prisma.user.findMany({
       orderBy: {
         createdAt: 'desc',
       },
       select: {
+        user_id: true,
         name: true,
         phone: true,
-        user_id: true,
         createdAt: true,
         updatedAt: true,
         is_verified: true,
         is_blocked: true,
-      },
-      include: {
+        // relation data
         payments: {
-          select: {
-            course_enrollment: true,
-            book_order: true,
-          },
+          select: { course_enrollment: true, book_order: true },
         },
         enrollments: {
-          select: {
-            payment: true,
-            course: true,
-          },
+          select: { payment: true, course: true },
         },
         book_orders: {
-          select: {
-            payment: true,
-            book: true,
-          },
+          select: { payment: true, book: true },
         },
       },
       take: page_size,
       skip,
     });
+
     // ============= response
     return responseGenerator(200, res, {
       message: 'all data found',

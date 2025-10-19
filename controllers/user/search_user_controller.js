@@ -20,31 +20,22 @@ const search_user_controller = async (req, res, next) => {
         OR: orConditions,
       },
       select: {
+        user_id: true,
         name: true,
         phone: true,
-        user_id: true,
         createdAt: true,
         updatedAt: true,
         is_verified: true,
         is_blocked: true,
-      },
-      include: {
+        // relation data
         payments: {
-          include: {
-            course_enrollment: true,
-          },
+          select: { course_enrollment: true, book_order: true },
         },
         enrollments: {
-          select: {
-            payment: true,
-            course: true,
-          },
+          select: { payment: true, course: true },
         },
         book_orders: {
-          select: {
-            payment: true,
-            book: true,
-          },
+          select: { payment: true, book: true },
         },
       },
     });
