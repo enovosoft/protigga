@@ -65,7 +65,12 @@ const get_finance_controller = async (req, res, next) => {
         (sum, order) => sum + (order.payment?.product_price_with_quantity || 0),
         0
       );
-      book_sales.push({ book_id: book.book_id, total_orders, total_amount });
+      book_sales.push({
+        book_id: book.book_id,
+        total_orders,
+        total_amount,
+        book_name: book.title,
+      });
     }
 
     // ================== per course sales
@@ -84,10 +89,11 @@ const get_finance_controller = async (req, res, next) => {
         course_id: course.course_id,
         total_orders,
         total_amount,
+        course_name: course.course_title,
       });
     }
 
-    // ================== daily/weekly/monthly sales
+    // ================== daily/weekly/monthly sales with book/course names
     const book_orders = await prisma.book_order.findMany({
       where: { ...whereCondition, payment: { status: 'SUCCESS' } },
       include: { payment: true },
@@ -102,27 +108,26 @@ const get_finance_controller = async (req, res, next) => {
     const monthly_book_sales = {};
 
     book_orders.forEach((order) => {
-      const day = order.createdAt.toISOString().split('T')[0]; // YYYY-MM-DD
+      const day = order.createdAt.toISOString().split('T')[0];
       const week = `${order.createdAt.getFullYear()}-W${Math.ceil(
         (order.createdAt.getDate() + 6) / 7
       )}`;
       const month = `${order.createdAt.getFullYear()}-${
         order.createdAt.getMonth() + 1
       }`;
+      const book_name =
+        books.find((b) => b.book_id === order.book_id)?.title || 'Unknown';
 
-      // Daily
-      if (!daily_book_sales[day]) daily_book_sales[day] = 0;
-      daily_book_sales[day] += order.payment?.product_price_with_quantity || 0;
+      const addSale = (obj, key, name, amount) => {
+        if (!obj[key]) obj[key] = {};
+        if (!obj[key][name]) obj[key][name] = 0;
+        obj[key][name] += amount;
+      };
 
-      // Weekly
-      if (!weekly_book_sales[week]) weekly_book_sales[week] = 0;
-      weekly_book_sales[week] +=
-        order.payment?.product_price_with_quantity || 0;
-
-      // Monthly
-      if (!monthly_book_sales[month]) monthly_book_sales[month] = 0;
-      monthly_book_sales[month] +=
-        order.payment?.product_price_with_quantity || 0;
+      const amount = order.payment?.product_price_with_quantity || 0;
+      addSale(daily_book_sales, day, book_name, amount);
+      addSale(weekly_book_sales, week, book_name, amount);
+      addSale(monthly_book_sales, month, book_name, amount);
     });
 
     const daily_course_sales = {};
@@ -137,18 +142,20 @@ const get_finance_controller = async (req, res, next) => {
       const month = `${order.createdAt.getFullYear()}-${
         order.createdAt.getMonth() + 1
       }`;
+      const course_name =
+        courses.find((c) => c.course_id === order.course_id)?.course_title ||
+        'Unknown';
 
-      if (!daily_course_sales[day]) daily_course_sales[day] = 0;
-      daily_course_sales[day] +=
-        order.payment?.product_price_with_quantity || 0;
+      const addSale = (obj, key, name, amount) => {
+        if (!obj[key]) obj[key] = {};
+        if (!obj[key][name]) obj[key][name] = 0;
+        obj[key][name] += amount;
+      };
 
-      if (!weekly_course_sales[week]) weekly_course_sales[week] = 0;
-      weekly_course_sales[week] +=
-        order.payment?.product_price_with_quantity || 0;
-
-      if (!monthly_course_sales[month]) monthly_course_sales[month] = 0;
-      monthly_course_sales[month] +=
-        order.payment?.product_price_with_quantity || 0;
+      const amount = order.payment?.product_price_with_quantity || 0;
+      addSale(daily_course_sales, day, course_name, amount);
+      addSale(weekly_course_sales, week, course_name, amount);
+      addSale(monthly_course_sales, month, course_name, amount);
     });
 
     // ================== top selling books/courses
@@ -201,7 +208,7 @@ const get_finance_controller = async (req, res, next) => {
         ? 100
         : ((current_revenue - prev_revenue) / prev_revenue) * 100;
 
-    // ================== pending orders
+    // ================== pending/inactive orders
     const pending_book_orders = await prisma.book_order.count({
       where: { status: 'pending' },
     });
