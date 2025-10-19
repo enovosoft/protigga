@@ -73,7 +73,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
               currency,
               store_amount,
               card_category,
-              // val_id,
+              val_id,
             }
           );
           // ----------------- save payment on Payment table

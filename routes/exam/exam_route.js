@@ -13,7 +13,15 @@ const update_exam_validation = require('../../validators/exam/update_exam_valida
 const validate = require('../../validators/utils/validate');
 
 const exam_route = require('express').Router();
-exam_route.get('/exams', get_all_exam_controller);
+exam_route.get(
+  '/exams',
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  auth_middleware,
+  is_admin,
+  get_all_exam_controller
+);
 exam_route.post(
   '/exam',
   validate(add_exam_validation),
