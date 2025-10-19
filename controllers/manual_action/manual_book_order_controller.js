@@ -18,8 +18,8 @@ const manual_book_order_controller = async (req, res, next) => {
       book_order_status,
       payment_status,
       book_id,
+      payment_method,
     } = req.body || {};
-
     // ------------ search by user
     const { exist, user } = await checkUserExists({ phone });
     if (!exist)
@@ -48,6 +48,7 @@ const manual_book_order_controller = async (req, res, next) => {
           due_amount,
           status: book_order_status,
           payment_status,
+          method: payment_method,
         },
       },
       next

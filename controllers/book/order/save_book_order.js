@@ -105,6 +105,7 @@ const save_book_order = async (material_details, next) => {
                   promo_code_id: null, // no code used
                 }),
             promo_code_id,
+            method: after_calulated_data.method || 'SSL_COMMERZ',
             purpose: 'book order',
             remarks: 'Book order',
           },

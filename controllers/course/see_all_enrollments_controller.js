@@ -6,12 +6,16 @@ const see_all_enrollments_controller = async (req, res, next) => {
   const page_size = 100;
   const course_id = req.query.book_id || '';
   const start_date = req.query.start_date || '';
+  const enrollment_type = req.query.enrollment_type || '';
   const end_date = req.query.end_date || new Date();
   const skip = (page - 1) * page_size;
   try {
     let whereCondition = {};
     if (course_id) {
       whereCondition.course_id = course_id;
+    }
+    if (enrollment_type) {
+      whereCondition.enrollment_type = enrollment_type; // online or hybrid
     }
     if (start_date && end_date) {
       whereCondition.createdAt = {
