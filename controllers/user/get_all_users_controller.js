@@ -10,6 +10,15 @@ const get_all_users_controller = async (req, res, next) => {
       orderBy: {
         createdAt: 'desc',
       },
+      select: {
+        name: true,
+        phone: true,
+        user_id: true,
+        createdAt: true,
+        updatedAt: true,
+        is_verified: true,
+        is_blocked: true,
+      },
       include: {
         payments: {
           select: {

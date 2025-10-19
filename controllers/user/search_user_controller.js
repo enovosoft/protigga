@@ -19,6 +19,34 @@ const search_user_controller = async (req, res, next) => {
       where: {
         OR: orConditions,
       },
+      select: {
+        name: true,
+        phone: true,
+        user_id: true,
+        createdAt: true,
+        updatedAt: true,
+        is_verified: true,
+        is_blocked: true,
+      },
+      include: {
+        payments: {
+          include: {
+            course_enrollment: true,
+          },
+        },
+        enrollments: {
+          select: {
+            payment: true,
+            course: true,
+          },
+        },
+        book_orders: {
+          select: {
+            payment: true,
+            book: true,
+          },
+        },
+      },
     });
 
     if (!user) {

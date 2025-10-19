@@ -41,7 +41,7 @@ const manual_book_order_controller = async (req, res, next) => {
         after_calulated_data: {
           product_price,
           discount_amount,
-          product_price_with_quantity: product_price,
+          product_price_with_quantity: product_price * quantity,
           discount,
           calculated_amount: product_price,
           after_discounted_amount,
