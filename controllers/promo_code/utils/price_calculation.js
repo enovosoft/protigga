@@ -110,8 +110,7 @@ const price_calculation = async (
 
       if (exist) {
         product_price = searched_data.price;
-        product_price_with_quantity =
-          searched_data.price * Number(quantity || 1);
+        product_price_with_quantity = searched_data.price;
         meterial_name = searched_data.course_title;
       }
     }
