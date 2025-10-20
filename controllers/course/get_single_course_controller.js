@@ -12,6 +12,7 @@ const get_single_course_controller = async (req, res, next) => {
         is_deleted: false,
       },
       include: {
+        exams: Boolean(accessible),
         course_details: true,
         chapters: {
           select: {
