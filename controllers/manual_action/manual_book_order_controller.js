@@ -19,7 +19,11 @@ const manual_book_order_controller = async (req, res, next) => {
       book_order_status,
       payment_status,
       book_id,
+      Txn_ID,
       payment_method,
+      inside_dhaka,
+      outside_dhaka,
+      sundarban_courier,
     } = req.body || {};
     // ------------ search by user
     const { exist, user } = await checkUserExists({ phone });
@@ -39,6 +43,19 @@ const manual_book_order_controller = async (req, res, next) => {
         error: true,
         success: false,
       });
+    // ========== delevery charge calculation
+    let ADVANCE_AMOUNT = Number(process.env.ADVANCE_AMOUNT);
+    const OUTSIDE_DHAKA_CHARGE = Number(process.env.OUTSIDE_DHAKA_CHARGE);
+    const INSIDE_DHAKA_CHARGE = Number(process.env.INSIDE_DHAKA_CHARGE);
+    const SUNDORBAN_CHARGE = Number(process.env.SUNDORBAN_CHARGE);
+    let delevery_charge = 60;
+    if (inside_dhaka && !outside_dhaka && !sundarban_courier) {
+      delevery_charge = INSIDE_DHAKA_CHARGE;
+    } else if (outside_dhaka && !sundarban_courier && !inside_dhaka) {
+      delevery_charge = OUTSIDE_DHAKA_CHARGE;
+    } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
+      delevery_charge = SUNDORBAN_CHARGE;
+    }
 
     const { success, error, errors } = await save_book_order(
       {
@@ -48,14 +65,16 @@ const manual_book_order_controller = async (req, res, next) => {
         alternative_phone,
         quantity,
         address,
-        Txn_ID: `MANUAL-${transaction_id_generator()}`,
+        Txn_ID: Txn_ID || `MANUAL-${transaction_id_generator()}`,
         after_calulated_data: {
           product_price,
           discount_amount,
           product_price_with_quantity: product_price * quantity,
           discount,
-          calculated_amount: product_price,
+          calculated_amount:
+            product_price * quantity - discount + delevery_charge,
           paid_amount,
+          delevery_charge,
           due_amount: product_price - paid_amount,
           status: book_order_status,
           payment_status,
