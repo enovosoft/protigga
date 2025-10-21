@@ -58,7 +58,7 @@ const manual_enrollment_controller = async (req, res, next) => {
           after_discounted_amount: product_price - discount_amount,
           paid_amount,
           discount: discount_amount,
-          due_amount: product_price - discount_amount - paid_amount,
+          due_amount: 0,
         },
         remarks,
         expiry_date,

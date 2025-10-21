@@ -15,6 +15,7 @@ const is_admin = require('../../middlewares/is_admin');
 const is_blocked = require('../../middlewares/is_blocked');
 const token_regenerator = require('../../middlewares/token_regenerator');
 const add_course_validation = require('../../validators/course/add_course_validation');
+const update_enrollment_block_unblock_validation = require('../../validators/course/enrollment/update_enrollment_block_unblock_validation');
 const update_course_validation = require('../../validators/course/update_course_validation');
 const validate = require('../../validators/utils/validate');
 
@@ -43,6 +44,7 @@ course_route.get(
 );
 course_route.put(
   '/enrollment',
+  validate(update_enrollment_block_unblock_validation),
   token_regenerator,
   cookie_decoder,
   check_verified_user,

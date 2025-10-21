@@ -33,7 +33,20 @@ const manual_book_order_controller = async (req, res, next) => {
         error: true,
         success: false,
       });
-
+    // ================= find transaction details
+    const transection = await prisma.payment.findFirst({
+      where: {
+        Txn_ID,
+      },
+    });
+    // ===== check:
+    if (transection?.Txn_ID) {
+      return responseGenerator(400, res, {
+        message: 'please input unique TxnID',
+        error: true,
+        success: false,
+      });
+    }
     // ====================== find book details
     const { exist: exist_, book } = await find_book({ book_id });
 
@@ -44,7 +57,6 @@ const manual_book_order_controller = async (req, res, next) => {
         success: false,
       });
     // ========== delevery charge calculation
-    let ADVANCE_AMOUNT = Number(process.env.ADVANCE_AMOUNT);
     const OUTSIDE_DHAKA_CHARGE = Number(process.env.OUTSIDE_DHAKA_CHARGE);
     const INSIDE_DHAKA_CHARGE = Number(process.env.INSIDE_DHAKA_CHARGE);
     const SUNDORBAN_CHARGE = Number(process.env.SUNDORBAN_CHARGE);
@@ -61,20 +73,20 @@ const manual_book_order_controller = async (req, res, next) => {
       {
         user_id: user.user_id,
         product_id: book_id,
-        product_price,
+        product_price: Number(product_price) || 0,
         alternative_phone,
-        quantity,
-        address,
+        quantity: quantity || 0,
+        address: address || '--',
         Txn_ID: Txn_ID || `MANUAL-${transaction_id_generator()}`,
         after_calulated_data: {
-          product_price,
-          discount_amount,
-          product_price_with_quantity: product_price * quantity,
-          discount,
+          product_price: Number(product_price) || 0,
+          discount_amount: discount_amount || 0,
+          product_price_with_quantity: Number(product_price * quantity) || 0,
+          discount: discount || 0,
           calculated_amount:
-            product_price * quantity - discount + delevery_charge,
-          paid_amount,
-          delevery_charge,
+            Number(product_price * quantity - discount + delevery_charge) || 0,
+          paid_amount: paid_amount || 0,
+          delevery_charge: delevery_charge || 0,
           due_amount: product_price - paid_amount,
           status: book_order_status,
           payment_status,

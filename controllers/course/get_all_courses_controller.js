@@ -8,10 +8,14 @@ const get_all_courses_controller = async (req, res, next) => {
     else featured = false;
 
     const courses = await prisma.course.findMany({
-      where: {
-        is_featured: featured,
-        is_deleted: false,
-      },
+      where: featured
+        ? {
+            is_deleted: false,
+            is_featured: featured,
+          }
+        : {
+            is_deleted: false,
+          },
       select: {
         course_id: true,
         batch: true,

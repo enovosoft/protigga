@@ -93,7 +93,9 @@ const save_book_order = async (material_details, next) => {
             delevery_charge: after_calulated_data?.delevery_charge,
             advance_charge_amount:
               after_calulated_data?.advance_charge_amount || 0,
-            user_id,
+            user: {
+              connect: { user_id },
+            },
             Txn_ID,
             // ✅ Only connect promo_code if it exists
             ...(promo_code_id

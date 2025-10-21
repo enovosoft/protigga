@@ -8,10 +8,14 @@ const get_all_books_controller = async (req, res, next) => {
     else featured = false;
     // ========= search
     const all_books = await prisma.book.findMany({
-      where: {
-        is_deleted: false,
-        is_featured: featured,
-      },
+      where: featured
+        ? {
+            is_deleted: false,
+            is_featured: featured,
+          }
+        : {
+            is_deleted: false,
+          },
       select: {
         book_id: true,
         title: true,

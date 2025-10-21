@@ -33,6 +33,7 @@ const manual_book_order_validation = z.object({
     .number('After discounted amount must be a number')
     .optional(),
   discount: z.number('Discount must be a number').optional(),
+
   book_order_status: z.enum(
     Object.values(OrderStatus),
     'book order status missing'

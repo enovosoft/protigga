@@ -3,7 +3,7 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const update_enrollment_block_unblock_controller = async (req, res, next) => {
   try {
-    const { enrollment_id, user_id } = req.body;
+    const { enrollment_id, user_id, expiry_date } = req.body;
     const enrollment_data = await prisma.enrollment.findFirst({
       where: {
         enrollment_id,
@@ -27,6 +27,7 @@ const update_enrollment_block_unblock_controller = async (req, res, next) => {
       data: {
         is_blocked: !enrollment_data.is_blocked,
         status: enrollment_data.status === 'active' ? 'inactive' : 'active',
+        expiry_date,
       },
     });
 
