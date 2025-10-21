@@ -47,6 +47,7 @@ const price_calculation = async (
     let customer_receivable_amount = 0;
     let advance_charge_amount = 0;
     let meterial_name = '';
+    let paid_amount = 0;
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
       const { exist, book } = await find_book({
@@ -74,18 +75,23 @@ const price_calculation = async (
       // -----------------
       if (inside_dhaka || outside_dhaka || sundarban_courier)
         last_promocode = default_promo_code_info;
+
       // -------------
       if (inside_dhaka && !outside_dhaka && !sundarban_courier) {
         delevery_charge = INSIDE_DHAKA_CHARGE;
         advance_charge_amount = ADVANCE_AMOUNT;
+        paid_amount = delevery_charge + advance_charge_amount;
       } else if (outside_dhaka && !sundarban_courier && !inside_dhaka) {
         advance_charge_amount = ADVANCE_AMOUNT;
         delevery_charge = OUTSIDE_DHAKA_CHARGE;
+        paid_amount = delevery_charge + advance_charge_amount;
       } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
         calculated_amount += SUNDORBAN_CHARGE;
         delevery_charge = SUNDORBAN_CHARGE;
+        paid_amount = product_price * quantity + delevery_charge; // _______ 🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩
       } else {
         calculated_amount = calculated_amount;
+        paid_amount = product_price * quantity + delevery_charge;
       }
     }
     // ----------------------
@@ -111,6 +117,7 @@ const price_calculation = async (
         meterial_name = searched_data.course_title;
         discount;
         due_amount;
+        paid_amount;
         willCustomerGetAmount;
         delevery_charge;
         customer_receivable_amount;
@@ -146,6 +153,7 @@ const price_calculation = async (
         advance_charge_amount,
       discount,
       due_amount,
+      paid_amount,
       willCustomerGetAmount,
       customer_receivable_amount,
       delevery_charge,

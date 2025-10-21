@@ -31,6 +31,10 @@ const get_finance_controller = async (req, res, next) => {
     let total_book_sell_amount = 0;
     let total_course_sell_amount = 0;
     let total_orders_count = 0;
+    let total_withdrawable_from_sslcomerz = 0;
+    all_payment_data.forEach((payment) => {
+      total_withdrawable_from_sslcomerz += payment.store_amount;
+    });
 
     all_payment_data.forEach((payment) => {
       if (payment.book_order_id) {
@@ -250,6 +254,7 @@ const get_finance_controller = async (req, res, next) => {
       revenue_growth,
       pending_book_orders,
       inactive_course_orders,
+      withrawable: total_withdrawable_from_sslcomerz,
     });
   } catch (error) {
     return next(error);

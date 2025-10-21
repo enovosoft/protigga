@@ -96,7 +96,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
             discount_amount: after_calulated_data.discount, // discount amount
             paid_amount: after_calulated_data?.paid_amount
               ? after_calulated_data?.paid_amount
-              : after_calulated_data.calculated_amount,
+              : after_calulated_data.paid_amount,
             due_amount: after_calulated_data.due_amount,
             willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
             customer_receivable_amount:

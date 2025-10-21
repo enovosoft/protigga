@@ -27,14 +27,14 @@ const update_book_controller = async (req, res, next) => {
         error: true,
         success: false,
       });
-    //  =========== new slug
+    // ============ new slug
     let slug = slug_generator(title);
-    let { exist_ } = await find_book({ slug });
-    exist = exist_;
-    while (exist) {
-      slug = slug_generator(title, false);
-      const { exist: exist_ } = await find_book({ slug });
-      exist = exist_;
+    let { exist: slugExists } = await find_book({ slug });
+    // loop until we get a unique slug
+    while (slugExists && book.title !== title) {
+      slug = slug_generator(title, false); // generate a new slug
+      const result = await find_book({ slug });
+      slugExists = result.exist;
     }
 
     // =========== update : book object

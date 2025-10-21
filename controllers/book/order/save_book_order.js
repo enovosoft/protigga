@@ -53,6 +53,7 @@ const save_book_order = async (material_details, next) => {
         message: 'Stocked out',
       };
     }
+
     //     ================= save order
     const order_id = shortid.generate();
     const created_order = await prisma.book_order.create({
@@ -84,7 +85,7 @@ const save_book_order = async (material_details, next) => {
             meterial_price: parseFloat(after_calulated_data.product_price),
             amount: Number(after_calulated_data.calculated_amount),
             discount_amount: after_calulated_data.discount, // discount amount
-            paid_amount: after_calulated_data.calculated_amount,
+            paid_amount: after_calulated_data.paid_amount,
             due_amount: after_calulated_data.due_amount,
             willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
             customer_receivable_amount:

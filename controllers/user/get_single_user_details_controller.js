@@ -17,7 +17,11 @@ const get_single_user_details_controller = async (req, res, next) => {
         enrollments: {
           select: {
             payment: true,
-            course: true,
+            course: {
+              select: {
+                exams: true,
+              },
+            },
           },
         },
         book_orders: {
