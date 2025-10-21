@@ -19,6 +19,12 @@ const get_all_users_controller = async (req, res, next) => {
         updatedAt: true,
         is_verified: true,
         is_blocked: true,
+        roles: {
+          select: {
+            role: true,
+            role_id: true,
+          },
+        },
         // relation data
         payments: {
           select: { course_enrollment: true, book_order: true },
