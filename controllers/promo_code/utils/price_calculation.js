@@ -89,6 +89,7 @@ const price_calculation = async (
         calculated_amount += SUNDORBAN_CHARGE;
         delevery_charge = SUNDORBAN_CHARGE;
         paid_amount = product_price * quantity + delevery_charge; // _______ 🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩
+        advance_charge_amount = 0;
       } else {
         calculated_amount = calculated_amount;
         paid_amount = product_price * quantity + delevery_charge;
@@ -101,9 +102,11 @@ const price_calculation = async (
         advance_charge_amount - product_price_with_quantity;
       due_amount = 0;
     } else {
-      due_amount = product_price_with_quantity - advance_charge_amount;
-      willCustomerGetAmount = false;
-      customer_receivable_amount = 0;
+      if (!sundarban_courier) {
+        due_amount = product_price_with_quantity - advance_charge_amount;
+        willCustomerGetAmount = false;
+        customer_receivable_amount = 0;
+      }
     }
     // ----------- course part
     if (meterial_type === 'course') {

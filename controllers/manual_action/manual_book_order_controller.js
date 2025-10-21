@@ -3,6 +3,8 @@ const save_book_order = require('../book/order/save_book_order');
 const responseGenerator = require('../../utils/responseGenerator');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
 const checkUserExists = require('../../utils/checkUserExists');
+const prisma = require('../../config/db');
+const find_book = require('../book/utils/find_book');
 const manual_book_order_controller = async (req, res, next) => {
   try {
     const {
@@ -12,7 +14,7 @@ const manual_book_order_controller = async (req, res, next) => {
       address,
       alternative_phone,
       discount_amount,
-      due_amount,
+      paid_amount,
       discount,
       book_order_status,
       payment_status,
@@ -24,6 +26,16 @@ const manual_book_order_controller = async (req, res, next) => {
     if (!exist)
       return responseGenerator(404, res, {
         message: 'user not found',
+        error: true,
+        success: false,
+      });
+
+    // ====================== find book details
+    const { exist: exist_, book } = await find_book({ book_id });
+
+    if (!exist_)
+      return responseGenerator(404, res, {
+        message: 'book not found',
         error: true,
         success: false,
       });
@@ -43,7 +55,8 @@ const manual_book_order_controller = async (req, res, next) => {
           product_price_with_quantity: product_price * quantity,
           discount,
           calculated_amount: product_price,
-          due_amount,
+          paid_amount,
+          due_amount: product_price - paid_amount,
           status: book_order_status,
           payment_status,
           method: payment_method,
@@ -51,6 +64,7 @@ const manual_book_order_controller = async (req, res, next) => {
       },
       next
     );
+
     return responseGenerator(success ? 201 : 500, res, {
       message: success ? 'Order saved' : 'failed or save order',
       success,
