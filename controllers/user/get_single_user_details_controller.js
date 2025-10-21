@@ -3,10 +3,10 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const get_single_user_details_controller = async (req, res, next) => {
   try {
-    const user_id = req.query.user_id || '';
+    const decoded_user = req.decoded_user;
     //     ======== search
     const user = await prisma.user.findFirst({
-      where: { user_id },
+      where: { user_id: decoded_user?.user_id },
       include: {
         payments: {
           select: {

@@ -85,7 +85,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    // return next(error);
+    return next(error);
   }
 };
 

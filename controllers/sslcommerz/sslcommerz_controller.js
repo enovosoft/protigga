@@ -83,7 +83,7 @@ const createPayment = async (req, res, next) => {
         errors,
       });
     // ============== if amount zero
-    if (after_calulated_data?.after_discounted_amount == 0) {
+    if (after_calulated_data?.calculated_amount == 0) {
       // -------- update book order
       if (String(meterial_type).toLowerCase() === 'book')
         await update_book_order(
@@ -99,9 +99,8 @@ const createPayment = async (req, res, next) => {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     }
     // ---------- sslcommerz
-    console.log(after_calulated_data.after_discounted_amount);
     const data = {
-      total_amount: Number(after_calulated_data.product_price_with_quantity),
+      total_amount: Number(after_calulated_data.calculated_amount),
       currency: 'BDT',
       tran_id: tran_id, // unique transaction id
       success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,

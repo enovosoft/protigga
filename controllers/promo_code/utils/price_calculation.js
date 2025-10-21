@@ -47,8 +47,6 @@ const price_calculation = async (
     let customer_receivable_amount = 0;
     let advance_charge_amount = 0;
     let meterial_name = '';
-    // let after_discounted_amount = 0;
-
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
       const { exist, book } = await find_book({
@@ -61,7 +59,6 @@ const price_calculation = async (
           error: true,
         });
       }
-
       if (exist) {
         product_price = book.price;
         meterial_name = book.title;
@@ -112,6 +109,13 @@ const price_calculation = async (
         product_price = searched_data.price;
         product_price_with_quantity = searched_data.price;
         meterial_name = searched_data.course_title;
+        discount;
+        due_amount;
+        willCustomerGetAmount;
+        delevery_charge;
+        customer_receivable_amount;
+        advance_charge_amount;
+        meterial_name;
       }
     }
 
