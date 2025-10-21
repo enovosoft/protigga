@@ -3,7 +3,15 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const get_all_courses_controller = async (req, res, next) => {
   try {
+    let { featured } = req.query || '';
+    if (String(featured).toLowerCase() == 'true') featured = true;
+    else featured = false;
+
     const courses = await prisma.course.findMany({
+      where: {
+        is_featured: featured,
+        is_deleted: false,
+      },
       select: {
         course_id: true,
         batch: true,
@@ -12,7 +20,6 @@ const get_all_courses_controller = async (req, res, next) => {
         price: true,
         thumbnail: true,
       },
-      where: { is_deleted: false },
     });
 
     //     --------- response

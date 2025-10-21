@@ -3,8 +3,15 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const get_all_books_controller = async (req, res, next) => {
   try {
+    let { featured } = req.query || '';
+    if (String(featured).toLowerCase() == 'true') featured = true;
+    else featured = false;
     // ========= search
     const all_books = await prisma.book.findMany({
+      where: {
+        is_deleted: false,
+        is_featured: featured,
+      },
       select: {
         book_id: true,
         title: true,
@@ -16,9 +23,6 @@ const get_all_books_controller = async (req, res, next) => {
         updatedAt: true,
         batch: true,
         stock: true,
-      },
-      where: {
-        is_deleted: false,
       },
     });
     if (all_books)
