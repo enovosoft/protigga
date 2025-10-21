@@ -59,6 +59,9 @@ const see_all_enrollments_controller = async (req, res, next) => {
       success: true,
       enrollments,
       courses,
+      total_page: Math.ceil(total_data_size / page_size),
+      curr_page: page,
+      item_per_page: page_size,
     });
   } catch (error) {
     error.message = 'failed to load enrollments';
