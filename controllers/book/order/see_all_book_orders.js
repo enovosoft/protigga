@@ -63,6 +63,7 @@ const see_all_book_orders = async (req, res, next) => {
       total_page: Math.floor(total_data_size / page_size),
       curr_page: page,
       item_per_page: page_size,
+      books,
     });
   } catch (error) {
     console.log(error);
