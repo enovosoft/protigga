@@ -3,11 +3,12 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const see_all_enrollments_controller = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
-  const page_size = 100;
+  const page_size = 20;
   const course_id = req.query.book_id || '';
   const start_date = req.query.start_date || '';
   const enrollment_type = req.query.enrollment_type || '';
   const end_date = req.query.end_date || new Date();
+
   const skip = (page - 1) * page_size;
   try {
     let whereCondition = {};
@@ -15,7 +16,11 @@ const see_all_enrollments_controller = async (req, res, next) => {
       whereCondition.course_id = course_id;
     }
     if (enrollment_type) {
-      whereCondition.enrollment_type = enrollment_type; // online or hybrid
+      if (enrollment_type == 'online' || enrollment_type == 'hybrid')
+        whereCondition.enrollment_type = enrollment_type;
+      else {
+        whereCondition.enrollment_type = '';
+      }
     }
     if (start_date && end_date) {
       whereCondition.createdAt = {
@@ -59,11 +64,12 @@ const see_all_enrollments_controller = async (req, res, next) => {
       success: true,
       enrollments,
       courses,
-      total_page: Math.ceil(total_data_size / page_size),
+      total_page: Math.ceil(enrollments.length / page_size),
       curr_page: page,
       item_per_page: page_size,
     });
   } catch (error) {
+    console.log(error);
     error.message = 'failed to load enrollments';
     error.status = 500;
     return next(error);
