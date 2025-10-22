@@ -228,7 +228,7 @@ model Payment {
   meterial_price Float
   product_price_with_quantity Float
   discount_amount  Float?         // ছাড়ের পরিমাণ
-  amount          Float
+  // amount          Float
   paid_amount     Float
   due_amount      Float
   willCustomerGetAmount Boolean @default(false)

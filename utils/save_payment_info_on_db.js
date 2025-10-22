@@ -6,7 +6,7 @@ const save_payment_info_on_db = async (payment_data) => {
     // =========== ::
     const {
       user_id,
-      amount,
+
       paid_amount,
       due_amount,
       method,
@@ -19,7 +19,7 @@ const save_payment_info_on_db = async (payment_data) => {
       data: {
         payment_id: shortid.generate(),
         user_id,
-        amount,
+
         paid_amount,
         due_amount,
         status: 'SUCCESS',

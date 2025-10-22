@@ -34,7 +34,6 @@ const createPayment = async (req, res, next) => {
     );
     // // ============== check: user
     const user = req.decoded_user;
-
     // ==================== decision : by meterial type -> and create order or enrollment
     let is_saved_data = false;
     let message_ = null;
@@ -99,8 +98,9 @@ const createPayment = async (req, res, next) => {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     }
     // ---------- sslcommerz
+
     const data = {
-      total_amount: Number(after_calulated_data.calculated_amount),
+      total_amount: Number(after_calulated_data.paid_amount),
       currency: 'BDT',
       tran_id: tran_id, // unique transaction id
       success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
@@ -125,6 +125,7 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
+    console.log(apiResponse);
     return responseGenerator(200, res, {
       status: 'SUCCESS',
       error: false,

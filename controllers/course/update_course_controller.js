@@ -5,7 +5,7 @@ const find_course_by_slug = require('./utils/find_course_by_slug');
 
 const update_course_controller = async (req, res, next) => {
   try {
-    const {
+    let {
       slug,
       batch,
       course_title,
@@ -19,7 +19,11 @@ const update_course_controller = async (req, res, next) => {
       skill_level,
       expired_date,
     } = req.body || {};
-
+    // ================
+    const { slug: slug_ } = req.params || {};
+    if (!slug) {
+      slug = slug_;
+    }
     const { exist, searched_data } = await find_course_by_slug({ slug });
     // --------------- if not exist
     if (!exist)
@@ -30,12 +34,12 @@ const update_course_controller = async (req, res, next) => {
       });
     //  ====================== check: if exist -> update
     // ============ new slug
-    let new_slug = slug_generator(title);
-    let { exist: slugExists } = await find_book({ slug: new_slug });
+    let new_slug = slug_generator(course_title);
+    let { exist: slugExists } = await find_course_by_slug({ slug: new_slug });
     // loop until we get a unique slug
     while (slugExists && searched_data.course_title !== course_title) {
       new_slug = slug_generator(title, false); // generate a new slug
-      const result = await find_book({ slug: new_slug });
+      const result = await find_course_by_slug({ slug: new_slug });
       slugExists = result.exist;
     }
 

@@ -3,6 +3,7 @@ const express = require('express');
 const helmet = require('helmet');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const moment = require('moment-timezone');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -33,6 +34,12 @@ const port = process.env.SERVER_PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// Middleware to attach Bangladesh time to each request
+app.use((req, res, next) => {
+  req.bangladeshTime = moment().tz('Asia/Dhaka').format('YYYY-MM-DD HH:mm:ss');
+  next();
+});
+
 //===================== allow list ======================
 const allowedOrigins = [
   process.env.FRONTEND_URL,

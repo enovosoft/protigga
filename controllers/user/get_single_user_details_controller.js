@@ -17,7 +17,6 @@ const get_single_user_details_controller = async (req, res, next) => {
             meterial_price: true,
             discount_amount: true,
             discount_amount: true,
-            amount: true,
             paid_amount: true,
             due_amount: true,
             willCustomerGetAmount: true,
@@ -46,7 +45,7 @@ const get_single_user_details_controller = async (req, res, next) => {
                 meterial_price: true,
                 discount_amount: true,
                 discount_amount: true,
-                amount: true,
+
                 paid_amount: true,
                 due_amount: true,
                 willCustomerGetAmount: true,
@@ -82,7 +81,7 @@ const get_single_user_details_controller = async (req, res, next) => {
                 meterial_price: true,
                 discount_amount: true,
                 discount_amount: true,
-                amount: true,
+
                 paid_amount: true,
                 due_amount: true,
                 willCustomerGetAmount: true,

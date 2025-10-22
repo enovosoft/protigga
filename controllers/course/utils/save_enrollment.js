@@ -91,7 +91,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
             meterial_price: after_calulated_data.product_price,
             product_price_with_quantity:
               after_calulated_data.product_price_with_quantity,
-            amount: after_calulated_data.calculated_amount, // after discount
+            // amount: after_calulated_data.calculated_amount, // after discount
             discount_amount: after_calulated_data.discount, // discount amount
             paid_amount: after_calulated_data?.paid_amount
               ? after_calulated_data?.paid_amount

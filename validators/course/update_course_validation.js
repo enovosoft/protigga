@@ -1,7 +1,7 @@
 const { default: z } = require('zod');
 
 const update_course_validation = z.object({
-  slug: z.string('slug missing'),
+  // slug: z.string('slug missing'),
   batch: z.string('Batch missing'),
   course_title: z.string('course title missing'),
   price: z.number('course price missing'),
@@ -12,6 +12,6 @@ const update_course_validation = z.object({
   quiz_count: z.number('Quiz count missing'),
   assessment: z.boolean('assesment missing'),
   skill_level: z.string('skill level missing'),
-  expired_date: z.string('expired date  missing'),
+  expired_date: z.iso.datetime('expired date  missing'),
 });
 module.exports = update_course_validation;

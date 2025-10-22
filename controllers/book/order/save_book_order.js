@@ -83,7 +83,7 @@ const save_book_order = async (material_details, next) => {
               after_calulated_data.product_price_with_quantity,
             payment_id: shortid.generate(),
             meterial_price: parseFloat(after_calulated_data.product_price),
-            amount: Number(after_calulated_data.calculated_amount),
+            // amount: Number(after_calulated_data.calculated_amount),
             discount_amount: after_calulated_data.discount, // discount amount
             paid_amount: after_calulated_data.paid_amount,
             due_amount: after_calulated_data.due_amount,

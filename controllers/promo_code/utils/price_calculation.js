@@ -29,6 +29,7 @@ const price_calculation = async (
     });
 
     //     ================= check : if promocode exist
+
     let last_promocode =
       promocodes[promocodes.length - 1] || default_promo_code_info;
     //     ============= find product through product meterial type
@@ -39,15 +40,17 @@ const price_calculation = async (
 
     let product_price = 0;
     let product_price_with_quantity = 0;
-    let calculated_amount = 0; // ✅
     let discount = 0;
-    let due_amount = 0;
-    let willCustomerGetAmount = false;
-    let delevery_charge = 0; // ✅
-    let customer_receivable_amount = 0;
-    let advance_charge_amount = 0;
-    let meterial_name = '';
     let paid_amount = 0;
+    let due_amount = 0;
+    let advance_charge_amount = 0;
+    let delevery_charge = 0; // ✅
+    let willCustomerGetAmount = false;
+    let customer_receivable_amount = 0;
+
+    let meterial_name = '';
+    let calculated_amount = 0; // ✅
+
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
       const { exist, book } = await find_book({
@@ -73,7 +76,7 @@ const price_calculation = async (
       // && String(delevery_type).toLowerCase() == 'cod'
     ) {
       // -----------------
-      if (inside_dhaka || outside_dhaka || sundarban_courier)
+      if (inside_dhaka || outside_dhaka)
         last_promocode = default_promo_code_info;
 
       // -------------
@@ -95,11 +98,30 @@ const price_calculation = async (
         paid_amount = product_price * quantity + delevery_charge;
       }
     }
+
+    // ===================== discount - calculation
+    // Check if amount meets minimum purchase requirement
+    if (product_price_with_quantity >= last_promocode.Min_purchase_amount) {
+      if (last_promocode.Discount_type === 'fixed') {
+        discount = last_promocode.Discount;
+      } else if (last_promocode.Discount_type === 'percentage') {
+        discount =
+          (product_price_with_quantity * last_promocode.Discount) / 100;
+        // Apply max discount limit
+        if (discount > last_promocode.Max_discount_amount) {
+          discount = last_promocode.Max_discount_amount;
+        }
+      }
+    }
+
+    //     ===== after discount
+    discount = Math.round(discount);
+
     // ----------------------
     if (advance_charge_amount > product_price_with_quantity) {
       willCustomerGetAmount = true;
       customer_receivable_amount =
-        advance_charge_amount - product_price_with_quantity;
+        advance_charge_amount - (product_price_with_quantity - discount);
       due_amount = 0;
     } else {
       if (!sundarban_courier) {
@@ -120,7 +142,7 @@ const price_calculation = async (
         meterial_name = searched_data.course_title;
         discount;
         due_amount;
-        paid_amount;
+        paid_amount = searched_data.price;
         willCustomerGetAmount;
         delevery_charge;
         customer_receivable_amount;
@@ -129,33 +151,11 @@ const price_calculation = async (
       }
     }
 
-    // ===================== discount - calculation
-    // Check if amount meets minimum purchase requirement
-    if (product_price_with_quantity >= last_promocode.Min_purchase_amount) {
-      if (last_promocode.Discount_type === 'fixed') {
-        discount = last_promocode.Discount;
-      } else if (last_promocode.Discount_type === 'percentage') {
-        discount =
-          (product_price_with_quantity * last_promocode.Discount) / 100;
-        // Apply max discount limit
-        if (discount > last_promocode.Max_discount_amount) {
-          discount = last_promocode.Max_discount_amount;
-        }
-      }
-    }
-    //     ===== after discount
-    discount = Math.round(discount);
     return {
       product_price,
       quantity,
       product_price_with_quantity,
-      calculated_amount:
-        inside_dhaka || outside_dhaka
-          ? paid_amount
-          : product_price_with_quantity -
-            discount +
-            delevery_charge +
-            advance_charge_amount,
+      // calculated_amount: paid_amount,
       discount,
       due_amount,
       paid_amount,
