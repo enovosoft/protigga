@@ -59,8 +59,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
       return {
         success: false,
         error: true,
-        message:
-          'You have already enrolled this course. please continue this course from your dashboard',
+        message: `You have already enrolled this course. please continue this course from your dashboard`,
       };
     }
     //     ================= save order

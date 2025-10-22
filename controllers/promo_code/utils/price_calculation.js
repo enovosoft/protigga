@@ -150,10 +150,12 @@ const price_calculation = async (
       quantity,
       product_price_with_quantity,
       calculated_amount:
-        product_price_with_quantity -
-        discount +
-        delevery_charge +
-        advance_charge_amount,
+        inside_dhaka || outside_dhaka
+          ? paid_amount
+          : product_price_with_quantity -
+            discount +
+            delevery_charge +
+            advance_charge_amount,
       discount,
       due_amount,
       paid_amount,
