@@ -1,6 +1,7 @@
 const prisma = require('../../config/db');
+const moment = require('moment-timezone');
 const responseGenerator = require('../../utils/responseGenerator');
-
+const bangladeshNow = moment().tz('Asia/Dhaka').toDate();
 const get_single_user_details_controller = async (req, res, next) => {
   try {
     const decoded_user = req.decoded_user;
@@ -68,7 +69,13 @@ const get_single_user_details_controller = async (req, res, next) => {
             },
             course: {
               include: {
-                exams: true,
+                exams: {
+                  where: {
+                    exam_end_time: {
+                      gt: bangladeshNow,
+                    },
+                  },
+                },
               },
             },
           },
