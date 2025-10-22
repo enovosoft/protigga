@@ -26,6 +26,9 @@ const get_finance_controller = async (req, res, next) => {
     // ================== fetch all successful payments
     const all_payment_data = await prisma.payment.findMany({
       where: { status: 'SUCCESS', ...whereCondition },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     let total_book_sell_amount = 0;
@@ -54,8 +57,16 @@ const get_finance_controller = async (req, res, next) => {
           total_orders_count;
 
     // ================== fetch books & courses
-    const books = await prisma.book.findMany();
-    const courses = await prisma.course.findMany();
+    const books = await prisma.book.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    const courses = await prisma.course.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
     // ================== per book sales
     const book_sales = [];
@@ -69,6 +80,7 @@ const get_finance_controller = async (req, res, next) => {
             status: 'SUCCESS',
           },
         },
+
         include: { payment: true },
       });
       const total_orders = orders.length;
@@ -95,6 +107,7 @@ const get_finance_controller = async (req, res, next) => {
             status: 'SUCCESS',
           },
         },
+
         include: { payment: true },
       });
       const total_orders = orders.length;
@@ -227,10 +240,10 @@ const get_finance_controller = async (req, res, next) => {
 
     // ================== pending/inactive orders
     const pending_book_orders = await prisma.book_order.count({
-      where: { status: 'pending' },
+      where: { status: 'pending', ...whereCondition },
     });
     const inactive_course_orders = await prisma.enrollment.count({
-      where: { status: 'inactive' },
+      where: { status: 'inactive', ...whereCondition },
     });
 
     // ================== response
