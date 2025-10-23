@@ -3,11 +3,18 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const update_exam_controller = async (req, res, next) => {
   try {
-    const { exam_id, exam_title, exam_description, exam_link } = req.body || {};
+    const {
+      exam_id,
+      exam_title,
+      exam_description,
+      exam_link,
+      exam_start_time,
+      exam_end_time,
+    } = req.body || {};
 
     if (!exam_id) {
       return responseGenerator(400, res, {
-        message: 'exam_id is required',
+        message: 'required data missing',
         success: false,
         error: true,
       });
@@ -33,6 +40,8 @@ const update_exam_controller = async (req, res, next) => {
         exam_title,
         exam_description,
         exam_link,
+        exam_start_time,
+        exam_end_time,
       },
     });
 
