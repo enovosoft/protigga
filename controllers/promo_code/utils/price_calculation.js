@@ -53,7 +53,7 @@ const price_calculation = async (
 
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
-      if (!inside_dhaka || !outside_dhaka || !sundarban_courier) {
+      if (!inside_dhaka && !outside_dhaka && !sundarban_courier) {
         return responseGenerator(404, res, {
           message: 'Please provide a valid delivery method',
           success: false,
