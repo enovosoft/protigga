@@ -55,6 +55,7 @@ const check_promo_code_controller = async (req, res, next) => {
         Discount: promo.Discount,
         Max_discount_amount: promo.Max_discount_amount,
         Min_purchase_amount: promo.Min_purchase_amount,
+        promocode_id: promo.promo_code_id,
       },
     });
   } catch (err) {
