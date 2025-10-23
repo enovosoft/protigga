@@ -1,5 +1,6 @@
 const add_course_controller = require('../../controllers/course/add_course_controller');
 const delete_course_controller = require('../../controllers/course/delete_course_controller');
+const download_enrollments_excel_format = require('../../controllers/course/download_enrollments_excel_format');
 const get_all_courses_controller = require('../../controllers/course/get_all_courses_controller');
 
 const get_single_course_controller = require('../../controllers/course/get_single_course_controller');
@@ -41,7 +42,16 @@ course_route.get(
   auth_middleware,
   is_admin,
   see_all_enrollments_controller
-);
+); // admin
+course_route.get(
+  '/enrollments-excel',
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  auth_middleware,
+  is_admin,
+  download_enrollments_excel_format
+); // admin
 course_route.put(
   '/enrollment',
   validate(update_enrollment_block_unblock_validation),

@@ -2,6 +2,7 @@ const add_book_controller = require('../../controllers/book/add_book_controller'
 const delete_book_controller = require('../../controllers/book/delete_book_controller');
 const get_all_books_controller = require('../../controllers/book/get_all_books_controller');
 const get_single_book_controller = require('../../controllers/book/get_single_book_controller');
+const download_orders_excel_format = require('../../controllers/book/order/download_orders_excel_format');
 const see_all_book_orders = require('../../controllers/book/order/see_all_book_orders');
 const update_book_controller = require('../../controllers/book/update_book_controller');
 const auth_middleware = require('../../middlewares/auth_middleware');
@@ -26,6 +27,15 @@ book_route.get(
   auth_middleware,
   is_admin,
   see_all_book_orders
+); // for admin
+book_route.get(
+  '/orders-excel',
+  token_regenerator,
+  cookie_decoder,
+  check_verified_user,
+  auth_middleware,
+  is_admin,
+  download_orders_excel_format
 ); // for admin
 book_route.post(
   '/book',

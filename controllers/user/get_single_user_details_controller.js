@@ -12,6 +12,9 @@ const get_single_user_details_controller = async (req, res, next) => {
         user_id: true,
         name: true,
         phone: true,
+        is_verified: true,
+        is_blocked: true,
+        createdAt: true,
         payments: {
           select: {
             product_price_with_quantity: true,
@@ -35,7 +38,6 @@ const get_single_user_details_controller = async (req, res, next) => {
             book_order: true,
             course_enrollment: true,
             Txn_ID: true,
-            promo_code: true,
           },
         },
         enrollments: {
@@ -46,7 +48,6 @@ const get_single_user_details_controller = async (req, res, next) => {
                 meterial_price: true,
                 discount_amount: true,
                 discount_amount: true,
-
                 paid_amount: true,
                 due_amount: true,
                 willCustomerGetAmount: true,
@@ -64,7 +65,6 @@ const get_single_user_details_controller = async (req, res, next) => {
                 book_order: true,
                 course_enrollment: true,
                 Txn_ID: true,
-                promo_code: true,
               },
             },
             course: {

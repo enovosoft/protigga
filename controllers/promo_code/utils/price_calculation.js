@@ -99,13 +99,15 @@ const price_calculation = async (
 
       // -------------
       if (inside_dhaka && !outside_dhaka && !sundarban_courier) {
-        delevery_charge = INSIDE_DHAKA_CHARGE;
+        // delevery_charge = INSIDE_DHAKA_CHARGE;
         advance_charge_amount = ADVANCE_AMOUNT;
-        paid_amount = delevery_charge + advance_charge_amount;
+        // paid_amount = delevery_charge + advance_charge_amount;
+        paid_amount = advance_charge_amount;
       } else if (outside_dhaka && !sundarban_courier && !inside_dhaka) {
+        // delevery_charge = OUTSIDE_DHAKA_CHARGE;
         advance_charge_amount = ADVANCE_AMOUNT;
-        delevery_charge = OUTSIDE_DHAKA_CHARGE;
-        paid_amount = delevery_charge + advance_charge_amount;
+        // paid_amount = delevery_charge + advance_charge_amount;
+        paid_amount = advance_charge_amount;
       } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
         calculated_amount += SUNDORBAN_CHARGE;
         delevery_charge = SUNDORBAN_CHARGE;
