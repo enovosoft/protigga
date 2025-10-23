@@ -65,7 +65,6 @@ const see_all_book_orders = async (req, res, next) => {
       books,
     });
   } catch (error) {
-    console.log(error);
     error.message = 'failed to load orders';
     error.status = 500;
     return next(error);

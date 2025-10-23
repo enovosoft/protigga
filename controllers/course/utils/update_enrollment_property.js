@@ -35,7 +35,6 @@ const update_enrollment_property = async (
         : null,
     };
   } catch (error) {
-    console.log(error);
     throw new Error('Server/database error');
   }
 };

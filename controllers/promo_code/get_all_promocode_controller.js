@@ -3,7 +3,11 @@ const responseGenerator = require('../../utils/responseGenerator');
 
 const get_all_promocode_controller = async (req, res, next) => {
   try {
-    const promocodes = await prisma.promo_code.findMany();
+    const promocodes = await prisma.promo_code.findMany({
+      where: {
+        is_deleted: false,
+      },
+    });
 
     return responseGenerator(200, res, {
       message:

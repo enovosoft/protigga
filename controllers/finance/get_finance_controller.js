@@ -36,7 +36,7 @@ const get_finance_controller = async (req, res, next) => {
     let total_orders_count = 0;
     let total_withdrawable_from_sslcomerz = 0;
     all_payment_data.forEach((payment) => {
-      total_withdrawable_from_sslcomerz += payment.store_amount;
+      total_withdrawable_from_sslcomerz += Number(payment.store_amount);
     });
 
     all_payment_data.forEach((payment) => {
@@ -253,6 +253,7 @@ const get_finance_controller = async (req, res, next) => {
       success: true,
       total_book_sell_amount,
       total_course_sell_amount,
+      total_sell: total_book_sell_amount + total_course_sell_amount,
       average_order_value,
       book_sales,
       course_sales,

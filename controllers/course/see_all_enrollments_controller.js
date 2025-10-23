@@ -69,7 +69,6 @@ const see_all_enrollments_controller = async (req, res, next) => {
       item_per_page: page_size,
     });
   } catch (error) {
-    console.log(error);
     error.message = 'failed to load enrollments';
     error.status = 500;
     return next(error);

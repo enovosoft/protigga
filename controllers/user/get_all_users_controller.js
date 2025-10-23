@@ -48,7 +48,6 @@ const get_all_users_controller = async (req, res, next) => {
       users,
     });
   } catch (error) {
-    console.log(error);
     error.message = 'failed to load user data';
     error.status = 500;
     return next(error);

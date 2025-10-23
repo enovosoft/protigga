@@ -53,6 +53,14 @@ const price_calculation = async (
 
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
+      if (!inside_dhaka || !outside_dhaka || !sundarban_courier) {
+        return responseGenerator(404, res, {
+          message: 'Please provide a valid delivery method',
+          success: false,
+          error: true,
+        });
+      }
+
       const { exist, book } = await find_book({
         book_id: meterial_details.product_id,
       });
@@ -150,7 +158,6 @@ const price_calculation = async (
         meterial_name;
       }
     }
-
     return {
       product_price,
       quantity,
@@ -158,7 +165,7 @@ const price_calculation = async (
       // calculated_amount: paid_amount,
       discount,
       due_amount,
-      paid_amount,
+      paid_amount: paid_amount - discount,
       willCustomerGetAmount,
       customer_receivable_amount,
       delevery_charge,
