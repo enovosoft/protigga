@@ -86,7 +86,7 @@ app.use(helmet());
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 3 * 60 * 1000, // 3 minutes
-  max: 100,
+  max: 3000,
   keyGenerator: (req) => req?.body?.user_email || req?.body?.email || req?.ip,
   handler: (req, res, next) => {
     const error = new Error('Too many requests. Please try again later.');

@@ -51,6 +51,19 @@ const price_calculation = async (
     let meterial_name = '';
     let calculated_amount = 0; // ✅
 
+    // ----------- course part
+    if (meterial_type === 'course') {
+      const { exist, searched_data } = await find_course_by_slug({
+        course_id: meterial_details.product_id,
+      });
+
+      if (exist) {
+        product_price = searched_data.price;
+        product_price_with_quantity = searched_data.price;
+        paid_amount = searched_data.price;
+        meterial_name = searched_data.course_title;
+      }
+    }
     // -------------------- if meterial_type === book
     if (meterial_type === 'book') {
       if (!inside_dhaka && !outside_dhaka && !sundarban_courier) {
@@ -79,10 +92,7 @@ const price_calculation = async (
     }
 
     // book part and cod
-    if (
-      meterial_type === 'book'
-      // && String(delevery_type).toLowerCase() == 'cod'
-    ) {
+    if (meterial_type === 'book') {
       // -----------------
       if (inside_dhaka || outside_dhaka)
         last_promocode = default_promo_code_info;
@@ -109,12 +119,11 @@ const price_calculation = async (
 
     // ===================== discount - calculation
     // Check if amount meets minimum purchase requirement
-    if (product_price_with_quantity >= last_promocode.Min_purchase_amount) {
+    if (paid_amount >= last_promocode?.Min_purchase_amount) {
       if (last_promocode.Discount_type === 'fixed') {
         discount = last_promocode.Discount;
       } else if (last_promocode.Discount_type === 'percentage') {
-        discount =
-          (product_price_with_quantity * last_promocode.Discount) / 100;
+        discount = (paid_amount * last_promocode.Discount) / 100;
         // Apply max discount limit
         if (discount > last_promocode.Max_discount_amount) {
           discount = last_promocode.Max_discount_amount;
@@ -132,36 +141,16 @@ const price_calculation = async (
         advance_charge_amount - (product_price_with_quantity - discount);
       due_amount = 0;
     } else {
-      if (!sundarban_courier) {
+      if (!sundarban_courier && meterial_type !== 'course') {
         due_amount = product_price_with_quantity - advance_charge_amount;
         willCustomerGetAmount = false;
         customer_receivable_amount = 0;
       }
     }
-    // ----------- course part
-    if (meterial_type === 'course') {
-      const { exist, searched_data } = await find_course_by_slug({
-        course_id: meterial_details.product_id,
-      });
-
-      if (exist) {
-        product_price = searched_data.price;
-        product_price_with_quantity = searched_data.price;
-        meterial_name = searched_data.course_title;
-        discount;
-        due_amount;
-        paid_amount = searched_data.price;
-        willCustomerGetAmount;
-        delevery_charge;
-        customer_receivable_amount;
-        advance_charge_amount;
-        meterial_name;
-      }
-    }
     return {
       product_price,
       quantity,
-      product_price_with_quantity,
+      product_price_with_quantity: product_price_with_quantity - discount,
       // calculated_amount: paid_amount,
       discount,
       due_amount,

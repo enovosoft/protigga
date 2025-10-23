@@ -98,7 +98,6 @@ const createPayment = async (req, res, next) => {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     }
     // ---------- sslcommerz
-
     const data = {
       total_amount: Number(after_calulated_data.paid_amount),
       currency: 'BDT',
