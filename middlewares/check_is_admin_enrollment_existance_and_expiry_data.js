@@ -52,8 +52,8 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
         course_id: course?.course_id,
       },
     });
-    // ============= check enrollment existence and expiry
 
+    // ============= check enrollment existence and expiry
     if (!enrollmentData) {
       return responseGenerator(403, res, {
         message: 'You are not enrolled in this course.',
@@ -61,8 +61,16 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
         success: false,
       });
     }
+    // ============= check payment data
+    if (enrollmentData?.enrollment_status === 'success') {
+      return responseGenerator(403, res, {
+        message: 'Please complete your enrollment',
+        error: true,
+        success: false,
+      });
+    }
     // ============= check expire
-    const isExpired = new Date(enrollmentData.expiry_date) <= new Date();
+    const isExpired = new Date(enrollmentData?.expiry_date) <= new Date();
     if (isExpired) {
       return responseGenerator(403, res, {
         message: 'Your enrollment has expired.',
@@ -71,7 +79,7 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
       });
     }
     // ================ check is blocked or not
-    if (enrollmentData.is_blocked) {
+    if (enrollmentData?.is_blocked) {
       return responseGenerator(403, res, {
         message: 'Your enrollment Has blocked by admin.',
         error: true,
