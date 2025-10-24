@@ -4,7 +4,7 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
 
   res.cookie(cookieName, token, {
     httpOnly: isProduction, // secure from JS
-    secure: isProduction, // HTTPS required for prod
+    secure: !isProduction,
     sameSite: isProduction ? 'lax' : 'none', // allow cross-domain
     maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day default
     path: '/', // root path
