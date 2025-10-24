@@ -8,6 +8,7 @@ const auth_middleware = require('../../middlewares/auth_middleware');
 const check_verified_user = require('../../middlewares/check_verified_user');
 const cookie_decoder = require('../../middlewares/cookie_decoder');
 const is_admin = require('../../middlewares/is_admin');
+const is_blocked = require('../../middlewares/is_blocked');
 const token_regenerator = require('../../middlewares/token_regenerator');
 
 const user_route = require('express').Router();
@@ -26,6 +27,7 @@ user_route.get(
   cookie_decoder,
   check_verified_user,
   auth_middleware,
+  is_blocked,
   get_single_user_details_controller
 );
 user_route.get(
