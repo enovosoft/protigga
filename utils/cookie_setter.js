@@ -8,6 +8,7 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
     sameSite: isProduction ? 'lax' : 'none', // allow cross-domain
     maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day default
     path: '/', // root path
+    domain: '.xyz.com', // notice dot for all subdomains
     ...options,
   });
 };
