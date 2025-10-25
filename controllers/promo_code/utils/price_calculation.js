@@ -111,11 +111,11 @@ const price_calculation = async (
       } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
         calculated_amount += SUNDORBAN_CHARGE;
         delevery_charge = SUNDORBAN_CHARGE;
-        paid_amount = product_price * quantity + delevery_charge; // _______ 🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩🚩
+        paid_amount = product_price * quantity;
         advance_charge_amount = 0;
       } else {
         calculated_amount = calculated_amount;
-        paid_amount = product_price * quantity + delevery_charge;
+        paid_amount = product_price * quantity;
       }
     }
 
@@ -156,7 +156,7 @@ const price_calculation = async (
       // calculated_amount: paid_amount,
       discount,
       due_amount,
-      paid_amount: paid_amount - discount,
+      paid_amount: paid_amount - discount + delevery_charge,
       willCustomerGetAmount,
       customer_receivable_amount,
       delevery_charge,
