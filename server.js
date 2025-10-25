@@ -32,15 +32,16 @@ const app = express();
 const port = process.env.SERVER_PORT || 5000;
 // ================== middleware =================
 app.use(express.json());
-app.use(
-  '/file',
-  (req, res, next) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    next();
-  },
-  express.static(path.join(__dirname, 'uploads'))
-);
+// app.use(
+//   '/file',
+//   (req, res, next) => {
+//     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     next();
+//   },
+//   express.static(path.join(__dirname, 'uploads'))
+// );
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // Middleware to attach Bangladesh time to each request
