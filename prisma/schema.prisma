@@ -3,7 +3,7 @@ generator client {
   // output   = "../generated/prisma"
 }
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 enum Enrollment_type{
@@ -53,7 +53,8 @@ enum PaymentMethod {
 }
 
 model User { 
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   user_id String @unique
   name      String   @default(".........")
   phone     String   @unique
@@ -68,7 +69,8 @@ model User {
   updatedAt DateTime @updatedAt
 }
 model Course{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   course_id String @unique
   batch String @default("_")
   course_title String
@@ -85,7 +87,8 @@ model Course{
   updatedAt DateTime @updatedAt
 }
 model Course_details{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   course_id String @unique
   slug String @unique
   course_details_id String  @unique
@@ -104,7 +107,8 @@ model Course_details{
 }
 
 model Chapter{
-    id        Int      @id @default(autoincrement())
+      id          String @id @default(auto()) @map("_id") @db.ObjectId
+
     chapter_id String @unique
     // course_details_id String
     course_id String 
@@ -117,7 +121,8 @@ model Chapter{
 }
 
 model Chapter_topic{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   chapter_topic_id String @unique
   chapter_id String
   title String 
@@ -129,7 +134,8 @@ model Chapter_topic{
   updatedAt DateTime @updatedAt
 }
 model Book{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   book_id String @unique
   slug String @unique
   stock Int @default(0)
@@ -149,7 +155,8 @@ model Book{
 
 
 model Note{ 
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   note_id String @unique
   slug String @unique
   note_name String
@@ -162,7 +169,8 @@ model Note{
 
 
 model Book_order{ 
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   order_id String @unique
   book_id String
   user_id String?
@@ -183,7 +191,8 @@ model Book_order{
 }
 
 model Enrollment { // ony for course
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   enrollment_id String @unique
   enrollment_type Enrollment_type @default(online) // hybrid
   user_id String
@@ -203,7 +212,8 @@ model Enrollment { // ony for course
   updatedAt DateTime @updatedAt
 }
 model Exam{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   exam_id String @unique
   course_id String
   exam_title String
@@ -218,7 +228,8 @@ model Exam{
 }
 
 model Payment { 
-  id              String   @id @default(cuid())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   payment_id String @unique
   val_id String? @unique 
   // Relation to User
@@ -263,7 +274,8 @@ model Payment {
 
 
 model Promo_code{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   promo_code_id String @unique
   promocode_for String // book/course
   promo_code String @unique
@@ -280,7 +292,8 @@ model Promo_code{
   updatedAt DateTime @updatedAt
 }
 model Otp{
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   otp_id String @unique
   otp String // hashed
   otp_type Otp_type @default(none)
@@ -290,7 +303,8 @@ model Otp{
   updatedAt DateTime @updatedAt
 }
 model Role {
-  id        Int      @id @default(autoincrement())
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+
   role_id String @unique
   user_id String
   phone String
