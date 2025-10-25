@@ -15,7 +15,6 @@ const success_sslcommerz_controller = async (req, res, next) => {
     } = req.body;
     const { status, val_id } = req.sslValidated;
     const meterial_type = req.query.meterial_type || '';
-    const product_id = req.query.product_id || '';
     const enrollment_id = req.query.enrollment_id || '';
     // ========== find: by tran_id
     const payment_details = await prisma.payment.findFirst({
