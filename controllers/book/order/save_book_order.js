@@ -3,14 +3,15 @@ const prisma = require('../../../config/db');
 const save_order_object_validation_schema = require('./save_order_object_validation');
 const validate_schema = require('../../../validators/utils/validate_schema');
 const find_book = require('../utils/find_book');
+
 const save_book_order = async (material_details, next) => {
   try {
+    // ================= Validate request
     const { success, message, errors } = validate_schema(
       save_order_object_validation_schema,
       material_details
     );
 
-    //     schema validation error and thorugh response
     if (!success) {
       return { success, message, error: true, errors };
     }
@@ -29,7 +30,8 @@ const save_book_order = async (material_details, next) => {
       wp_number = '--',
       fb_name = '--',
     } = material_details || {};
-    // ---------------- check: book exist or not
+
+    // ---------------- Check if book exists
     const { exist, book } = await find_book({ book_id: product_id });
     if (!exist) {
       return {
@@ -38,7 +40,8 @@ const save_book_order = async (material_details, next) => {
         message: 'Invalid book details',
       };
     }
-    // =========== check stock
+
+    // ---------------- Check stock
     if (book.stock < quantity) {
       return {
         success: false,
@@ -46,7 +49,7 @@ const save_book_order = async (material_details, next) => {
         message: `Insufficient quantity exist. please purchase ${book.stock} item or order after re-stock`,
       };
     }
-    if (book.stock == 0) {
+    if (book.stock === 0) {
       return {
         success: false,
         error: true,
@@ -54,8 +57,43 @@ const save_book_order = async (material_details, next) => {
       };
     }
 
-    //     ================= save order
+    // ================= Prepare order & payment data
     const order_id = shortid.generate();
+
+    // ----------- Payment Data
+    const paymentData = {
+      product_price_with_quantity:
+        after_calulated_data.product_price_with_quantity,
+      payment_id: shortid.generate(),
+      meterial_price: parseFloat(after_calulated_data.product_price),
+      discount_amount: after_calulated_data.discount,
+      paid_amount: after_calulated_data.paid_amount,
+      due_amount: after_calulated_data.due_amount,
+      willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
+      customer_receivable_amount:
+        after_calulated_data?.customer_receivable_amount,
+      delevery_charge: after_calulated_data?.delevery_charge,
+      advance_charge_amount: after_calulated_data?.advance_charge_amount || 0,
+      user: { connect: { user_id } },
+      Txn_ID,
+      method: after_calulated_data.method || 'SSL_COMMERZ',
+      purpose: 'book order',
+      remarks: 'Book order',
+      promo_code_id: null, // default
+    };
+
+    // ----------- Connect promo code only if exists in DB
+    if (promo_code_id) {
+      const promoExists = await prisma.promo_code.findUnique({
+        where: { promo_code_id },
+      });
+      if (promoExists) {
+        paymentData.promo_code = { connect: { promo_code_id } };
+        paymentData.promo_code_id = promo_code_id;
+      }
+    }
+
+    // ================= Create order
     const created_order = await prisma.book_order.create({
       data: {
         order_id,
@@ -65,81 +103,34 @@ const save_book_order = async (material_details, next) => {
         Txn_ID,
         wp_number,
         fb_name,
-        book: {
-          connect: {
-            book_id: product_id,
-          },
-        },
+        book: { connect: { book_id: product_id } },
         address,
-        status: after_calulated_data?.status
-          ? after_calulated_data?.status
-          : 'pending',
-        user: {
-          connect: { user_id },
-        },
-        payment: {
-          create: {
-            product_price_with_quantity:
-              after_calulated_data.product_price_with_quantity,
-            payment_id: shortid.generate(),
-            meterial_price: parseFloat(after_calulated_data.product_price),
-            // amount: Number(after_calulated_data.calculated_amount),
-            discount_amount: after_calulated_data.discount, // discount amount
-            paid_amount: after_calulated_data.paid_amount,
-            due_amount: after_calulated_data.due_amount,
-            willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
-            customer_receivable_amount:
-              after_calulated_data?.customer_receivable_amount,
-            delevery_charge: after_calulated_data?.delevery_charge,
-            advance_charge_amount:
-              after_calulated_data?.advance_charge_amount || 0,
-            user: {
-              connect: { user_id },
-            },
-            Txn_ID,
-            // ✅ Only connect promo_code if it exists
-            ...(promo_code_id
-              ? {
-                  promo_code: {
-                    connect: { promo_code_id },
-                  },
-                  promo_code_id,
-                }
-              : {
-                  promo_code_id: null, // no code used
-                }),
-            promo_code_id,
-            method: after_calulated_data.method || 'SSL_COMMERZ',
-            purpose: 'book order',
-            remarks: 'Book order',
-          },
-        },
+        status: after_calulated_data?.status || 'pending',
+        user: { connect: { user_id } },
+        payment: { create: paymentData },
       },
     });
-    // update stock
+
+    // ---------------- Update stock
     await prisma.book.update({
-      where: {
-        book_id: product_id,
-      },
-      data: {
-        stock: Number(book.stock) - Number(quantity),
-      },
+      where: { book_id: product_id },
+      data: { stock: Number(book.stock) - Number(quantity) },
     });
-    // =============== return : if failed to data saved
+
+    // ---------------- Return success
     if (!created_order?.order_id) {
       return {
         success: false,
         error: true,
-        message: 'faile to place order',
+        message: 'Failed to place order',
         errors,
       };
     }
 
-    // =============== return : if data saved
     return {
       success: true,
       error: false,
-      message: 'order placed successfully',
+      message: 'Order placed successfully',
       created_order,
       errors,
     };
