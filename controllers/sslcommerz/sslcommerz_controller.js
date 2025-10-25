@@ -124,6 +124,7 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
+    console.log(apiResponse);
 
     return responseGenerator(200, res, {
       status: 'SUCCESS',
