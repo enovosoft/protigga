@@ -3,7 +3,7 @@ generator client {
   // output   = "../generated/prisma"
 }
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 enum Enrollment_type{
@@ -53,7 +53,7 @@ enum PaymentMethod {
 }
 
 model User { 
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   user_id String @unique
   name      String   @default(".........")
@@ -69,7 +69,7 @@ model User {
   updatedAt DateTime @updatedAt
 }
 model Course{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   course_id String @unique
   batch String @default("_")
@@ -87,7 +87,7 @@ model Course{
   updatedAt DateTime @updatedAt
 }
 model Course_details{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   course_id String @unique
   slug String @unique
@@ -107,7 +107,7 @@ model Course_details{
 }
 
 model Chapter{
-      id          String @id @default(auto()) @map("_id") @db.ObjectId
+      id        Int      @id @default(autoincrement())
 
     chapter_id String @unique
     // course_details_id String
@@ -121,7 +121,7 @@ model Chapter{
 }
 
 model Chapter_topic{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   chapter_topic_id String @unique
   chapter_id String
@@ -134,7 +134,7 @@ model Chapter_topic{
   updatedAt DateTime @updatedAt
 }
 model Book{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   book_id String @unique
   slug String @unique
@@ -155,7 +155,7 @@ model Book{
 
 
 model Note{ 
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   note_id String @unique
   slug String @unique
@@ -169,7 +169,7 @@ model Note{
 
 
 model Book_order{ 
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   order_id String @unique
   book_id String
@@ -191,7 +191,7 @@ model Book_order{
 }
 
 model Enrollment { // ony for course
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   enrollment_id String @unique
   enrollment_type Enrollment_type @default(online) // hybrid
@@ -212,7 +212,7 @@ model Enrollment { // ony for course
   updatedAt DateTime @updatedAt
 }
 model Exam{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   exam_id String @unique
   course_id String
@@ -228,7 +228,7 @@ model Exam{
 }
 
 model Payment { 
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   payment_id String @unique
   val_id String? @unique 
@@ -274,7 +274,7 @@ model Payment {
 
 
 model Promo_code{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   promo_code_id String @unique
   promocode_for String // book/course
@@ -292,7 +292,7 @@ model Promo_code{
   updatedAt DateTime @updatedAt
 }
 model Otp{
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   otp_id String @unique
   otp String // hashed
@@ -303,7 +303,7 @@ model Otp{
   updatedAt DateTime @updatedAt
 }
 model Role {
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id        Int      @id @default(autoincrement())
 
   role_id String @unique
   user_id String
@@ -314,3 +314,5 @@ model Role {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
