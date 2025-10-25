@@ -3,12 +3,12 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   const isProduction = process.env.NODE_ENV === 'production';
 
   res.cookie(cookieName, token, {
-    httpOnly: isProduction, // secure from JS
-    secure: !isProduction,
-    sameSite: isProduction ? 'lax' : 'none', // allow cross-domain
-    maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day default
-    path: '/', // root path
-    domain: '.enovosoft.com', // notice dot for all subdomains
+    httpOnly: false, // frontend thekeo access hobe
+    secure: isProduction, // only HTTPS in production
+    sameSite: 'none', // subdomain / cross-domain access
+    maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day
+    path: '/',
+    domain: isProduction ? '.enovosoft.com' : undefined, // local e auto skip korbe
     ...options,
   });
 };
