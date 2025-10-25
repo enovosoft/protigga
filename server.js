@@ -133,6 +133,7 @@ app.get('/api/health', async (req, res) => {
 
 // ================== global error handle =====================
 app.use((err, _req, res, _next) => {
+  console.log('global error', err);
   const status = err.status || 500;
   // message decision
   let message = err.message || 'Something went wrong.';
