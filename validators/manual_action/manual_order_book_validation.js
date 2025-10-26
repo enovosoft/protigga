@@ -38,6 +38,7 @@ const manual_book_order_validation = z.object({
     Object.values(OrderStatus),
     'book order status missing'
   ),
+  paid_amount: z.number('Paid amount missing'),
   payment_status: z.enum(
     Object.values(PaymentStatus),
     'Payment status missing'
