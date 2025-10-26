@@ -85,7 +85,7 @@ const manual_book_order_controller = async (req, res, next) => {
           discount: discount || 0,
           // calculated_amount:
           //   Number(product_price * quantity - discount + delevery_charge) || 0,
-          paid_amount: paid_amount || 0,
+          paid_amount: paid_amount - discount + delevery_charge || 0,
           delevery_charge: delevery_charge || 0,
           due_amount: product_price - paid_amount,
           status: book_order_status,
