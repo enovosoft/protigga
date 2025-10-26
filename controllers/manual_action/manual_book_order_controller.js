@@ -81,13 +81,15 @@ const manual_book_order_controller = async (req, res, next) => {
         after_calulated_data: {
           product_price: Number(product_price) || 0,
           discount_amount: discount_amount || 0,
-          product_price_with_quantity: Number(product_price * quantity) || 0,
+          product_price_with_quantity:
+            Number(product_price * quantity) - discount || 0,
           discount: discount || 0,
           // calculated_amount:
           //   Number(product_price * quantity - discount + delevery_charge) || 0,
-          paid_amount: paid_amount - discount + delevery_charge || 0,
+          paid_amount: paid_amount || 0,
           delevery_charge: delevery_charge || 0,
-          due_amount: product_price - paid_amount,
+          due_amount:
+            Number(product_price * quantity) - (paid_amount + discount),
           status: book_order_status,
           payment_status,
           method: payment_method,
