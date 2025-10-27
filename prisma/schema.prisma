@@ -52,6 +52,12 @@ enum PaymentMethod {
   BANK
 }
 
+enum announcement_status{
+  active
+  expired
+  draft
+  scheduled
+}
 model User { 
     id        Int      @id @default(autoincrement())
 
@@ -82,8 +88,10 @@ model Course{
   thumbnail String @default("localhost://schema.com")
   course_details Course_details?
   createdAt DateTime @default(now())
+  related_books  Book[]   @relation("CourseBooks")  // link books
   enrollments Enrollment[]
   exams Exam[]
+  announcements Announcement[]
   updatedAt DateTime @updatedAt
 }
 model Course_details{
@@ -148,7 +156,7 @@ model Book{
   is_deleted Boolean @default(false)
   is_featured Boolean  @default(false)
   orders Book_order[]
-  // course Course_details? @relation(fields: [book_id],references: [related_book])
+    courses   Course[] @relation("CourseBooks")  // many-to-many relation
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -204,7 +212,7 @@ model Enrollment { // ony for course
   status enrollment_access_type  @default(active)
   enrollment_status Enrollment_status @default(pending) 
   active_inactive_reason String? // example: due payment
-  user User? @relation(fields: [user_id],references: [user_id])
+  user User @relation(fields: [user_id],references: [user_id])
   course Course? @relation(fields: [course_id],references: [course_id])
     // Optional Payment relation
   payment Payment?
@@ -223,10 +231,27 @@ model Exam{
   exam_description String
   exam_link String
   course Course? @relation(fields: [course_id],references: [course_id])
+    
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model Announcement{
+  id        Int      @id @default(autoincrement())
+  announcement_id String @unique
+  title String
+  description String?
+  course_id String
+  course Course? @relation(fields: [course_id],references: [course_id])
+  attachment_url String?
+  status announcement_status
+  start_date DateTime
+  end_date DateTime
+  is_send_sms Boolean?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 model Payment { 
     id        Int      @id @default(autoincrement())
 

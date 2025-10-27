@@ -2,15 +2,16 @@ const shortid = require('shortid');
 const prisma = require('../../../config/db');
 const bcrypt = require('bcrypt');
 const responseGenerator = require('../../../utils/responseGenerator');
-const sendOTP = require('../../../utils/sendOTP');
+
 const generate6DigitOtp = require('../../../utils/six_digit_otp_generator');
 const normalizePhoneNumber = require('../../../utils/normalize_phone_number');
+const send_message = require('../../../utils/send_message');
 
 const send_reset_password_controller = async (req, res, next) => {
   try {
     const { phone } = req.body || {};
     const otp = generate6DigitOtp();
-    const sender_otp_details = await sendOTP(`your otp is ${otp} `);
+    const sender_otp_details = await send_message(`your otp is ${otp} `);
     if (sender_otp_details.success) {
       // ====== save  to db
       await prisma.otp.create({

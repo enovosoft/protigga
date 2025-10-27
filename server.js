@@ -27,6 +27,7 @@ const chapter_route = require('./routes/chapter/chapter_route');
 const user_route = require('./routes/user/user_route');
 const topic_route = require('./routes/topic/topic_route');
 const finance_route = require('./routes/finance/finance_route');
+const announcement_route = require('./routes/announcement/announcement_route');
 // ================== main =================
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
@@ -119,6 +120,7 @@ app.use('/api/v1', chapter_route);
 app.use('/api/v1', user_route);
 app.use('/api/v1', topic_route);
 app.use('/api/v1', finance_route);
+app.use('/api/v1', announcement_route);
 
 app.get('/', async (_req, res) => {
   return res.redirect(`${process.env.FRONTEND_URL}`);

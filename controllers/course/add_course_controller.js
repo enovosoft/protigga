@@ -13,7 +13,7 @@ const add_course_controller = async (req, res, next) => {
       thumbnail,
       academy_name,
       description,
-      related_book,
+      related_books,
       expired_date,
       quiz_count,
       assessment,
@@ -34,6 +34,9 @@ const add_course_controller = async (req, res, next) => {
         slug,
         price,
         thumbnail,
+        related_books: related_books
+          ? { connect: related_books.map((book_id) => ({ book_id })) }
+          : undefined,
         course_details: {
           create: {
             slug,

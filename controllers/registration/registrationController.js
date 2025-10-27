@@ -6,8 +6,9 @@ const checkUserExists = require('../../utils/checkUserExists');
 const normalizePhoneNumber = require('../../utils/normalize_phone_number');
 
 const responseGenerator = require('../../utils/responseGenerator');
-const sendOTP = require('../../utils/sendOTP');
+
 const generate6DigitOtp = require('../../utils/six_digit_otp_generator');
+const send_message = require('../../utils/send_message');
 
 const registration_controller = async (req, res, next) => {
   try {
@@ -50,7 +51,7 @@ const registration_controller = async (req, res, next) => {
     };
     // ========================= send otp =========================
     const otp = generate6DigitOtp();
-    const otp_response = await sendOTP(`your OTP is ${otp}`);
+    const otp_response = await send_message(`your OTP is ${otp}`);
     if (otp_response.success) {
       // ------- update decision
       decision.is_send_otp = true;

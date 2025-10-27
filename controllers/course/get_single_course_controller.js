@@ -12,8 +12,42 @@ const get_single_course_controller = async (req, res, next) => {
         is_deleted: false,
       },
       include: {
-        exams: Boolean(accessible),
+        exams: {
+          where: {
+            exam_end_time: {
+              gte: new Date(),
+            },
+          },
+        },
         course_details: true,
+        announcements: accessible
+          ? {
+              where: {
+                end_date: {
+                  gte: new Date(),
+                },
+              },
+              select: {
+                title: Boolean(accessible),
+                description: Boolean(accessible),
+                course: Boolean(accessible),
+                start_date: Boolean(accessible),
+                end_date: Boolean(accessible),
+              },
+            }
+          : false,
+        related_books: {
+          select: {
+            slug: true,
+            stock: true,
+            batch: true,
+            book_image: true,
+            title: true,
+            price: true,
+            writter: true,
+            description: true,
+          },
+        },
         chapters: {
           select: {
             course_id: Boolean(accessible),

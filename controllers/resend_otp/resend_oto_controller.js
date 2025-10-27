@@ -3,9 +3,10 @@ const prisma = require('../../config/db');
 const bcrypt = require('bcrypt');
 const checkUserExists = require('../../utils/checkUserExists');
 const responseGenerator = require('../../utils/responseGenerator');
-const sendOTP = require('../../utils/sendOTP');
+
 const generate6DigitOtp = require('../../utils/six_digit_otp_generator');
 const normalizePhoneNumber = require('../../utils/normalize_phone_number');
+const send_message = require('../../utils/send_message');
 
 const resend_otp_controller = async (req, res, next) => {
   try {
@@ -26,7 +27,7 @@ const resend_otp_controller = async (req, res, next) => {
     // ============ geenrate otp
     const otp = generate6DigitOtp();
     // ============== send otp
-    const sended_otp_data = await sendOTP(`your otp is ${otp}`);
+    const sended_otp_data = await send_message(`your otp is ${otp}`);
     if (!sended_otp_data.success) {
       return responseGenerator(500, res, {
         message: 'Failed to send otp',
