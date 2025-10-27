@@ -7,6 +7,7 @@ const update_course_validation = z.object({
   price: z.number('course price missing'),
   thumbnail: z.string('thumbnail missing'),
   academy_name: z.string('academy name missing'),
+  related_books: z.array(z.string()).optional(),
   description: z.string('course description missing'),
   related_book: z.string("'Related book reference missing'"),
   quiz_count: z.number('Quiz count missing'),

@@ -59,8 +59,7 @@ enum announcement_status{
   scheduled
 }
 model User { 
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   user_id String @unique
   name      String   @default(".........")
   phone     String   @unique
@@ -75,8 +74,7 @@ model User {
   updatedAt DateTime @updatedAt
 }
 model Course{
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   course_id String @unique
   batch String @default("_")
   course_title String
@@ -95,8 +93,7 @@ model Course{
   updatedAt DateTime @updatedAt
 }
 model Course_details{
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   course_id String @unique
   slug String @unique
   course_details_id String  @unique
@@ -115,35 +112,29 @@ model Course_details{
 }
 
 model Chapter{
-      id        Int      @id @default(autoincrement())
-
+    id        Int      @id @default(autoincrement())
     chapter_id String @unique
-    // course_details_id String
     course_id String 
     title String
     course Course @relation(fields: [course_id],references: [course_id])
-    // course_details Course_details @relation(fields: [course_details_id], references: [course_details_id])
     topics Chapter_topic[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Chapter_topic{
-    id        Int      @id @default(autoincrement())
-
+  id        Int      @id @default(autoincrement())
   chapter_topic_id String @unique
   chapter_id String
   title String 
   slug String @unique
   youtube_url String
-  
   chapters Chapter? @relation(fields: [chapter_id],references: [chapter_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 model Book{
-    id        Int      @id @default(autoincrement())
-
+  id        Int      @id @default(autoincrement())
   book_id String @unique
   slug String @unique
   stock Int @default(0)
@@ -152,11 +143,12 @@ model Book{
   title String
   price Float
   writter String
+  demo_file_link String? @default("")
   description String
   is_deleted Boolean @default(false)
   is_featured Boolean  @default(false)
   orders Book_order[]
-    courses   Course[] @relation("CourseBooks")  // many-to-many relation
+  courses   Course[] @relation("CourseBooks")  // many-to-many relation
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

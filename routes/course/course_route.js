@@ -73,7 +73,7 @@ course_route.post(
   add_course_controller
 );
 course_route.put(
-  '/course/:slug',
+  '/course',
   validate(update_course_validation),
   token_regenerator,
   cookie_decoder,

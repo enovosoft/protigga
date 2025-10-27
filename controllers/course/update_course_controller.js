@@ -13,7 +13,7 @@ const update_course_controller = async (req, res, next) => {
       thumbnail,
       academy_name,
       description,
-      related_book,
+      related_books: related_books_,
       quiz_count,
       assessment,
       skill_level,
@@ -54,6 +54,9 @@ const update_course_controller = async (req, res, next) => {
         slug: new_slug,
         price,
         thumbnail,
+        related_books: related_books_
+          ? { set: [], connect: related_books_.map((book_id) => ({ book_id })) }
+          : undefined,
         course_details: {
           update: {
             slug: new_slug,
@@ -65,6 +68,9 @@ const update_course_controller = async (req, res, next) => {
             expired_date,
           },
         },
+      },
+      include: {
+        related_books: true,
       },
     });
     //     ============ if : not updated

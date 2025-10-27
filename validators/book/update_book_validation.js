@@ -6,6 +6,7 @@ const update_book_validation = z.object({
   title: z.string().nonempty({ message: 'title is missing' }),
   batch: z.string('batch missing'),
   is_featured: z.boolean('data missing'),
+  demo_file_link: z.string('demo pdf/img missing'),
   stock: z.number('stock is missing'),
   price: z
     .number({
