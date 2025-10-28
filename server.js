@@ -35,12 +35,13 @@ const port = process.env.SERVER_PORT || 5000;
 app.use(express.json());
 app.use(
   '/file',
-  express.static(path.join(__dirname, 'uploads'), {
-    setHeaders: (res, filePath) => {
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    },
-  })
+  (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
+    next();
+  },
+  express.static(path.join(__dirname, 'uploads'))
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -71,12 +72,6 @@ app.use(
   })
 );
 
-// app.use(
-//   cors({
-//     origin: 'http://localhost:5173',
-//     credentials: true,
-//   })
-// );
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined')); // production-friendly format
 } else {
