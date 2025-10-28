@@ -82,7 +82,8 @@ const createPayment = async (req, res, next) => {
         errors,
       });
     // ============== if amount zero
-    if (after_calulated_data?.calculated_amount == 0) {
+
+    if (after_calulated_data?.paid_amount === 0) {
       // -------- update book order
       if (String(meterial_type).toLowerCase() === 'book')
         await update_book_order(
@@ -92,10 +93,16 @@ const createPayment = async (req, res, next) => {
       // ---------- update enrollment
       if (String(meterial_type).toLowerCase() === 'course')
         await update_enrollment_property(
-          { enrollment_id_ },
+          { enrollment_id: enrollment_id_ },
           { enrollment_status: 'confirmed' }
         );
-      return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
+
+      return responseGenerator(200, res, {
+        status: 'SUCCESS',
+        error: false,
+        success: true,
+        payment_url: `${process.env.FRONTEND_URL}/payment/success`,
+      });
     }
     // ---------- sslcommerz
     const data = {
@@ -133,6 +140,7 @@ const createPayment = async (req, res, next) => {
       payment_url: apiResponse?.GatewayPageURL,
     });
   } catch (error) {
+    console.log(error);
     return responseGenerator(500, res, {
       status: 'FAILED',
       error: true,
