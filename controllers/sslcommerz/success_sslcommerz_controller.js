@@ -17,7 +17,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
     const meterial_type = req.query.meterial_type || '';
     const enrollment_id = req.query.enrollment_id || '';
     // ========== find: by tran_id
-    const payment_details = await prisma.payment.findFirst({
+    const payment_details = await prisma.payment.findUnique({
       where: {
         Txn_ID: tran_id,
       },
