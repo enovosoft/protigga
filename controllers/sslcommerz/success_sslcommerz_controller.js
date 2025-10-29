@@ -22,7 +22,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
         Txn_ID: tran_id,
       },
     });
-
+    console.log('hello from SUCCESS 🫡🫡🫡🫡🫡🫡');
     // ================ check and response
     if (!payment_details?.Txn_ID)
       return res.send(

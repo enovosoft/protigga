@@ -150,6 +150,7 @@ const createPayment = async (req, res, next) => {
 
 const ipnListener = async (req, res) => {
   try {
+    console.log('hello from IPN ✌🏻✌🏻✌🏻✌🏻✌🏻✌🏻');
     return res.status(200).json({ message: 'IPN received', validation });
   } catch (err) {
     return res.status(400).json({ error: err.message });
