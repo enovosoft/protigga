@@ -21,9 +21,6 @@ const success_sslcommerz_controller = async (req, res, next) => {
       where: {
         Txn_ID: tran_id,
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
     });
 
     // ================ check and response
