@@ -33,8 +33,6 @@ const success_sslcommerz_controller = async (req, res, next) => {
       );
 
     if (!payment_details.val_id && status === 'VALID') {
-      // redirect
-      res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
       // ====== check
       if (String(meterial_type).toLowerCase() === 'book') {
         // ============= confirm: book order
@@ -81,6 +79,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
           // ----------------- save payment on Payment table
         }
       }
+      return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     } else {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/fail`);
     }
