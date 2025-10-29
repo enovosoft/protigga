@@ -59,7 +59,6 @@ const check_promo_code_controller = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.error('Promo code check error:', err);
     return next(err);
   }
 };

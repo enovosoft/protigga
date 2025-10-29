@@ -165,7 +165,6 @@ const price_calculation = async (
       promocode: last_promocode,
     };
   } catch (error) {
-    console.log(error);
     throw new Error('calculation error/database error');
   }
 };
