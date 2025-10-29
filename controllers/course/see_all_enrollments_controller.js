@@ -4,7 +4,7 @@ const responseGenerator = require('../../utils/responseGenerator');
 const see_all_enrollments_controller = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const page_size = 20;
-  const course_id = req.query.book_id || '';
+  const course_id = req.query.course_id || '';
   const start_date = req.query.start_date || '';
   const enrollment_type = req.query.enrollment_type || '';
   const end_date = req.query.end_date || new Date();
@@ -15,6 +15,7 @@ const see_all_enrollments_controller = async (req, res, next) => {
     if (course_id) {
       whereCondition.course_id = course_id;
     }
+
     if (enrollment_type) {
       if (enrollment_type == 'online' || enrollment_type == 'hybrid')
         whereCondition.enrollment_type = enrollment_type;
