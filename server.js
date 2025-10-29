@@ -11,7 +11,7 @@ const morgan = require('morgan');
 // ================== router imports =================
 const registration_route = require('./routes/registration/registration_route');
 const verify_otp_route = require('./routes/verifyOTP/verify_otp_route');
-const login_route = require('./routes/login/login_route');
+
 const change_password_route = require('./routes/change_password/change_password_route');
 const reset_password_route = require('./routes/reset_password/reset_password_route');
 const file_meterial_router = require('./routes/file_meterial/file_meterial_route');
@@ -29,6 +29,7 @@ const user_route = require('./routes/user/user_route');
 const topic_route = require('./routes/topic/topic_route');
 const finance_route = require('./routes/finance/finance_route');
 const announcement_route = require('./routes/announcement/announcement_route');
+const auth_route = require('./routes/auth/auth_route');
 
 // ================== main =================
 const app = express();
@@ -104,7 +105,7 @@ app.use(limiter);
 //==================== all routes ==============================
 app.use('/api/v1', registration_route);
 app.use('/api/v1', verify_otp_route);
-app.use('/api/v1', login_route);
+app.use('/api/v1', auth_route);
 app.use('/api/v1', change_password_route);
 app.use('/api/v1', reset_password_route);
 app.use('/api/v1', file_meterial_router);
