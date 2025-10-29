@@ -12,13 +12,15 @@ const get_single_course_controller = async (req, res, next) => {
         is_deleted: false,
       },
       include: {
-        exams: {
-          where: {
-            exam_end_time: {
-              gte: new Date(),
-            },
-          },
-        },
+        exams: Boolean(accessible)
+          ? {
+              where: {
+                exam_end_time: {
+                  gte: new Date(),
+                },
+              },
+            }
+          : false,
         course_details: true,
         announcements: accessible
           ? {
