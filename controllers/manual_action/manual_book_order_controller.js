@@ -25,6 +25,7 @@ const manual_book_order_controller = async (req, res, next) => {
       outside_dhaka,
       sundarban_courier,
     } = req.body || {};
+
     // ------------ search by user
     const { exist, user } = await checkUserExists({ phone });
     if (!exist)
@@ -84,8 +85,6 @@ const manual_book_order_controller = async (req, res, next) => {
           product_price_with_quantity:
             Number(product_price * quantity) - discount || 0,
           discount: discount || 0,
-          // calculated_amount:
-          //   Number(product_price * quantity - discount + delevery_charge) || 0,
           paid_amount: paid_amount || 0,
           delevery_charge: delevery_charge || 0,
           due_amount:

@@ -62,7 +62,7 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
       });
     }
     // ============= check payment data
-    if (enrollmentData?.enrollment_status === 'success') {
+    if (enrollmentData?.enrollment_status !== 'success') {
       return responseGenerator(403, res, {
         message: 'Please complete your enrollment',
         error: true,

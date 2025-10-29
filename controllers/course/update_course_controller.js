@@ -38,7 +38,7 @@ const update_course_controller = async (req, res, next) => {
     let { exist: slugExists } = await find_course_by_slug({ slug: new_slug });
     // loop until we get a unique slug
     while (slugExists && searched_data.course_title !== course_title) {
-      new_slug = slug_generator(title, false); // generate a new slug
+      new_slug = slug_generator(course_title, false); // generate a new slug
       const result = await find_course_by_slug({ slug: new_slug });
       slugExists = result.exist;
     }
