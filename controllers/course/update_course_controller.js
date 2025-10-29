@@ -24,6 +24,7 @@ const update_course_controller = async (req, res, next) => {
     if (!slug) {
       slug = slug_;
     }
+
     const { exist, searched_data } = await find_course_by_slug({ slug });
     // --------------- if not exist
     if (!exist)
