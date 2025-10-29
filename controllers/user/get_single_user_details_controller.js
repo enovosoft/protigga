@@ -8,6 +8,7 @@ const get_single_user_details_controller = async (req, res, next) => {
     //     ======== search
     const user = await prisma.user.findFirst({
       where: { user_id: decoded_user?.user_id },
+
       select: {
         user_id: true,
         name: true,
@@ -16,6 +17,9 @@ const get_single_user_details_controller = async (req, res, next) => {
         is_blocked: true,
         createdAt: true,
         payments: {
+          orderBy: {
+            createdAt: 'desc',
+          },
           select: {
             product_price_with_quantity: true,
             meterial_price: true,
@@ -41,6 +45,9 @@ const get_single_user_details_controller = async (req, res, next) => {
           },
         },
         enrollments: {
+          orderBy: {
+            createdAt: 'desc',
+          },
           select: {
             payment: {
               select: {
@@ -65,8 +72,10 @@ const get_single_user_details_controller = async (req, res, next) => {
                 book_order: true,
                 course_enrollment: true,
                 Txn_ID: true,
+                createdAt: true,
               },
             },
+
             course: {
               include: {
                 exams: {

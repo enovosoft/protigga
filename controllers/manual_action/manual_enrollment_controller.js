@@ -37,6 +37,7 @@ const manual_enrollment_controller = async (req, res, next) => {
     Txn_ID = `${Txn_ID || ''}${
       Txn_ID ? '-' : ''
     }MANUAL-${transaction_id_generator()}`;
+
     const { success, error, message } = await save_enrollment(
       {
         user_id: user?.user_id,

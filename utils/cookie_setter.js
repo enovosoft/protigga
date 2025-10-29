@@ -5,7 +5,7 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   res.cookie(cookieName, token, {
     httpOnly: false, // frontend thekeo access hobe
     secure: isProduction, // only HTTPS in production
-    sameSite: 'none', // subdomain / cross-domain access
+    sameSite: isProduction ? 'none' : 'lax', // localhost এ কাজ করবে
     maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day
     path: '/',
     domain: isProduction ? '.enovosoft.com' : undefined, // local e auto skip korbe
