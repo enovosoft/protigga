@@ -34,7 +34,7 @@ const get_single_user_details_controller = async (req, res, next) => {
             tran_date: true,
             card_type: true,
             card_issuer: true,
-            store_amount: true,
+            store_amount: false,
             card_category: true,
             currency: true,
             status: true,
@@ -64,7 +64,7 @@ const get_single_user_details_controller = async (req, res, next) => {
                 tran_date: true,
                 card_type: true,
                 card_issuer: true,
-                store_amount: true,
+                store_amount: false,
                 card_category: true,
                 currency: true,
                 status: true,
@@ -78,6 +78,13 @@ const get_single_user_details_controller = async (req, res, next) => {
 
             course: {
               include: {
+                announcements: {
+                  where: {
+                    start_date: {
+                      gt: bangladeshNow,
+                    },
+                  },
+                },
                 exams: {
                   where: {
                     exam_end_time: {
@@ -107,7 +114,7 @@ const get_single_user_details_controller = async (req, res, next) => {
                 tran_date: true,
                 card_type: true,
                 card_issuer: true,
-                store_amount: true,
+                store_amount: false,
                 card_category: true,
                 currency: true,
                 status: true,
