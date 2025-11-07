@@ -80,7 +80,8 @@ const get_single_user_details_controller = async (req, res, next) => {
               include: {
                 announcements: {
                   where: {
-                    start_date: {
+                    status: 'active',
+                    end_date: {
                       gt: bangladeshNow,
                     },
                   },
