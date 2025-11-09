@@ -279,6 +279,10 @@ model Payment {
   remarks         String?  // optional note
   course_enrollment Enrollment? @relation(fields: [enrollment_id],references: [enrollment_id])
   book_order Book_order? @relation(fields: [book_order_id],references: [order_id])
+  
+  @@index([status])
+  @@index([book_order_id])
+  @@index([enrollment_id])
   // Timestamps
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
