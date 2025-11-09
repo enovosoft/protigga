@@ -86,6 +86,13 @@ const get_single_user_details_controller = async (req, res, next) => {
 
             course: {
               include: {
+                live_classes: {
+                  where: {
+                    end_time: {
+                      gt: bangladeshNow,
+                    },
+                  },
+                },
                 announcements: {
                   where: {
                     status: 'active',
