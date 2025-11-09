@@ -24,7 +24,15 @@ const add_course_controller = async (req, res, next) => {
     //================== search by slug
     const { exist, searched_data } = await find_course_by_slug({ slug });
     if (searched_data?.id) slug = slug_generator(course_title, false);
-
+    // ====================== sorted book
+    let validBooks = [];
+    if (related_books?.length) {
+      const existingBooks = await prisma.book.findMany({
+        where: { book_id: { in: related_books } },
+        select: { book_id: true },
+      });
+      validBooks = existingBooks.map((b) => ({ book_id: b.book_id }));
+    }
     // ===================== create course.
     const created_course = await prisma.course.create({
       data: {
@@ -34,9 +42,7 @@ const add_course_controller = async (req, res, next) => {
         slug,
         price,
         thumbnail,
-        related_books: related_books
-          ? { connect: related_books.map((book_id) => ({ book_id })) }
-          : undefined,
+        related_books: validBooks.length ? { connect: validBooks } : undefined,
         course_details: {
           create: {
             slug,
