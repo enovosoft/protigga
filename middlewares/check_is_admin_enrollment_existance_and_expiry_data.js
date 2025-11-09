@@ -51,6 +51,10 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
         user_id: user.user_id,
         course_id: course?.course_id,
       },
+      include: {
+        payment: true,
+        course: true,
+      },
     });
 
     // ============= check enrollment existence and expiry
@@ -62,7 +66,11 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
       });
     }
     // ============= check payment data
-    if (enrollmentData?.enrollment_status !== 'success') {
+
+    if (
+      enrollmentData?.enrollment_status !== 'success' ||
+      enrollmentData?.payment?.status !== 'SUCCESS'
+    ) {
       return responseGenerator(403, res, {
         message: 'Please complete your enrollment',
         error: true,
