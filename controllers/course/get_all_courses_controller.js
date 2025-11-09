@@ -24,6 +24,9 @@ const get_all_courses_controller = async (req, res, next) => {
         price: true,
         thumbnail: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     //     --------- response

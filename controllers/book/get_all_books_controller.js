@@ -28,6 +28,9 @@ const get_all_books_controller = async (req, res, next) => {
         batch: true,
         stock: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     if (all_books)
       return responseGenerator(200, res, {
