@@ -20,7 +20,7 @@ file_meterial_router.post('/upload', upload.single('file'), (req, res) => {
 
   res.json({
     message: 'Uploaded successfully',
-    // url: fileUrl,
+    url: fileUrl,
     path: req.file.filename,
   });
 });

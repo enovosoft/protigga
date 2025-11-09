@@ -112,7 +112,7 @@ model Course_details{
 }
 
 model Chapter{
-    id        Int      @id @default(autoincrement())
+    id Int @id @default(autoincrement())
     chapter_id String @unique
     course_id String 
     title String
@@ -123,7 +123,7 @@ model Chapter{
 }
 
 model Chapter_topic{
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   chapter_topic_id String @unique
   chapter_id String
   title String 
@@ -134,7 +134,7 @@ model Chapter_topic{
   updatedAt DateTime @updatedAt
 }
 model Book{
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   book_id String @unique
   slug String @unique
   stock Int @default(0)
@@ -155,8 +155,7 @@ model Book{
 
 
 model Note{ 
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   note_id String @unique
   slug String @unique
   note_name String
@@ -169,8 +168,7 @@ model Note{
 
 
 model Book_order{ 
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   order_id String @unique
   book_id String
   user_id String?
@@ -191,8 +189,7 @@ model Book_order{
 }
 
 model Enrollment { // ony for course
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   enrollment_id String @unique
   enrollment_type Enrollment_type @default(online) // hybrid
   user_id String
@@ -212,8 +209,7 @@ model Enrollment { // ony for course
   updatedAt DateTime @updatedAt
 }
 model Exam{
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   exam_id String @unique
   course_id String
   exam_title String
@@ -223,14 +219,12 @@ model Exam{
   exam_description String
   exam_link String
   course Course? @relation(fields: [course_id],references: [course_id])
-    
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Announcement{
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   announcement_id String @unique
   title String
   description String?
@@ -245,8 +239,7 @@ model Announcement{
   updatedAt DateTime @updatedAt
 }
 model Payment { 
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   payment_id String @unique
   val_id String? @unique 
   // Relation to User
@@ -291,8 +284,7 @@ model Payment {
 
 
 model Promo_code{
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   promo_code_id String @unique
   promocode_for String // book/course
   promo_code String @unique
@@ -309,8 +301,7 @@ model Promo_code{
   updatedAt DateTime @updatedAt
 }
 model Otp{
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   otp_id String @unique
   otp String // hashed
   otp_type Otp_type @default(none)
@@ -320,8 +311,7 @@ model Otp{
   updatedAt DateTime @updatedAt
 }
 model Role {
-    id        Int      @id @default(autoincrement())
-
+  id Int @id @default(autoincrement())
   role_id String @unique
   user_id String
   phone String
@@ -333,3 +323,17 @@ model Role {
 }
 
 
+
+model Live_class{
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  teacher_name String
+  start_time DateTime
+  end_time DateTime
+  meeting_id String
+  meeting_password  String
+  join_url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

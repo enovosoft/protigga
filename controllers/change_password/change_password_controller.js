@@ -38,6 +38,7 @@ const change_password_controller = async (req, res, next) => {
         password: bcrypt.hashSync(password, 10),
       },
     });
+
     if (updated_data?.phone) {
       clearCookie(res, 'access_token');
       clearCookie(res, 'refresh_token');
