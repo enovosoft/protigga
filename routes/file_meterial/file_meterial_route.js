@@ -10,10 +10,12 @@ const mime = require('mime-types');
 file_meterial_router.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Invalid file type' });
 
+  let protocol = req.protocol;
+  if (req.headers['x-forwarded-proto']) {
+    protocol = req.headers['x-forwarded-proto'].split(',')[0];
+  }
   // ✅ Dynamic URL build (no hardcoding)
-  const fileUrl = `${req.protocol}://${req.get('host')}/file/${
-    req.file.filename
-  }`;
+  const fileUrl = `${protocol}://${req.get('host')}/file/${req.file.filename}`;
 
   res.json({ message: 'Uploaded successfully', url: fileUrl });
 });
