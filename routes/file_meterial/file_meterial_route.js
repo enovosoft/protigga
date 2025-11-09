@@ -23,6 +23,7 @@ file_meterial_router.post('/upload', upload.single('file'), (req, res) => {
 // -----------------------------
 file_meterial_router.get('/file/:filename', (req, res) => {
   const filePath = path.join(UPLOAD_FOLDER, req.params.filename);
+  console.log(filePath);
   if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
 
   const stat = fs.statSync(filePath);

@@ -37,10 +37,11 @@ const port = process.env.SERVER_PORT || 5000;
 // ✅ Serve static files (PDF, images, etc.) with CORRECT CORS headers
 app.use(
   '/file',
-  express.static(path.join(__dirname, 'uploads'), {
+  express.static(path.join(__dirname, './uploads'), {
     setHeaders: (res, filePath) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      // res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
     },
   })
 );
