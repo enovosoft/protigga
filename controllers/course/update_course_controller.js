@@ -33,6 +33,7 @@ const update_course_controller = async (req, res, next) => {
         success: false,
         error: true,
       });
+
     //  ====================== check: if exist -> update
     // ============ new slug
     let new_slug = slug_generator(course_title);
@@ -43,7 +44,14 @@ const update_course_controller = async (req, res, next) => {
       const result = await find_course_by_slug({ slug: new_slug });
       slugExists = result.exist;
     }
-
+    let validBooks = [];
+    if (related_books_?.length) {
+      const existingBooks = await prisma.book.findMany({
+        where: { book_id: { in: related_books_ } },
+        select: { book_id: true },
+      });
+      validBooks = existingBooks.map((b) => ({ book_id: b.book_id }));
+    }
     // ------------- update part
     const updated_course = await prisma.course.update({
       where: {
@@ -55,9 +63,8 @@ const update_course_controller = async (req, res, next) => {
         slug: new_slug,
         price,
         thumbnail,
-        related_books: related_books_
-          ? { set: [], connect: related_books_.map((book_id) => ({ book_id })) }
-          : undefined,
+        related_books: validBooks.length ? { connect: validBooks } : undefined,
+
         course_details: {
           update: {
             slug: new_slug,
