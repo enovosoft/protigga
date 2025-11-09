@@ -90,6 +90,7 @@ model Course{
   enrollments Enrollment[]
   exams Exam[]
   announcements Announcement[]
+  live_classes Live_class[]
   updatedAt DateTime @updatedAt
 }
 model Course_details{
@@ -203,6 +204,7 @@ model Enrollment { // ony for course
   active_inactive_reason String? // example: due payment
   user User @relation(fields: [user_id],references: [user_id])
   course Course? @relation(fields: [course_id],references: [course_id])
+  
     // Optional Payment relation
   payment Payment?
   createdAt DateTime @default(now())
@@ -326,14 +328,18 @@ model Role {
 
 model Live_class{
   id Int @id @default(autoincrement())
+  live_class_id String @unique
   title String
   description String
   teacher_name String
   start_time DateTime
   end_time DateTime
+  is_deleted Boolean @default(false)
   meeting_id String
   meeting_password  String
   join_url String
+  course_id String
+  course Course? @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

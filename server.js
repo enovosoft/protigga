@@ -30,6 +30,7 @@ const topic_route = require('./routes/topic/topic_route');
 const finance_route = require('./routes/finance/finance_route');
 const announcement_route = require('./routes/announcement/announcement_route');
 const auth_route = require('./routes/auth/auth_route');
+const live_class_route = require('./routes/live_class/live_class_route');
 
 // ================== main =================
 const app = express();
@@ -124,6 +125,7 @@ app.use('/api/v1', user_route);
 app.use('/api/v1', topic_route);
 app.use('/api/v1', finance_route);
 app.use('/api/v1', announcement_route);
+app.use('/api/v1', live_class_route);
 
 //===================== base routes ==========================
 app.get('/', (_req, res) => res.redirect(process.env.FRONTEND_URL));

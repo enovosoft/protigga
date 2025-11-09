@@ -45,11 +45,19 @@ const get_single_user_details_controller = async (req, res, next) => {
           },
         },
         enrollments: {
+          where: {
+            status: 'active',
+            is_blocked: false,
+            enrollment_status: 'success',
+          },
           orderBy: {
             createdAt: 'desc',
           },
           select: {
             payment: {
+              where: {
+                status: 'SUCCESS',
+              },
               select: {
                 product_price_with_quantity: true,
                 meterial_price: true,
