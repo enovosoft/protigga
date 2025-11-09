@@ -14,10 +14,15 @@ file_meterial_router.post('/upload', upload.single('file'), (req, res) => {
   if (req.headers['x-forwarded-proto']) {
     protocol = req.headers['x-forwarded-proto'].split(',')[0];
   }
-  // ✅ Dynamic URL build (no hardcoding)
+
+  // =========== Dynamic URL build (no hardcoding)
   const fileUrl = `${protocol}://${req.get('host')}/file/${req.file.filename}`;
 
-  res.json({ message: 'Uploaded successfully', url: fileUrl });
+  res.json({
+    message: 'Uploaded successfully',
+    // url: fileUrl,
+    path: req.file.filename,
+  });
 });
 
 // -----------------------------
