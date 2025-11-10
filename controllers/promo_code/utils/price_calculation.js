@@ -9,6 +9,7 @@ const default_promo_code_info = {
   Discount: 0,
   Max_discount_amount: 0,
   status: 'active',
+  applicable_for: 'all',
 };
 
 const price_calculation = async (
@@ -50,7 +51,7 @@ const price_calculation = async (
 
     let meterial_name = '';
     let calculated_amount = 0; // ✅
-
+    return console.log(last_promocode);
     // ==================== promocode checking part 1
     if (
       (last_promocode?.book == null &&
@@ -64,20 +65,21 @@ const price_calculation = async (
         error: true,
       });
     }
-    // ==================== promocode checking part 2
-    if (
-      ((last_promocode?.book !== null &&
-        last_promocode?.book?.book_id !== meterial_details?.product_id) ||
-        (last_promocode?.course !== null &&
-          last_promocode?.course.course_id !== meterial_details?.product_id)) &&
-      last_promocode?.promocode_for !== 'all'
-    ) {
-      return responseGenerator(404, res, {
-        message: 'this code is not applicatble for this book',
-        success: false,
-        error: true,
-      });
-    }
+
+    // // ==================== promocode checking part 2
+    // if (
+    //   ((last_promocode?.book !== null &&
+    //     last_promocode?.book?.book_id !== meterial_details?.product_id) ||
+    //     (last_promocode?.course !== null &&
+    //       last_promocode?.course.course_id !== meterial_details?.product_id)) &&
+    //   last_promocode?.promocode_for !== 'all'
+    // ) {
+    //   return responseGenerator(404, res, {
+    //     message: 'this code is not applicatble for this book',
+    //     success: false,
+    //     error: true,
+    //   });
+    // }
     // ==============================
     if (meterial_type === 'course') {
       // ----------- course part
@@ -193,6 +195,7 @@ const price_calculation = async (
       promocode: last_promocode,
     };
   } catch (error) {
+    return console.log(error);
     throw new Error('calculation error/database error');
   }
 };

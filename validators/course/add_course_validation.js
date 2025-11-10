@@ -9,7 +9,6 @@ const add_course_validation = z.object({
   related_books: z.array(z.string()).optional(),
   academy_name: z.string('academy name missing'),
   description: z.string('course description missing'),
-  related_book: z.string("'Related book reference missing'"),
   quiz_count: z.number('Quiz count missing'),
   assessment: z.boolean('assesment missing'),
   skill_level: z.string('skill level missing'),
