@@ -88,6 +88,7 @@ const get_single_user_details_controller = async (req, res, next) => {
               include: {
                 live_classes: {
                   where: {
+                    is_deleted: false,
                     start_time: {
                       lte: new Date(),
                     },
