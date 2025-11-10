@@ -18,6 +18,7 @@ const add_course_controller = async (req, res, next) => {
       quiz_count,
       assessment,
       skill_level,
+      is_featured,
     } = req.body || {};
     // =============== generate slug
     let slug = slug_generator(course_title);
@@ -43,6 +44,7 @@ const add_course_controller = async (req, res, next) => {
         slug,
         price,
         thumbnail,
+        is_featured,
         related_books: validBooks.length ? { connect: validBooks } : undefined,
         course_details: {
           create: {
@@ -52,7 +54,6 @@ const add_course_controller = async (req, res, next) => {
             published_date: new Date(),
             language: 'Bangla',
             description,
-
             quiz_count,
             assessment,
             skill_level,

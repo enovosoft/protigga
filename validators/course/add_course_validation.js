@@ -5,6 +5,7 @@ const add_course_validation = z.object({
   course_title: z.string('course title missing'),
   price: z.number('course price missing'),
   thumbnail: z.string('thumbnail missing'),
+  is_featured: z.boolean().optional(),
   related_books: z.array(z.string()).optional(),
   academy_name: z.string('academy name missing'),
   description: z.string('course description missing'),

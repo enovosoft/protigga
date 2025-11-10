@@ -18,6 +18,7 @@ const update_course_controller = async (req, res, next) => {
       assessment,
       skill_level,
       expired_date,
+      is_featured,
     } = req.body || {};
     // ================
     const { slug: slug_ } = req.params || {};
@@ -64,7 +65,7 @@ const update_course_controller = async (req, res, next) => {
         price,
         thumbnail,
         related_books: validBooks.length ? { connect: validBooks } : undefined,
-
+        is_featured,
         course_details: {
           update: {
             slug: new_slug,
