@@ -11,15 +11,16 @@ const get_single_course_controller = async (req, res, next) => {
         slug,
         is_deleted: false,
       },
+
       include: {
         exams: Boolean(accessible)
           ? {
               where: {
                 exam_start_time: {
-                  gte: new Date(),
+                  lte: new Date(),
                 },
                 exam_end_time: {
-                  lte: new Date(),
+                  gte: new Date(),
                 },
               },
             }
@@ -28,6 +29,9 @@ const get_single_course_controller = async (req, res, next) => {
         announcements: accessible
           ? {
               where: {
+                start_date: {
+                  lte: new Date(),
+                },
                 end_date: {
                   gte: new Date(),
                 },

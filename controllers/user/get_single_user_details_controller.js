@@ -88,23 +88,32 @@ const get_single_user_details_controller = async (req, res, next) => {
               include: {
                 live_classes: {
                   where: {
+                    start_time: {
+                      lte: new Date(),
+                    },
                     end_time: {
-                      gt: bangladeshNow,
+                      gte: new Date(),
                     },
                   },
                 },
                 announcements: {
                   where: {
                     status: 'active',
+                    start_date: {
+                      lte: new Date(),
+                    },
                     end_date: {
-                      gt: bangladeshNow,
+                      gte: new Date(),
                     },
                   },
                 },
                 exams: {
                   where: {
+                    exam_start_time: {
+                      lte: new Date(),
+                    },
                     exam_end_time: {
-                      gt: bangladeshNow,
+                      gte: new Date(),
                     },
                   },
                 },
