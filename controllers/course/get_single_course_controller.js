@@ -15,8 +15,11 @@ const get_single_course_controller = async (req, res, next) => {
         exams: Boolean(accessible)
           ? {
               where: {
-                exam_end_time: {
+                exam_start_time: {
                   gte: new Date(),
+                },
+                exam_end_time: {
+                  lte: new Date(),
                 },
               },
             }
