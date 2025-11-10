@@ -30,7 +30,12 @@ const get_all_users_controller = async (req, res, next) => {
           select: { course_enrollment: true, book_order: true },
         },
         enrollments: {
-          select: { payment: true, course: true },
+          select: {
+            enrollment_id: true,
+            status: true,
+            payment: true,
+            course: true,
+          },
         },
         book_orders: {
           select: { payment: true, book: true },
