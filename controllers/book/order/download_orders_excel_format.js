@@ -6,18 +6,28 @@ const download_orders_excel_format = async (req, res, next) => {
     const start_date = req.query.start_date || '';
     const end_date = req.query.end_date || new Date();
     let whereCondition = {};
+
+    // Date logic
     if (start_date && end_date) {
+      // end_date-কে দিনের শেষ পর্যন্ত সেট করুন
+      const endDate = new Date(end_date);
+      endDate.setHours(23, 59, 59, 999); // 23:59:59.999
+
       whereCondition.createdAt = {
-        gte: new Date(start_date),
-        lte: new Date(end_date),
+        gte: new Date(start_date), // দিনের শুরু (00:00:00)
+        lte: endDate, // দিনের শেষ (23:59:59)
       };
     } else if (start_date) {
       whereCondition.createdAt = {
-        gte: new Date(start_date),
+        gte: new Date(start_date), // দিনের শুরু থেকে
       };
     } else if (end_date) {
+      // end_date-কে দিনের শেষ পর্যন্ত সেট করুন
+      const endDate = new Date(end_date);
+      endDate.setHours(23, 59, 59, 999); // 23:59:59.999
+
       whereCondition.createdAt = {
-        lte: new Date(end_date),
+        lte: endDate, // দিনের শেষ পর্যন্ত
       };
     }
 
@@ -60,6 +70,7 @@ const download_orders_excel_format = async (req, res, next) => {
       { header: 'product price', key: 'product_price', width: 30 },
       { header: 'quantity', key: 'quantity', width: 30 },
       { header: 'discount', key: 'discount_amount', width: 30 },
+      { header: 'Delivery', key: 'Delivery', width: 30 },
       { header: 'paid amount', key: 'paid_amount', width: 30 },
       { header: 'due amount', key: 'due_amount', width: 30 },
       { header: 'Order Date', key: 'order_date', width: 30 },
@@ -79,6 +90,7 @@ const download_orders_excel_format = async (req, res, next) => {
         product_price: order.product_price,
         quantity: order.quantity,
         discount_amount: order.payment.discount_amount,
+        Delivery: order.payment.delevery_charge,
         paid_amount: order.payment.paid_amount,
         due_amount: order.payment.due_amount,
         order_date: order.createdAt,
@@ -114,6 +126,7 @@ const download_orders_excel_format = async (req, res, next) => {
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {
+    return console.log(error);
     return next(error);
   }
 };

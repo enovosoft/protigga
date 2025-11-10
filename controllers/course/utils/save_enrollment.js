@@ -83,6 +83,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
         is_blocked: false,
         status: 'active',
         wp_number,
+        address: material_details?.address || '_-_',
         fb_name,
         enrollment_status: material_details?.enrollment_status || 'pending',
         payment: {

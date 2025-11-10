@@ -7,6 +7,10 @@ const get_all_promocode_controller = async (req, res, next) => {
       where: {
         is_deleted: false,
       },
+      include: {
+        book: true,
+        course: true,
+      },
     });
 
     return responseGenerator(200, res, {

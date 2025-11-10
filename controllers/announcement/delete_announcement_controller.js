@@ -30,8 +30,8 @@ const delete_enrollment_controller = async (req, res, next) => {
         error: true,
       });
     if (deleted_announcemnt?.announcement_id)
-      return responseGenerator(404, res, {
-        message: 'Failed to delete',
+      return responseGenerator(200, res, {
+        message: 'successfully deleted',
         success: true,
         announcement: deleted_announcemnt,
         error: false,

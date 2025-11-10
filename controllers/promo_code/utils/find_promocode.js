@@ -8,6 +8,10 @@ const find_promocode = async (search_details) => {
     orderBy: {
       createdAt: 'desc',
     },
+    include: {
+      book: true,
+      course: true,
+    },
   });
   return {
     exist: alreadt_exist.length > 0 ? true : false,

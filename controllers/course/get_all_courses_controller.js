@@ -23,6 +23,7 @@ const get_all_courses_controller = async (req, res, next) => {
         slug: true,
         price: true,
         thumbnail: true,
+        related_books: true,
       },
       orderBy: {
         createdAt: 'desc',

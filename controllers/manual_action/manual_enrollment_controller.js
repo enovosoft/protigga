@@ -21,6 +21,7 @@ const manual_enrollment_controller = async (req, res, next) => {
       Txn_ID,
       wp_number,
       fb_name,
+      address,
     } = req.body || {};
 
     // ------------ search by user
@@ -34,18 +35,17 @@ const manual_enrollment_controller = async (req, res, next) => {
 
     //========================= enrollment create
     //     ------------- create required value
-    Txn_ID = `${Txn_ID || ''}${
-      Txn_ID ? '-' : ''
-    }MANUAL-${transaction_id_generator()}`;
 
     const { success, error, message } = await save_enrollment(
       {
         user_id: user?.user_id,
-        Txn_ID,
+        Txn_ID: Txn_ID
+          ? `MANUAL~${Txn_ID}`
+          : `MANUAL-${transaction_id_generator()}`,
         wp_number,
         fb_name,
         product_price,
-        address: '',
+        address,
         product_id: course_id,
         method,
         paymentGateway: method,

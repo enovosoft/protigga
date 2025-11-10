@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const responseGenerator = require('../../utils/responseGenerator');
 const check_promo_code_controller = async (req, res, next) => {
   try {
-    const { promocode, promocode_for } = req.body;
+    const { promocode, promocode_for, product_id } = req.body;
 
     // Fetch the promo code from DB
     const promo = await prisma.promo_code.findFirst({
@@ -11,12 +11,39 @@ const check_promo_code_controller = async (req, res, next) => {
         promo_code: promocode,
         promocode_for,
       },
+      include: {
+        book: true,
+        course: true,
+      },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    // return console.log(origina_promo_code);
+    // ==================== promocode checking part 1
+    if (
+      (promo?.book == null && promo?.promocode_for == 'book') ||
+      (promo?.course == null && promo?.promocode_for == 'course')
+    ) {
+      return responseGenerator(404, res, {
+        message: 'Please provide a valid promo code',
+        success: false,
+        error: true,
+      });
+    }
+    // ==================== promocode checking part 2
+    if (
+      ((promo?.book !== null && promo?.book.book_id !== product_id) ||
+        (promo?.course !== null && promo?.course.course_id !== product_id)) &&
+      promo?.promocode_for !== 'all'
+    ) {
+      return responseGenerator(404, res, {
+        message: 'this code is not applicatble for this book',
+        success: false,
+        error: true,
+      });
+    }
+
     if (!promo) {
       // Generic message to avoid info leak
       return responseGenerator(404, res, {

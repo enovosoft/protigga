@@ -15,7 +15,6 @@ const manual_book_order_controller = async (req, res, next) => {
       alternative_phone,
       discount_amount,
       paid_amount,
-      discount,
       book_order_status,
       payment_status,
       book_id,
@@ -78,18 +77,21 @@ const manual_book_order_controller = async (req, res, next) => {
         alternative_phone,
         quantity: quantity || 0,
         address: address || '--',
-        Txn_ID: Txn_ID || `MANUAL-${transaction_id_generator()}`,
+        Txn_ID: Txn_ID
+          ? `MANUAL~${Txn_ID}`
+          : `MANUAL-${transaction_id_generator()}`,
         after_calulated_data: {
           product_price: Number(product_price) || 0,
-          discount_amount: discount_amount || 0,
+
           product_price_with_quantity:
-            Number(product_price * quantity) - discount || 0,
-          discount: discount || 0,
+            Number(product_price * quantity) - discount_amount || 0,
+          discount: discount_amount || 0,
           paid_amount: paid_amount || 0,
           delevery_charge: delevery_charge || 0,
           due_amount:
-            parseFloat(product_price * quantity - (paid_amount + discount)) ||
-            0,
+            parseFloat(
+              product_price * quantity - (paid_amount + discount_amount)
+            ) || 0,
           status: book_order_status,
           payment_status,
           method: payment_method,

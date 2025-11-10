@@ -7,7 +7,6 @@ const save_enromment_validation_schema = z.object({
   promo_code_id: z.string().optional().nullable(),
   address: z.string('address missing'),
   enrollment_type: z.enum(['online', 'hybrid']).optional().default('online'),
-  address: z.string('address is missing'),
   wp_number: z.string('whatsapp number is missing'),
   fb_name: z.string('facebook name is missing'),
   Txn_ID: z.string('Txn_ID is missing'),

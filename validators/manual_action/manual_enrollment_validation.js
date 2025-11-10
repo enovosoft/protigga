@@ -17,6 +17,7 @@ const manual_enrollment_validation = z.object({
     ['pending', 'failed ', 'success', 'cancelled', 'refunded'],
     'enrollment status missing'
   ),
+  address: z.string('address missing'),
   method: z.enum(
     ['BKASH', 'NAGAD', 'STRIPE', 'SSL_COMMERZ', 'CASH', 'OTHER', 'BANK'],
     'payment mathod amount missing'

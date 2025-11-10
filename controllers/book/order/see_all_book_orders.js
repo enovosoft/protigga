@@ -11,22 +11,27 @@ const see_all_book_orders = async (req, res, next) => {
   try {
     let whereCondition = {};
 
-    if (book_id) {
-      whereCondition.book_id = book_id;
-    }
-
+    // Date logic
     if (start_date && end_date) {
+      // end_date-কে দিনের শেষ পর্যন্ত সেট করুন
+      const endDate = new Date(end_date);
+      endDate.setHours(23, 59, 59, 999); // 23:59:59.999
+
       whereCondition.createdAt = {
-        gte: new Date(start_date),
-        lte: new Date(end_date),
+        gte: new Date(start_date), // দিনের শুরু (00:00:00)
+        lte: endDate, // দিনের শেষ (23:59:59)
       };
     } else if (start_date) {
       whereCondition.createdAt = {
-        gte: new Date(start_date),
+        gte: new Date(start_date), // দিনের শুরু থেকে
       };
     } else if (end_date) {
+      // end_date-কে দিনের শেষ পর্যন্ত সেট করুন
+      const endDate = new Date(end_date);
+      endDate.setHours(23, 59, 59, 999); // 23:59:59.999
+
       whereCondition.createdAt = {
-        lte: new Date(end_date),
+        lte: endDate, // দিনের শেষ পর্যন্ত
       };
     }
 

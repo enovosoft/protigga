@@ -608,7 +608,7 @@ const get_finance_controller = async (req, res, next) => {
       inactive_course_orders,
     });
   } catch (error) {
-    return next(error);
+    // return next();
   }
 };
 

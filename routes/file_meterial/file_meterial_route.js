@@ -3,12 +3,18 @@ const file_meterial_router = require('express').Router();
 const path = require('path');
 const fs = require('fs');
 const mime = require('mime-types');
+const responseGenerator = require('../../utils/responseGenerator');
 
 // -----------------------------
 // ✅ Upload
 // -----------------------------
 file_meterial_router.post('/upload', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'Invalid file type' });
+  if (!req.file)
+    return responseGenerator(400, res, {
+      message: 'Invalid file type',
+      success: false,
+      error: true,
+    });
 
   let protocol = req.protocol;
   if (req.headers['x-forwarded-proto']) {
@@ -30,8 +36,12 @@ file_meterial_router.post('/upload', upload.single('file'), (req, res) => {
 // -----------------------------
 file_meterial_router.get('/file/:filename', (req, res) => {
   const filePath = path.join(UPLOAD_FOLDER, req.params.filename);
-  console.log(filePath);
-  if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
+  if (!fs.existsSync(filePath))
+    return responseGenerator(404, res, {
+      message: 'file not found',
+      success: false,
+      error: true,
+    });
 
   const stat = fs.statSync(filePath);
   const contentType = mime.lookup(filePath) || 'application/octet-stream';
@@ -57,10 +67,19 @@ file_meterial_router.put(
     const filename = req.params.filename;
     const filePath = path.join(UPLOAD_FOLDER, filename);
     if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'File not found' });
+      return responseGenerator(404, res, {
+        message: 'file not found',
+        success: false,
+        error: true,
+      });
     }
 
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    if (!req.file)
+      return responseGenerator(400, res, {
+        message: 'No file uploaded',
+        success: false,
+        error: true,
+      });
 
     fs.unlinkSync(filePath);
 
@@ -79,7 +98,11 @@ file_meterial_router.delete('/file/delete/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(UPLOAD_FOLDER, filename);
   if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: 'File not found' });
+    return responseGenerator(400, res, {
+      message: 'File not found',
+      error: true,
+      success: false,
+    });
   }
 
   fs.unlinkSync(filePath);

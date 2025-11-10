@@ -76,6 +76,7 @@ const save_book_order = async (material_details, next) => {
       advance_charge_amount: after_calulated_data?.advance_charge_amount || 0,
       user: { connect: { user_id } },
       Txn_ID,
+      status: after_calulated_data.payment_status || 'PENDING',
       method: after_calulated_data.method || 'SSL_COMMERZ',
       purpose: 'book order',
       remarks: 'Book order',
@@ -92,19 +93,20 @@ const save_book_order = async (material_details, next) => {
         paymentData.promo_code_id = promo_code_id;
       }
     }
-
     // ================= Create order
     const created_order = await prisma.book_order.create({
       data: {
         order_id,
         product_price: after_calulated_data.product_price || product_price,
         alternative_phone,
+
         quantity,
         Txn_ID,
         wp_number,
         fb_name,
         book: { connect: { book_id: product_id } },
         address,
+        confirmed: after_calulated_data?.status === 'confirmed' ? true : false,
         status: after_calulated_data?.status || 'pending',
         user: { connect: { user_id } },
         payment: { create: paymentData },

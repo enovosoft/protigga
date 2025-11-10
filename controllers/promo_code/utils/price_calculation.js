@@ -51,8 +51,36 @@ const price_calculation = async (
     let meterial_name = '';
     let calculated_amount = 0; // ✅
 
-    // ----------- course part
+    // ==================== promocode checking part 1
+    if (
+      (last_promocode?.book == null &&
+        last_promocode?.promocode_for == 'book') ||
+      (last_promocode?.course == null &&
+        last_promocode?.promocode_for == 'course')
+    ) {
+      return responseGenerator(404, res, {
+        message: 'Please provide a valid promo code',
+        success: false,
+        error: true,
+      });
+    }
+    // ==================== promocode checking part 2
+    if (
+      ((last_promocode?.book !== null &&
+        last_promocode?.book?.book_id !== meterial_details?.product_id) ||
+        (last_promocode?.course !== null &&
+          last_promocode?.course.course_id !== meterial_details?.product_id)) &&
+      last_promocode?.promocode_for !== 'all'
+    ) {
+      return responseGenerator(404, res, {
+        message: 'this code is not applicatble for this book',
+        success: false,
+        error: true,
+      });
+    }
+    // ==============================
     if (meterial_type === 'course') {
+      // ----------- course part
       const { exist, searched_data } = await find_course_by_slug({
         course_id: meterial_details.product_id,
       });

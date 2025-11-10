@@ -1,4 +1,5 @@
 const { validatePayment } = require('../utils/payment.utils');
+const responseGenerator = require('../utils/responseGenerator');
 
 const validate_ssl_payment = async (req, res, next) => {
   try {
@@ -6,9 +7,10 @@ const validate_ssl_payment = async (req, res, next) => {
 
     const validationResponse = await validatePayment(val_id);
     if (!validationResponse) {
-      return res.status(500).json({
+      return responseGenerator(500, res, {
         success: false,
         message: 'Payment validation failed.',
+        error: true,
       });
     }
     req.ssl_validation_response = validationResponse;

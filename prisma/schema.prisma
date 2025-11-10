@@ -58,6 +58,12 @@ enum announcement_status{
   draft
   scheduled
 }
+
+enum Promocode_for{
+  all
+  book
+  course
+}
 model User { 
   id Int @id @default(autoincrement())
   user_id String @unique
@@ -91,6 +97,7 @@ model Course{
   exams Exam[]
   announcements Announcement[]
   live_classes Live_class[]
+  promo_codes Promo_code[]
   updatedAt DateTime @updatedAt
 }
 model Course_details{
@@ -150,6 +157,7 @@ model Book{
   is_featured Boolean  @default(false)
   orders Book_order[]
   courses   Course[] @relation("CourseBooks")  // many-to-many relation
+  promo_codes Promo_code[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -197,6 +205,7 @@ model Enrollment { // ony for course
   wp_number String?
   fb_name String?
   course_id String
+  address String?
   expiry_date DateTime
   is_blocked Boolean @default(false)
   status enrollment_access_type  @default(active)
@@ -292,7 +301,7 @@ model Payment {
 model Promo_code{
   id Int @id @default(autoincrement())
   promo_code_id String @unique
-  promocode_for String // book/course
+  promocode_for Promocode_for @default(all)// BOOK / COURSE / ALL
   promo_code String @unique
   Discount_type String // fixed or percentage
   Discount Int //percentage/fixed taka defined from discount type field
@@ -300,6 +309,11 @@ model Promo_code{
   Min_purchase_amount Int
   expiry_date DateTime
   status String
+  book_id String?
+  course_id String?
+   // relation
+  book   Book?   @relation(fields: [book_id], references: [book_id])
+  course Course? @relation(fields: [course_id], references: [course_id])
   is_deleted Boolean @default(false)
   payment  Payment?    @relation(fields: [payment_id], references: [payment_id])
   payment_id          String?     @unique
@@ -343,6 +357,7 @@ model Live_class{
   meeting_password  String
   join_url String
   course_id String
+  
   course Course? @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -15,10 +15,26 @@ const update_announcement_controller = async (req, res, next) => {
       end_date,
       is_send_sms,
     } = req.body || {};
+    // ==================== check course data
+    if (course_id) {
+      const courseExists = await prisma.course.findUnique({
+        where: { course_id },
+      });
+      if (!courseExists) {
+        return responseGenerator(400, res, {
+          message: 'Invalid course_id',
+          error: true,
+          success: false,
+        });
+      }
+    }
     // =================== search announcement
     const searched_data = await prisma.announcement.findFirst({
       where: {
         announcement_id,
+      },
+      include: {
+        course: true,
       },
     });
 
@@ -38,8 +54,8 @@ const update_announcement_controller = async (req, res, next) => {
       data: {
         title,
         description,
-        course_id,
         attachment_url,
+        course_id,
         status,
         start_date,
         end_date,

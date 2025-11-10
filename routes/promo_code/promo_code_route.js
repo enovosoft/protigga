@@ -9,8 +9,8 @@ const cookie_decoder = require('../../middlewares/cookie_decoder');
 const is_admin = require('../../middlewares/is_admin');
 const token_regenerator = require('../../middlewares/token_regenerator');
 const add_promo_code_validation = require('../../validators/promo_code/add_promo_code_validarion');
+const check_promocode_validation = require('../../validators/promo_code/check_promocode_validation');
 const delete_promocode_validation = require('../../validators/promo_code/delete_promo_code_validation');
-const promo_code_validation = require('../../validators/promo_code/promo_code_validation');
 const update_promo_code_validarion = require('../../validators/promo_code/update_promo_code_validarion');
 
 const validate = require('../../validators/utils/validate');
@@ -19,7 +19,7 @@ const promo_code_route = require('express').Router();
 
 promo_code_route.post(
   '/check-promo-code',
-  validate(promo_code_validation),
+  validate(check_promocode_validation),
   check_promo_code_controller
 );
 promo_code_route.get(
