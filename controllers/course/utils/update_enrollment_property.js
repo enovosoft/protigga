@@ -11,6 +11,14 @@ const update_enrollment_property = async (
         ...finder_obj,
       },
       data: {
+        enrollment_status:
+          update_obj.enrollment_status === 'confirmed'
+            ? 'success'
+            : update_obj.enrollment_status === 'cancelled'
+            ? 'cancelled'
+            : update_obj.enrollment_status === 'failed'
+            ? 'failed'
+            : 'pending',
         payment: {
           update: {
             status:
