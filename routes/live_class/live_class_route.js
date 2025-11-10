@@ -43,7 +43,6 @@ live_class_route.put(
 );
 live_class_route.delete(
   '/live-class/:live_class_id',
-  validate(add_live_class_validation),
   token_regenerator,
   cookie_decoder,
   check_verified_user,

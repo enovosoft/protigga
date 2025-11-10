@@ -11,6 +11,9 @@ const see_all_book_orders = async (req, res, next) => {
   try {
     let whereCondition = {};
 
+    if (book_id) {
+      whereCondition.book_id = book_id;
+    }
     // Date logic
     if (start_date && end_date) {
       // end_date-কে দিনের শেষ পর্যন্ত সেট করুন
