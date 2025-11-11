@@ -129,7 +129,8 @@ const price_calculation = async (
       if (last_promocode.Discount_type === 'fixed') {
         discount = last_promocode.Discount;
       } else if (last_promocode.Discount_type === 'percentage') {
-        discount = (paid_amount * last_promocode.Discount) / 100;
+        discount =
+          (product_price_with_quantity * last_promocode.Discount) / 100;
         // Apply max discount limit
         if (discount > last_promocode.Max_discount_amount) {
           discount = last_promocode.Max_discount_amount;
@@ -152,7 +153,6 @@ const price_calculation = async (
         advance_charge_amount = ADVANCE_AMOUNT;
         paid_amount = advance_charge_amount;
       } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
-        console.log('sundarban');
         delevery_charge = SUNDORBAN_CHARGE;
         paid_amount = product_price_with_quantity + delevery_charge - discount;
         advance_charge_amount = 0;

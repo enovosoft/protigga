@@ -8,8 +8,16 @@ const get_all_promocode_controller = async (req, res, next) => {
         is_deleted: false,
       },
       include: {
-        book: true,
-        course: true,
+        book: {
+          where: {
+            is_deleted: false,
+          },
+        },
+        course: {
+          where: {
+            is_deleted: false,
+          },
+        },
       },
     });
 
