@@ -4,7 +4,10 @@ const manual_enrollment_validation = z.object({
   enrollment_type: z.enum(['online', 'hybrid']).optional().default('online'),
   phone: z.string('phone number missing'),
   course_id: z.string('course id missing'),
-  expiry_date: z.string('Expiry date missing').optional().default(undefined),
+  expiry_date: z.iso
+    .datetime('Expiry date missing')
+    .optional()
+    .default(undefined),
   product_price: z.number('Product price missing'),
   discount_amount: z.number('discount amount missing'),
   paid_amount: z.number('paid amount missing'),
