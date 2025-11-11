@@ -295,32 +295,21 @@ const get_finance_controller = async (req, res, next) => {
             : 0 // Handle divide by zero
           : ((current_revenue - prev_revenue) / prev_revenue) * 100;
     }
-    // ================== ssl withdrawable
-    const result = await prisma.$queryRaw`
-      SELECT SUM(CAST(\`store_amount\` AS DECIMAL(20, 4))) AS total
-      FROM \`Payment\`;
-    `;
-    const withrawable = result[0]?.total ?? 0;
-    // ============= total due
-    const due_result = await prisma.$queryRaw`
-      SELECT SUM(\`due_amount\`) AS totalDue
-      FROM \`Payment\`;
-    `;
-    const totalDue = due_result[0]?.totalDue ?? 0;
-    // ========= total paid
-    const paidresult = await prisma.$queryRaw`
-      SELECT SUM(\`paid_amount\`) AS totalPaid
-      FROM \`Payment\`;
-    `;
-    const totalPaid = paidresult[0]?.totalPaid ?? 0;
-    // =============== total delevery charge
-    const delevery_result = await prisma.$queryRaw`
-      SELECT SUM(\`delevery_charge\`) AS totalDeliveryCharge
-      FROM \`Payment\`;
-    `;
 
-    const totalDeliveryCharge = delevery_result[0]?.totalDeliveryCharge ?? 0;
-
+    const result_ = await prisma.$queryRaw`
+      SELECT 
+        SUM(CAST(\`store_amount\` AS DECIMAL(20, 4))) AS totalStoreAmount,
+        SUM(\`due_amount\`) AS totalDue,
+        SUM(\`paid_amount\`) AS totalPaid,
+        SUM(\`delevery_charge\`) AS totalDeliveryCharge
+      FROM \`Payment\`
+      WHERE \`status\` ="SUCCESS"; 
+    `;
+    const totals = result_[0];
+    const totalStoreAmount = totals.totalStoreAmount ?? 0;
+    const totalDue = totals.totalDue ?? 0;
+    const totalPaid = totals.totalPaid ?? 0;
+    const totalDeliveryCharge = totals.totalDeliveryCharge ?? 0;
     // ================== 7. Response ==================
     return responseGenerator(200, res, {
       message: 'Finance data loaded',
@@ -343,7 +332,7 @@ const get_finance_controller = async (req, res, next) => {
       revenue_growth: revenue_growth.toFixed(2), // Format to 2 decimal places
       pending_book_orders,
       inactive_course_orders,
-      withrawable: Number(withrawable),
+      withrawable: totalStoreAmount,
       totalDue: totalDue - totalDeliveryCharge,
       totalPaid,
       totalDeliveryCharge,
