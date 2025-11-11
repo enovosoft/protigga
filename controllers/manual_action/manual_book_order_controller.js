@@ -82,15 +82,15 @@ const manual_book_order_controller = async (req, res, next) => {
           : `MANUAL-${transaction_id_generator()}`,
         after_calulated_data: {
           product_price: Number(product_price) || 0,
-
-          product_price_with_quantity:
-            Number(product_price * quantity) - discount_amount || 0,
+          product_price_with_quantity: Number(product_price * quantity) || 0,
           discount: discount_amount || 0,
           paid_amount: paid_amount || 0,
           delevery_charge: delevery_charge || 0,
           due_amount:
             parseFloat(
-              product_price * quantity - (paid_amount + discount_amount)
+              product_price * quantity +
+                delevery_charge -
+                (paid_amount + discount_amount)
             ) || 0,
           status: book_order_status,
           payment_status,

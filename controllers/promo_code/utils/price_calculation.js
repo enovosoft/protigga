@@ -52,7 +52,6 @@ const price_calculation = async (
     let customer_receivable_amount = 0;
 
     let meterial_name = '';
-    let calculated_amount = 0; // ✅
 
     // ==================== promocode checking part 1
     if (
@@ -124,37 +123,9 @@ const price_calculation = async (
       }
     }
 
-    // book part and cod
-    if (meterial_type === 'book') {
-      // -----------------
-      if (inside_dhaka || outside_dhaka)
-        last_promocode = default_promo_code_info;
-
-      // -------------
-      if (inside_dhaka && !outside_dhaka && !sundarban_courier) {
-        // delevery_charge = INSIDE_DHAKA_CHARGE;
-        advance_charge_amount = ADVANCE_AMOUNT;
-        // paid_amount = delevery_charge + advance_charge_amount;
-        paid_amount = advance_charge_amount;
-      } else if (outside_dhaka && !sundarban_courier && !inside_dhaka) {
-        // delevery_charge = OUTSIDE_DHAKA_CHARGE;
-        advance_charge_amount = ADVANCE_AMOUNT;
-        // paid_amount = delevery_charge + advance_charge_amount;
-        paid_amount = advance_charge_amount;
-      } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
-        calculated_amount += SUNDORBAN_CHARGE;
-        delevery_charge = SUNDORBAN_CHARGE;
-        paid_amount = product_price * quantity;
-        advance_charge_amount = 0;
-      } else {
-        calculated_amount = calculated_amount;
-        paid_amount = product_price * quantity;
-      }
-    }
-
     // ===================== discount - calculation
     // Check if amount meets minimum purchase requirement
-    if (paid_amount >= last_promocode?.Min_purchase_amount) {
+    if (product_price_with_quantity >= last_promocode?.Min_purchase_amount) {
       if (last_promocode.Discount_type === 'fixed') {
         discount = last_promocode.Discount;
       } else if (last_promocode.Discount_type === 'percentage') {
@@ -169,6 +140,28 @@ const price_calculation = async (
     //     ===== after discount
     discount = Math.round(discount);
 
+    // book part and cod
+    if (meterial_type === 'book') {
+      // -------------
+      if (inside_dhaka && !outside_dhaka && !sundarban_courier) {
+        delevery_charge = INSIDE_DHAKA_CHARGE;
+        advance_charge_amount = ADVANCE_AMOUNT;
+        paid_amount = advance_charge_amount;
+      } else if (outside_dhaka && !sundarban_courier && !inside_dhaka) {
+        delevery_charge = OUTSIDE_DHAKA_CHARGE;
+        advance_charge_amount = ADVANCE_AMOUNT;
+        paid_amount = advance_charge_amount;
+      } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
+        console.log('sundarban');
+        delevery_charge = SUNDORBAN_CHARGE;
+        paid_amount = product_price_with_quantity + delevery_charge - discount;
+        advance_charge_amount = 0;
+      } else {
+        console.log('else');
+        paid_amount = product_price * quantity;
+      }
+    }
+
     // ----------------------
     if (advance_charge_amount > product_price_with_quantity) {
       willCustomerGetAmount = true;
@@ -177,7 +170,11 @@ const price_calculation = async (
       due_amount = 0;
     } else {
       if (!sundarban_courier && meterial_type !== 'course') {
-        due_amount = product_price_with_quantity - advance_charge_amount;
+        due_amount =
+          product_price_with_quantity +
+          delevery_charge -
+          advance_charge_amount -
+          discount;
         willCustomerGetAmount = false;
         customer_receivable_amount = 0;
       }
@@ -187,10 +184,9 @@ const price_calculation = async (
       product_price,
       quantity,
       product_price_with_quantity: product_price_with_quantity - discount,
-      // calculated_amount: paid_amount,
       discount,
       due_amount,
-      paid_amount: paid_amount - discount + delevery_charge,
+      paid_amount: paid_amount,
       willCustomerGetAmount,
       customer_receivable_amount,
       delevery_charge,

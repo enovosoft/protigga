@@ -6,10 +6,10 @@ const check_promo_code_controller = async (req, res, next) => {
     const { promocode, promocode_for, product_id } = req.body;
 
     // Fetch the promo code from DB
-    const promo = await prisma.promo_code.findFirst({
+    const promo = (await prisma.promo_code.findFirst({
       where: {
         promo_code: promocode,
-        promocode_for,
+        // promocode_for,
       },
       include: {
         book: true,
@@ -18,7 +18,17 @@ const check_promo_code_controller = async (req, res, next) => {
       orderBy: {
         createdAt: 'desc',
       },
-    });
+    })) || {
+      promo_code: '',
+      Discount_type: 'fixed',
+      Discount: 0,
+      Max_discount_amount: 0,
+      status: 'active',
+      applicable_for: 'all',
+      book: null,
+      course: null,
+      default: true,
+    };
 
     // ==================== promocode checking part 1
     if (
@@ -32,13 +42,17 @@ const check_promo_code_controller = async (req, res, next) => {
       });
     }
     // ==================== promocode checking part 2
+    console.log(product_id);
     if (
-      ((promo?.book !== null && promo?.book.book_id !== product_id) ||
-        (promo?.course !== null && promo?.course.course_id !== product_id)) &&
-      promo?.promocode_for !== 'all'
+      (promo?.book !== null &&
+        promo?.book.book_id !== product_id &&
+        promo?.promocode_for !== 'all') ||
+      (promo?.course !== null &&
+        promo?.course.course_id !== product_id &&
+        promo?.promocode_for !== 'all')
     ) {
       return responseGenerator(404, res, {
-        message: 'this code is not applicatble for this book',
+        message: 'this code is not applicatble for this product',
         success: false,
         error: true,
       });
@@ -72,10 +86,17 @@ const check_promo_code_controller = async (req, res, next) => {
       });
     }
 
+    if (promo?.default == true) {
+      return responseGenerator(404, res, {
+        message: 'invlaid promocode',
+        success: false,
+        error: true,
+      });
+    }
     return responseGenerator(200, res, {
       success: true,
       error: false,
-      message: '',
+      message: 'promocoe applied',
       data: {
         promocode_for: promo.promocode_for,
         Discount_type: promo.Discount_type,
