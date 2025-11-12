@@ -297,19 +297,22 @@ const get_finance_controller = async (req, res, next) => {
     }
 
     const result_ = await prisma.$queryRaw`
-      SELECT 
-        SUM(CAST(\`store_amount\` AS DECIMAL(20, 4))) AS totalStoreAmount,
-        SUM(\`due_amount\`) AS totalDue,
-        SUM(\`paid_amount\`) AS totalPaid,
-        SUM(\`delevery_charge\`) AS totalDeliveryCharge
-      FROM \`Payment\`
-      WHERE \`status\` ="SUCCESS"; 
-    `;
+  SELECT 
+    SUM(CAST(\`store_amount\` AS DECIMAL(20, 4))) AS totalStoreAmount,
+    SUM(\`due_amount\`) AS totalDue,
+    SUM(\`paid_amount\`) AS totalPaid,
+    SUM(\`delevery_charge\`) AS totalDeliveryCharge,
+    SUM(\`discount_amount\`) AS totalDiscount 
+  FROM \`Payment\`
+  WHERE \`status\` ="SUCCESS"; 
+`;
+
     const totals = result_[0];
     const totalStoreAmount = totals.totalStoreAmount ?? 0;
     const totalDue = totals.totalDue ?? 0;
     const totalPaid = totals.totalPaid ?? 0;
     const totalDeliveryCharge = totals.totalDeliveryCharge ?? 0;
+    const totalDiscount = totals.totalDiscount ?? 0;
     // ================== 7. Response ==================
     return responseGenerator(200, res, {
       message: 'Finance data loaded',
@@ -333,9 +336,10 @@ const get_finance_controller = async (req, res, next) => {
       pending_book_orders,
       inactive_course_orders,
       withrawable: totalStoreAmount,
-      totalDue: totalDue - totalDeliveryCharge,
-      totalPaid,
+      totalPaid: totalPaid,
+      totalDue: total_sell - totalPaid,
       totalDeliveryCharge,
+      totalDiscount,
     });
   } catch (error) {
     return next(error);

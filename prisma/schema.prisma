@@ -32,7 +32,6 @@ enum Enrollment_status{
   failed 
   success
   cancelled
-  refunded
 }
 enum PaymentStatus {
   PENDING
@@ -161,21 +160,6 @@ model Book{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-
-model Note{ 
-  id Int @id @default(autoincrement())
-  note_id String @unique
-  slug String @unique
-  note_name String
-  note_desc String 
-  note_file_link String
-  shared_by String // author name
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-
 model Book_order{ 
   id Int @id @default(autoincrement())
   order_id String @unique
@@ -196,6 +180,21 @@ model Book_order{
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Note{ 
+  id Int @id @default(autoincrement())
+  note_id String @unique
+  slug String @unique
+  note_name String
+  note_desc String 
+  note_file_link String
+  shared_by String // author name
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
 
 model Enrollment { // ony for course
   id Int @id @default(autoincrement())

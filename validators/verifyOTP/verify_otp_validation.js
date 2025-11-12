@@ -7,7 +7,6 @@ const verify_otp_validation = z.object({
     .refine((val) => /^\d{6}$/.test(val), {
       message: 'OTP must be exactly 6 digits',
     }),
-
   otp_type: z.string('OTP type must be given'),
 });
 
