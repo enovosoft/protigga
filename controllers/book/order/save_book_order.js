@@ -67,7 +67,11 @@ const save_book_order = async (material_details, next) => {
       payment_id: shortid.generate(),
       meterial_price: parseFloat(after_calulated_data.product_price),
       discount_amount: after_calulated_data.discount,
-      paid_amount: after_calulated_data.paid_amount,
+      paid_amount:
+        after_calulated_data.sundarban_courier == true
+          ? after_calulated_data.paid_amount -
+            after_calulated_data?.delevery_charge
+          : after_calulated_data.paid_amount,
       due_amount: after_calulated_data.due_amount,
       willCustomerGetAmount: after_calulated_data.willCustomerGetAmount,
       customer_receivable_amount:

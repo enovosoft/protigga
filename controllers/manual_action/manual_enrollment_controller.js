@@ -53,10 +53,9 @@ const manual_enrollment_controller = async (req, res, next) => {
         enrollment_status,
         after_calulated_data: {
           product_price,
-          product_price_with_quantity: product_price,
+          product_price_with_quantity: product_price - discount_amount,
           calculated_amount: product_price,
           original_amount: product_price,
-          after_discounted_amount: product_price - discount_amount,
           paid_amount,
           discount: discount_amount,
           due_amount: 0,

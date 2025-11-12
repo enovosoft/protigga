@@ -92,7 +92,7 @@ const price_calculation = async (
       if (exist) {
         product_price = searched_data.price;
         product_price_with_quantity = searched_data.price;
-        paid_amount = searched_data.price;
+        // paid_amount = searched_data.price;
         meterial_name = searched_data.course_title;
       }
     }
@@ -141,6 +141,10 @@ const price_calculation = async (
     //     ===== after discount
     discount = Math.round(discount);
 
+    if (meterial_type === 'course') {
+      paid_amount = product_price_with_quantity - discount;
+      due_amount = 0;
+    }
     // book part and cod
     if (meterial_type === 'book') {
       // -------------
@@ -154,7 +158,7 @@ const price_calculation = async (
         paid_amount = advance_charge_amount;
       } else if (sundarban_courier && !inside_dhaka && !outside_dhaka) {
         delevery_charge = SUNDORBAN_CHARGE;
-        paid_amount = product_price_with_quantity + delevery_charge - discount;
+        paid_amount = product_price_with_quantity - discount + delevery_charge;
         advance_charge_amount = 0;
       } else {
         console.log('else');
@@ -169,7 +173,7 @@ const price_calculation = async (
         advance_charge_amount - (product_price_with_quantity - discount);
       due_amount = 0;
     } else {
-      if (!sundarban_courier && meterial_type !== 'course') {
+      if (!sundarban_courier && meterial_type === 'book') {
         due_amount =
           product_price_with_quantity +
           delevery_charge -
@@ -187,6 +191,7 @@ const price_calculation = async (
       discount,
       due_amount,
       paid_amount: paid_amount,
+      sundarban_courier,
       willCustomerGetAmount,
       customer_receivable_amount,
       delevery_charge,

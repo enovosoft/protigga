@@ -304,7 +304,9 @@ const get_finance_controller = async (req, res, next) => {
     SUM(\`delevery_charge\`) AS totalDeliveryCharge,
     SUM(\`discount_amount\`) AS totalDiscount 
   FROM \`Payment\`
-  WHERE \`status\` ="SUCCESS"; 
+  WHERE \`status\` ="SUCCESS"
+  AND \`createdAt\` >= ${startDateSql}   
+  AND \`createdAt\` <= ${endDateSql};
 `;
 
     const totals = result_[0];
@@ -314,6 +316,7 @@ const get_finance_controller = async (req, res, next) => {
     const totalDeliveryCharge = totals.totalDeliveryCharge ?? 0;
     const totalDiscount = totals.totalDiscount ?? 0;
     // ================== 7. Response ==================
+
     return responseGenerator(200, res, {
       message: 'Finance data loaded',
       error: false,
