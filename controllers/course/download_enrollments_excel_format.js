@@ -61,6 +61,7 @@ const download_enrollments_excel_format = async (req, res, next) => {
       { header: 'product price', key: 'product_price', width: 30 },
       { header: 'quantity', key: 'quantity', width: 30 },
       { header: 'discount', key: 'discount_amount', width: 30 },
+      { header: 'address', key: 'address', width: 50 },
 
       { header: 'paid amount', key: 'paid_amount', width: 30 },
       { header: 'due amount', key: 'due_amount', width: 30 },
@@ -80,7 +81,7 @@ const download_enrollments_excel_format = async (req, res, next) => {
         product_price: order.course.price,
         quantity: 1,
         discount_amount: order.payment.discount_amount,
-
+        address: order.address,
         paid_amount: order.payment.paid_amount,
         due_amount: order.payment.due_amount,
         order_date: order.createdAt,
