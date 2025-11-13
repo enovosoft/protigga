@@ -88,7 +88,7 @@ const check_promo_code_controller = async (req, res, next) => {
 
     if (promo?.default == true) {
       return responseGenerator(404, res, {
-        message: 'invlaid promocode',
+        message: 'please provide valid promocode',
         success: false,
         error: true,
       });

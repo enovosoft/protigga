@@ -24,7 +24,7 @@ const delete_enrollment_controller = async (req, res, next) => {
 
     // =================== if announcement not exist
     if (!deleted_announcemnt?.announcement_id)
-      return responseGenerator(404, res, {
+      return responseGenerator(400, res, {
         message: 'Failed to delete',
         success: false,
         error: true,

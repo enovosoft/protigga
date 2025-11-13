@@ -34,6 +34,7 @@ const get_all_users_controller = async (req, res, next) => {
             enrollment_id: true,
             status: true,
             payment: true,
+            expiry_date: true,
             course: true,
           },
         },
