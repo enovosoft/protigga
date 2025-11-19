@@ -1,27 +1,33 @@
-name: Sync to PioneerAlpha
+name: Sync to PioneerAlpha (Force)
 
 on:
   push:
     branches:
-      - main # Enovosoft এর ব্রাঞ্চ নেম (main বা master চেক করে নিবেন)
+      - main
   workflow_dispatch:
 
 jobs:
-  sync:
+  force-sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Push to pioneerAlpha repository
-        uses: cpina/github-action-push-to-another-repository@main
+      - name: Force Push to PioneerAlpha
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          source-directory: '.'
-          destination-github-username: 'pioneerAlpha'
-          destination-repository-name: 'protigga-backend-nodejs'
-          user-email: 'rashedul360rs@gmail.com'
-          user-name: 'rashedul360'
-          target-branch: 'main'
+          TARGET_REPO: 'pioneerAlpha/protigga-backend-nodejs'
+          TARGET_BRANCH: 'main'
+          USER_NAME: 'rashedul360'
+        run: |
+          # Git Config setup
+          git config --global user.email "rashedul360rs@gmail.com"
+          git config --global user.name "rashedul360"
+
+          # Add Remote with Token authentication
+          git remote add pioneer "https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$TARGET_REPO.git"
+
+          # Force Push (Overwrite destination)
+          git push pioneer main:$TARGET_BRANCH --force
