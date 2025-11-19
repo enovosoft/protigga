@@ -14,7 +14,7 @@ ENV DATABASE_URL="mysql://protigga:rashedul2004@mysql-protigga.alwaysdata.net:33
 
 
 RUN npx prisma generate
-RUN npx prisma db push --accept-data-loss
+RUN npx prisma db push
 
 EXPOSE 4000
 
