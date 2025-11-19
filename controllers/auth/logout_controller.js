@@ -9,14 +9,14 @@ const logout_controller = async (req, res, next) => {
       secure: isProduction,
       sameSite: 'none',
       path: '/',
-      domain: isProduction ? '.enovosoft.com' : undefined,
+      domain: isProduction ? '.protigya.com' : undefined,
     });
     clearCookie(res, 'refresh_token', {
       httpOnly: false,
       secure: isProduction,
       sameSite: 'none',
       path: '/',
-      domain: isProduction ? '.enovosoft.com' : undefined,
+      domain: isProduction ? '.protigya.com' : undefined,
     });
     return responseGenerator(200, res, {
       message: 'Logged out successfully',
