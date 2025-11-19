@@ -1,0 +1,28 @@
+name: Mirror to Backend Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push to backend repo
+        env:
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "actions@github.com"
+
+          git remote add mirror https://x-access-token:${MIRROR_TOKEN}@github.com/pioneerAlpha/protigga-backend-nodejs.git
+
+          git push mirror --force --all
+          git push mirror --force --tags
