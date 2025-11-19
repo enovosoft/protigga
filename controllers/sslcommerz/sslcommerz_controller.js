@@ -2,11 +2,8 @@ const { initPayment } = require('../../utils/payment.utils');
 const responseGenerator = require('../../utils/responseGenerator');
 const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
-
 const save_enrollment = require('../course/utils/save_enrollment');
-
 const price_calculation = require('../promo_code/utils/price_calculation');
-
 const update_book_order = require('../book/order/utils/update_book_order');
 const update_enrollment_property = require('../course/utils/update_enrollment_property');
 
