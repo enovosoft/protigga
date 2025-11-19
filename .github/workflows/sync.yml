@@ -1,4 +1,4 @@
-name: Sync to PioneerAlpha
+name: sync to PioneerAlpha
 
 on:
   push:
@@ -17,7 +17,4 @@ jobs:
       - name: Push to Target Repo
         run: |
 
-          git remote add target https://oauth2:${{ secrets.TARGET_REPO_TOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git
-
-
-          git push target main --force
+          git push https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git main --force
