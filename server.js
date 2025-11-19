@@ -130,7 +130,6 @@ app.get('/api/health', (_req, res) => res.json({ status: 'OK' }));
 
 // ================== global error handler =====================
 app.use((err, _req, res, _next) => {
-  console.error('🔥 Global Error:', err);
   const status = err.status || 500;
   let message = err.message || 'Something went wrong.';
 

@@ -126,7 +126,6 @@ const download_orders_excel_format = async (req, res, next) => {
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {
-    return console.log(error);
     return next(error);
   }
 };

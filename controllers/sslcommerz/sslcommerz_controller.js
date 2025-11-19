@@ -152,5 +152,4 @@ const createPayment = async (req, res, next) => {
 
 module.exports = {
   createPayment,
-  ipnListener,
 };
