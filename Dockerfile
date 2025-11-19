@@ -10,7 +10,7 @@ RUN npm install
 
 COPY . .
 
-ENV DATABASE_URL="mysql://protigga:rashedul2004@mysql-protigga.alwaysdata.net:3306/protigga_momit"
+
 
 
 RUN npx prisma generate
