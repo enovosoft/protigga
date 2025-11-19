@@ -42,7 +42,7 @@ const check_promo_code_controller = async (req, res, next) => {
       });
     }
     // ==================== promocode checking part 2
-    console.log(product_id);
+
     if (
       (promo?.book !== null &&
         promo?.book.book_id !== product_id &&

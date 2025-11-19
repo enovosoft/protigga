@@ -58,17 +58,13 @@ app.use((req, res, next) => {
 });
 
 //===================== allow list ======================
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.FRONTEND_URL_PROD,
-  process.env.SSLCOMMERZ_URL,
-];
+const allowedOrigins = [process.env.FRONTEND_URL, process.env.SSLCOMMERZ_URL];
 
 // ✅ Global CORS setup
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
+      // if (!origin) return callback(null, true); // e.g. Postman or server-to-server
       if (allowedOrigins.includes(origin)) return callback(null, true);
       callback(new Error('IP BLOCKED'));
     },

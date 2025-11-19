@@ -53,7 +53,7 @@ const update_course_controller = async (req, res, next) => {
       });
       validBooks = existingBooks.map((b) => ({ book_id: b.book_id }));
     }
-    console.log(validBooks.length);
+
     // ------------- update part
     const updated_course = await prisma.course.update({
       where: {

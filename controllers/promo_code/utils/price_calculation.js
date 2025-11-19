@@ -161,7 +161,6 @@ const price_calculation = async (
         paid_amount = product_price_with_quantity - discount + delevery_charge;
         advance_charge_amount = 0;
       } else {
-        console.log('else');
         paid_amount = product_price * quantity;
       }
     }

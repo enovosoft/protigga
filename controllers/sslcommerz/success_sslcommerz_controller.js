@@ -22,20 +22,13 @@ const success_sslcommerz_controller = async (req, res, next) => {
         Txn_ID: tran_id,
       },
     });
-    console.log('hello from SUCCESS 🫡🫡🫡🫡🫡🫡');
+
     // ================ check and response
     if (!payment_details?.Txn_ID)
-      return res.send(
-        `<h1 style="text-align:center">Not found</h1><br/><h3 style="color:red; text-align:center">Transection</h3>`
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment/fail?message=invalid payment information`
       );
 
-    console.log(
-      '📌📌📌📌 log: ',
-      payment_details.val_id,
-      status,
-      meterial_type,
-      ' 📌📌'
-    );
     if (!payment_details.val_id && status === 'VALID') {
       // ====== check
       if (String(meterial_type).toLowerCase() === 'book') {
@@ -54,13 +47,12 @@ const success_sslcommerz_controller = async (req, res, next) => {
             val_id,
           }
         );
-        // ----------------- save payment on Payment table
       }
       // ============= confirm: course enrollment
       else if (String(meterial_type).toLowerCase() === 'course') {
         if (enrollment_id == 'undefined') {
-          return res.send(
-            `<h1 style="text-align:center">Warning for rules break</h1><br/><h3 style="color:red; text-align:center">Please follow our website rules, don't misuse it</h3>`
+          return res.redirect(
+            `${process.env.FRONTEND_URL}/payment/fail?message=Warning for rules break. Please follow our website rules, don't missuse it`
           );
         }
 

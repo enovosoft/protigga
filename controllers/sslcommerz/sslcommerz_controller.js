@@ -4,9 +4,11 @@ const save_book_order = require('../book/order/save_book_order');
 const transaction_id_generator = require('../../utils/transaction_id_generator');
 
 const save_enrollment = require('../course/utils/save_enrollment');
+
+const price_calculation = require('../promo_code/utils/price_calculation');
+const prisma = require('../../config/db');
 const update_book_order = require('../book/order/utils/update_book_order');
 const update_enrollment_property = require('../course/utils/update_enrollment_property');
-const price_calculation = require('../promo_code/utils/price_calculation');
 
 const createPayment = async (req, res, next) => {
   try {
@@ -145,15 +147,6 @@ const createPayment = async (req, res, next) => {
       success: false,
       message: error.message,
     });
-  }
-};
-
-const ipnListener = async (req, res) => {
-  try {
-    console.log('hello from IPN ✌🏻✌🏻✌🏻✌🏻✌🏻✌🏻');
-    return res.status(200).json({ message: 'IPN received', validation });
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
   }
 };
 
