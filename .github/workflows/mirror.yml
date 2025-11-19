@@ -1,4 +1,4 @@
-name: Sync to Backend Repo
+name: Sync to PioneerAlpha
 
 on:
   push:
@@ -6,14 +6,18 @@ on:
       - main
 
 jobs:
-  repo_sync:
+  sync-repo:
     runs-on: ubuntu-latest
     steps:
-      - name: Git Sync to Destination
-        uses: repo-sync/github-sync@v2
+      - name: Checkout source repo
+        uses: actions/checkout@v3
         with:
-          source_repo: 'https://github.com/enovosoft/protigga.git'
-          source_branch: 'main'
-          destination_repo: 'https://github.com/pioneerAlpha/protigga-backend-nodejs.git'
-          destination_branch: 'main' # Destination-এর ব্রাঞ্চ
-          github_token: ${{ secrets.DESTINATION_REPO_PAT }}
+          fetch-depth: 0
+
+      - name: Push to Target Repo
+        run: |
+
+          git remote add target https://oauth2:${{ secrets.TARGET_REPO_TOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git
+
+
+          git push target main --force
