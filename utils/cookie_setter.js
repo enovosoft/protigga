@@ -8,7 +8,7 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
     sameSite: isProduction ? 'none' : 'lax', // localhost এ কাজ করবে
     maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day
     path: '/',
-    domain: isProduction ? '.enovosoft.com' : undefined, // local e auto skip korbe
+    domain: isProduction ? '.protigya.com' : undefined, // local e auto skip korbe
     ...options,
   });
 };

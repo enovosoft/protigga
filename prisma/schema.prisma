@@ -3,8 +3,9 @@ generator client {
   // output   = "../generated/prisma"
 }
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 enum Enrollment_type{
   online
@@ -107,7 +108,8 @@ model Course_details{
   academy_name String 
   published_date DateTime
   language String
-  description String @db.LongText()
+  // description String @db.LongText()
+  description String 
   related_book String  @default("") // it will be id
   quiz_count Int @default(0)
   assessment Boolean  @default(false)
@@ -151,7 +153,8 @@ model Book{
   price Float
   writter String
   demo_file_link String? @default("")
-  description String @db.LongText()
+  // description String @db.LongText()
+  description String 
   is_deleted Boolean @default(false)
   is_featured Boolean  @default(false)
   orders Book_order[]
