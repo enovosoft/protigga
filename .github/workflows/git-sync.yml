@@ -1,0 +1,27 @@
+name: Sync to PioneerAlpha
+
+on:
+  push:
+    branches:
+      - main # Enovosoft এর ব্রাঞ্চ নেম (main বা master চেক করে নিবেন)
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push to pioneerAlpha repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: '.'
+          destination-github-username: 'pioneerAlpha'
+          destination-repository-name: 'protigga-backend-nodejs'
+          user-email: 'rashedul360rs@gmail.com'
+          user-name: 'rashedul360'
+          target-branch: 'main'
