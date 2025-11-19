@@ -16,5 +16,4 @@ jobs:
 
       - name: Push to Target Repo
         run: |
-
-          git push https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git main --force
+          git push https://rashedul360:${{ secrets.TARGET_REPO_TOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git main --force
