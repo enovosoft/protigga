@@ -50,13 +50,26 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 // 🕒 Attach Bangladesh time
 app.use((req, res, next) => {
   req.bangladeshTime = moment().tz('Asia/Dhaka').format('YYYY-MM-DD HH:mm:ss');
   next();
 });
-
+// ✅ Rate limiting
+const limiter = rateLimit({
+  windowMs: 3 * 60 * 1000, // 3 minutes
+  max: 3000,
+  keyGenerator: (req) => req?.body?.user_email || req?.body?.email || req?.ip,
+  handler: (req, res, next) => {
+    const error = new Error('Too many requests. Please try again later.');
+    error.status = 429;
+    throw error;
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+app.get('/api/health', (_req, res) => res.json({ status: 'OK' }));
 //===================== allow list ======================
 const allowedOrigins = [process.env.FRONTEND_URL, process.env.SSLCOMMERZ_URL];
 
@@ -85,21 +98,6 @@ if (process.env.NODE_ENV === 'production') {
 // ✅ Security headers
 app.use(helmet());
 
-// ✅ Rate limiting
-const limiter = rateLimit({
-  windowMs: 3 * 60 * 1000, // 3 minutes
-  max: 3000,
-  keyGenerator: (req) => req?.body?.user_email || req?.body?.email || req?.ip,
-  handler: (req, res, next) => {
-    const error = new Error('Too many requests. Please try again later.');
-    error.status = 429;
-    throw error;
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(limiter);
-
 //==================== all routes ==============================
 app.use('/api/v1', registration_route);
 app.use('/api/v1', verify_otp_route);
@@ -126,7 +124,6 @@ app.use('/api/v1', live_class_route);
 //===================== base routes ==========================
 app.get('/', (_req, res) => res.redirect(process.env.FRONTEND_URL));
 app.get('/api/v1', (_req, res) => res.redirect(process.env.FRONTEND_URL));
-app.get('/api/health', (_req, res) => res.json({ status: 'OK' }));
 
 // ================== global error handler =====================
 app.use((err, _req, res, _next) => {
