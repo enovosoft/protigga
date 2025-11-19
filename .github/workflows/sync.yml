@@ -1,4 +1,4 @@
-name: syncTOken
+name: Sync to PioneerAlpha
 
 on:
   push:
@@ -6,14 +6,18 @@ on:
       - main
 
 jobs:
-  sync-repo:
+  mirror_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Push to Target Repo
-        run: |
-          git push https://rashedul360:${{ secrets.SYNCTOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git main --force
+      - name: Mirror to PioneerAlpha
+        uses: yesolutions/mirror-action@master
+        with:
+          REMOTE: 'https://github.com/pioneerAlpha/protigga-backend-nodejs.git'
+          GIT_USERNAME: '${{ github.actor }}' # এটা অটোমেটিক আপনার ইউজারনেম নিয়ে নেবে
+          GIT_PASSWORD: ${{ secrets.API_TOKEN_GITHUB }}
+          PUSH_ALL_REFS: false
+          git_push_args: '--force'
