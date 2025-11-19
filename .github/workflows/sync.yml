@@ -1,4 +1,4 @@
-name: sync to PioneerAlpha
+name: syncTOken
 
 on:
   push:
@@ -16,4 +16,4 @@ jobs:
 
       - name: Push to Target Repo
         run: |
-          git push https://rashedul360:${{ secrets.TARGET_REPO_TOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git main --force
+          git push https://rashedul360:${{ secrets.SYNCTOKEN }}@github.com/pioneerAlpha/protigga-backend-nodejs.git main --force
