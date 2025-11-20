@@ -215,7 +215,6 @@ model Enrollment { // ony for course
   active_inactive_reason String? // example: due payment
   user User @relation(fields: [user_id],references: [user_id])
   course Course? @relation(fields: [course_id],references: [course_id])
-  
     // Optional Payment relation
   payment Payment?
   createdAt DateTime @default(now())
@@ -359,7 +358,6 @@ model Live_class{
   meeting_password  String
   join_url String
   course_id String
-  
   course Course? @relation(fields: [course_id],references: [course_id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

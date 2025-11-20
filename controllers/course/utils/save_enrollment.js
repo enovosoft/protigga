@@ -51,6 +51,13 @@ const save_enrollment = async (material_details = {}, res, next) => {
       where: {
         user_id,
         course_id: material_details.product_id,
+        enrollment_status: 'success',
+        payment: {
+          status: 'SUCCESS',
+        },
+      },
+      include: {
+        payment: true,
       },
     });
 
@@ -142,7 +149,7 @@ const save_enrollment = async (material_details = {}, res, next) => {
     return {
       success: true,
       error: false,
-      message: 'order placed successfully',
+      message: 'Order placed successfully. please wait for payment',
       // user: user?.user_id ? user : null,
       enrollment_id,
       enrollme_course_details: created_enrollment,
