@@ -135,7 +135,7 @@ const save_book_order = async (material_details, next) => {
     return {
       success: true,
       error: false,
-      message: 'Order placed successfully. please wait for payment',
+      message: 'Order placed successfully. please wait for payment.',
       created_order,
       errors,
     };
