@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 
-// ================== router imports =================
+// ================== router imports ==================
 const registration_route = require('./routes/registration/registration_route');
 const verify_otp_route = require('./routes/verifyOTP/verify_otp_route');
 
