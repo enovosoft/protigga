@@ -1,6 +1,7 @@
 const prisma = require('../../config/db');
 const moment = require('moment-timezone');
 const responseGenerator = require('../../utils/responseGenerator');
+const clearCookie = require('../../utils/clearCookie');
 const bangladeshNow = moment().tz('Asia/Dhaka').toDate();
 const get_single_user_details_controller = async (req, res, next) => {
   try {
@@ -171,19 +172,23 @@ const get_single_user_details_controller = async (req, res, next) => {
     });
 
     //     check : if exist
-    if (!user?.user_id)
+    if (!user?.user_id) {
+      clearCookie(res, 'access_token');
+      clearCookie(res, 'refresh_token');
       return responseGenerator(404, res, {
         message: 'user not found',
         success: false,
         error: true,
       });
-    if (user?.user_id)
+    }
+    if (user?.user_id) {
       return responseGenerator(200, res, {
         message: 'user found',
         success: true,
         error: false,
         user,
       });
+    }
   } catch (error) {
     return next(error);
   }

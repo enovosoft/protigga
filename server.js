@@ -31,6 +31,7 @@ const finance_route = require('./routes/finance/finance_route');
 const announcement_route = require('./routes/announcement/announcement_route');
 const auth_route = require('./routes/auth/auth_route');
 const live_class_route = require('./routes/live_class/live_class_route');
+const clearCookie = require('./utils/clearCookie');
 
 // ================== main =================
 const app = express();
@@ -77,7 +78,7 @@ const allowedOrigins = [process.env.FRONTEND_URL, process.env.SSLCOMMERZ_URL];
 app.use(
   cors({
     origin: function (origin, callback) {
-      // if (!origin) return callback(null, true); // e.g. Postman or server-to-server
+      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
       if (allowedOrigins.includes(origin)) return callback(null, true);
       callback(new Error('IP BLOCKED'));
     },
@@ -133,7 +134,8 @@ app.use((err, _req, res, _next) => {
   if (process.env.NODE_ENV === 'production' && message.includes('prisma')) {
     message = 'You declined the database rules';
   }
-
+  clearCookie(res, 'access_token');
+  clearCookie(res, 'refresh_token');
   return res.status(status).json({
     status,
     message,
