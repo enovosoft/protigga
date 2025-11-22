@@ -78,7 +78,7 @@ const allowedOrigins = [process.env.FRONTEND_URL, process.env.SSLCOMMERZ_URL];
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
+      // if (!origin) return callback(null, true); // e.g. Postman or server-to-server
       if (allowedOrigins.includes(origin)) return callback(null, true);
       callback(new Error('IP BLOCKED'));
     },
@@ -134,8 +134,8 @@ app.use((err, _req, res, _next) => {
   if (process.env.NODE_ENV === 'production' && message.includes('prisma')) {
     message = 'You declined the database rules';
   }
-  // clearCookie(res, 'access_token');
-  // clearCookie(res, 'refresh_token');
+  clearCookie(res, 'access_token');
+  clearCookie(res, 'refresh_token');
   return res.status(status).json({
     status,
     message,
