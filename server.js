@@ -134,8 +134,8 @@ app.use((err, _req, res, _next) => {
   if (process.env.NODE_ENV === 'production' && message.includes('prisma')) {
     message = 'You declined the database rules';
   }
-  clearCookie(res, 'access_token');
-  clearCookie(res, 'refresh_token');
+  // clearCookie(res, 'access_token');
+  // clearCookie(res, 'refresh_token');
   return res.status(status).json({
     status,
     message,
