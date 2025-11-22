@@ -3,7 +3,7 @@ generator client {
   // output   = "../generated/prisma"
 }
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 enum Enrollment_type{
