@@ -95,6 +95,13 @@ const get_single_user_details_controller = async (req, res, next) => {
                       gte: new Date(),
                     },
                   },
+                  include: {
+                    course: {
+                      select: {
+                        announcements: true,
+                      },
+                    },
+                  },
                 },
                 announcements: {
                   where: {
