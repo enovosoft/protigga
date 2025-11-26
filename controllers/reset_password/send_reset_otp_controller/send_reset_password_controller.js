@@ -13,7 +13,7 @@ const send_reset_password_controller = async (req, res, next) => {
     const otp = generate6DigitOtp();
     const sender_otp_details = await send_message(
       [phone?.split('+')[1]],
-      `your password reset OTP is ${otp}
+      `your password reset OTP is ${otp}, this code is valid for 5 min.
       Protigya Edu`
     );
     if (sender_otp_details.success) {

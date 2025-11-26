@@ -53,9 +53,8 @@ const registration_controller = async (req, res, next) => {
     const otp = generate6DigitOtp();
     const otp_response = await send_message(
       [phone],
-      `your account registration OTP is ${otp}
-      Protigya Edu
-      `
+      `your account registration OTP is ${otp}. this code is valid for 5 min.
+      Protigya Edu`
     );
     if (otp_response.success) {
       // ------- update decision

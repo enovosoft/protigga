@@ -29,7 +29,7 @@ const resend_otp_controller = async (req, res, next) => {
     // ============== send otp
     const sended_otp_data = await send_message(
       [phone?.split('+')[1]],
-      `your OTP is ${otp} 
+      `your account registration OTP is ${otp}. this code is valid for 5 min.
       Progiyga Edu`
     );
 
