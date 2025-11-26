@@ -130,12 +130,12 @@ const createPayment = async (req, res, next) => {
     };
 
     const apiResponse = await initPayment(data);
-    console.log(apiResponse);
 
     return responseGenerator(200, res, {
       status: 'SUCCESS',
       error: false,
       success: true,
+      message: message_ ?? '',
       payment_url: apiResponse?.GatewayPageURL,
     });
   } catch (error) {

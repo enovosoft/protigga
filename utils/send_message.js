@@ -24,7 +24,6 @@ const send_message = async (phones = [], content) => {
     .catch((err) => console.log('sms errror -> ', err));
 
   const responseResult = await sended_data.json();
-  console.log(responseResult);
   return {
     success: responseResult?.statusCode == '200' ? true : false,
     sended_data: responseResult,
