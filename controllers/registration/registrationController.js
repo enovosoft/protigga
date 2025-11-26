@@ -52,7 +52,7 @@ const registration_controller = async (req, res, next) => {
     // ========================= send otp =========================
     const otp = generate6DigitOtp();
     const otp_response = await send_message(
-      [phone],
+      [phone.split('+')[1]],
       `your account registration OTP is ${otp}. this code is valid for 5 min.
       Protigya Edu`
     );
@@ -84,11 +84,12 @@ const registration_controller = async (req, res, next) => {
     // ===================== hide sensitive data ===============
     const { password: _, ...userWithoutPassword } = created_user;
 
-    return responseGenerator(201, res, {
+    return responseGenerator(created_user.phone ? 201 : 500, res, {
       success: true,
-      message: 'User registered successfully',
+      message: created_user.phone
+        ? 'User registered successfully'
+        : 'sorry, registrtion not completed',
       user: userWithoutPassword,
-      otp,
     });
   } catch (err) {
     next(err);
