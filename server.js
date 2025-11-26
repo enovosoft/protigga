@@ -72,7 +72,11 @@ const limiter = rateLimit({
 app.use(limiter);
 app.get('/api/health', (_req, res) => res.json({ status: 'OK' }));
 //===================== allow list ======================
-const allowedOrigins = [process.env.FRONTEND_URL, process.env.SSLCOMMERZ_URL];
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.SSLCOMMERZ_URL,
+  process.env.SSLCOMMERZ_URL_POST,
+];
 
 // ✅ Global CORS setup
 app.use(

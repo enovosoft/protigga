@@ -4,9 +4,11 @@ const responseGenerator = require('../utils/responseGenerator');
 const validate_ssl_payment = async (req, res, next) => {
   try {
     const { val_id } = req.body;
-
     const validationResponse = await validatePayment(val_id);
-    if (!validationResponse) {
+    if (
+      !validationResponse ||
+      validationResponse.status === 'INVALID_TRANSACTION'
+    ) {
       return responseGenerator(500, res, {
         success: false,
         message: 'Payment validation failed.',
@@ -15,11 +17,8 @@ const validate_ssl_payment = async (req, res, next) => {
     }
     req.ssl_validation_response = validationResponse;
     const { status } = validationResponse;
-
+    console.log(validationResponse);
     if (status === 'VALID') {
-      req.sslValidated = validationResponse;
-      return next();
-    } else if (status === 'INVALID_TRANSACTION') {
       req.sslValidated = validationResponse;
       return next();
     }
