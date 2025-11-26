@@ -1,3 +1,4 @@
+const { Prisma } = require('@prisma/client');
 const prisma = require('../../config/db');
 const responseGenerator = require('../../utils/responseGenerator');
 
@@ -8,7 +9,10 @@ const search_user_controller = async (req, res, next) => {
     let orConditions = [];
 
     if (user_id) orConditions.push({ user_id: { contains: user_id } });
-    if (name) orConditions.push({ name: { contains: name } }); // case-sensitive; add mode if Prisma >=4.14
+    if (name)
+      orConditions.push({
+        name: { contains: name, mode: Prisma.QueryMode.insensitive },
+      });
     if (phone) orConditions.push({ phone: { contains: phone } });
 
     if (orConditions.length === 0) {
