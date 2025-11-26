@@ -11,8 +11,9 @@ const failed_sslcommerz_controller = async (req, res) => {
     currency,
     store_amount,
     card_category,
+    status,
   } = req.body;
-  const { status, val_id } = req.sslValidated;
+
   const meterial_type = req.query.meterial_type || '';
   const product_id = req.query.product_id || '';
   const enrollment_id = req.query.enrollment_id || '';
@@ -26,7 +27,7 @@ const failed_sslcommerz_controller = async (req, res) => {
       createdAt: 'desc',
     },
   });
-  if (!payment_details.val_id && status === 'INVALID_TRANSACTION') {
+  if (!payment_details.val_id && status === 'FAILED') {
     if (String(meterial_type).toLowerCase() === 'book') {
       // ============= confirm: book order
       //=========== check: check and update status and confiremed property

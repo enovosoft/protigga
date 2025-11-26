@@ -9,6 +9,7 @@ const ipn_controller = async (req, res) => {
       store_amount,
       card_category,
     } = req.body;
+
     const { status, val_id } = req.sslValidated;
 
     const payment_details = await prisma.payment.findUnique({
