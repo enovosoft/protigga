@@ -27,8 +27,13 @@ const resend_otp_controller = async (req, res, next) => {
     // ============ geenrate otp
     const otp = generate6DigitOtp();
     // ============== send otp
-    const sended_otp_data = await send_message(`your otp is ${otp}`);
-    if (!sended_otp_data.success) {
+    const sended_otp_data = await send_message(
+      [phone?.split('+')[1]],
+      `your OTP is ${otp} 
+      Progiyga Edu`
+    );
+
+    if (!sended_otp_data?.success) {
       return responseGenerator(500, res, {
         message: 'Failed to send otp',
         error: true,

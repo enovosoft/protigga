@@ -74,11 +74,17 @@ const update_announcement_controller = async (req, res, next) => {
         },
       });
 
+      const phone_numbers = [];
       for (const enrollment of enrollments) {
         if (enrollment?.user?.phone) {
-          await send_message(enrollment.user.phone, title);
+          phone_numbers.push(enrollment.user.phone?.split('+')[1]);
         }
       }
+      await send_message(
+        phone_numbers,
+        `${title} ~ 
+        ${description}`
+      );
     }
 
     // ================= not success response
