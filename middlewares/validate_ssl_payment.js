@@ -17,7 +17,7 @@ const validate_ssl_payment = async (req, res, next) => {
     }
     req.ssl_validation_response = validationResponse;
     const { status } = validationResponse;
-    console.log(validationResponse);
+
     if (status === 'VALID') {
       req.sslValidated = validationResponse;
       return next();

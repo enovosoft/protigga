@@ -79,19 +79,17 @@ const allowedOrigins = [
 ];
 
 // ✅ Global CORS setup
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      callback(new Error('IP BLOCKED'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Disposition'],
-  })
-);
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       console.log(origin);
+//       if (!origin) return callback(null, true); // e.g. Postman or server-to-server
+//       if (allowedOrigins.includes(origin)) return callback(null, true);
+//       callback(new Error('IP BLOCKED'));
+//     },
+//     credentials: true,
+//   })
+// );
 
 // ✅ Logging
 if (process.env.NODE_ENV === 'production') {
@@ -104,6 +102,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use(helmet());
 
 //==================== all routes ==============================
+app.use('/api/v1', sslcommerz_route);
 app.use('/api/v1', registration_route);
 app.use('/api/v1', verify_otp_route);
 app.use('/api/v1', auth_route);
@@ -113,7 +112,7 @@ app.use('/api/v1', file_meterial_router);
 app.use('/api/v1', note_route);
 app.use('/api/v1', promo_code_route);
 app.use('/api/v1', resend_otp_route);
-app.use('/api/v1', sslcommerz_route);
+
 app.use('/api/v1', book_route);
 app.use('/api/v1', course_route);
 app.use('/api/v1', exam_route);
