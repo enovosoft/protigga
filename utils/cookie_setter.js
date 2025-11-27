@@ -7,7 +7,6 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
     maxAge: options.maxAge || 1000 * 60 * 60 * 24,
-    path: '/',
     domain: isProduction ? '.protigya.com' : undefined,
     ...options,
   });
