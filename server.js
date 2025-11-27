@@ -79,17 +79,18 @@ const allowedOrigins = [
 ];
 
 // ✅ Global CORS setup
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       console.log(origin);
-//       if (!origin) return callback(null, true); // e.g. Postman or server-to-server
-//       if (allowedOrigins.includes(origin)) return callback(null, true);
-//       callback(new Error('IP BLOCKED'));
-//     },
-//     credentials: true,
-//   })
-// );
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      console.log(origin);
+      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error('IP BLOCKED'));
+    },
+    credentials: true,
+  })
+);
 
 // ✅ Logging
 if (process.env.NODE_ENV === 'production') {
