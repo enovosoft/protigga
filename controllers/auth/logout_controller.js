@@ -7,14 +7,14 @@ const logout_controller = async (req, res, next) => {
     clearCookie(res, 'access_token', {
       httpOnly: false,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: 'none',
       path: '/',
       domain: isProduction ? '.protigya.com' : undefined,
     });
     clearCookie(res, 'refresh_token', {
       httpOnly: false,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: 'none',
       path: '/',
       domain: isProduction ? '.protigya.com' : undefined,
     });

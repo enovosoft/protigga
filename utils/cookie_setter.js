@@ -5,10 +5,10 @@ const cookie_setter = (res, token, cookieName = 'token', options = {}) => {
   res.cookie(cookieName, token, {
     httpOnly: false,
     secure: isProduction,
-    sameSite: isProduction ? 'lax' : 'none',
-    maxAge: options.maxAge || 1000 * 60 * 60 * 24, // 1 day
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: options.maxAge || 1000 * 60 * 60 * 24,
     path: '/',
-    domain: isProduction ? '.protigya.com' : undefined, // local e auto skip korbe
+    domain: isProduction ? '.protigya.com' : undefined,
     ...options,
   });
 };
