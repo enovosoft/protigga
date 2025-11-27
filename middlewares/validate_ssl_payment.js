@@ -1,5 +1,4 @@
 const { validatePayment } = require('../utils/payment.utils');
-const responseGenerator = require('../utils/responseGenerator');
 
 const validate_ssl_payment = async (req, res, next) => {
   try {
@@ -9,11 +8,9 @@ const validate_ssl_payment = async (req, res, next) => {
       !validationResponse ||
       validationResponse.status === 'INVALID_TRANSACTION'
     ) {
-      return responseGenerator(500, res, {
-        success: false,
-        message: 'Payment validation failed.',
-        error: true,
-      });
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/payment/fail?message=Payment validation failed.`
+      );
     }
     req.ssl_validation_response = validationResponse;
     const { status } = validationResponse;

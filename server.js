@@ -36,18 +36,27 @@ const clearCookie = require('./utils/clearCookie');
 // ================== main =================
 const app = express();
 const port = process.env.SERVER_PORT || 5000;
-// ✅ Serve static files (PDF, images, etc.) with CORRECT CORS headers
+
+//===================== allow list ======================
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.SSLCOMMERZ_URL,
+  process.env.SSLCOMMERZ_URL_POST,
+];
+
+// ================== middleware =================
 app.use(
-  '/file',
-  express.static(path.join(__dirname, './uploads'), {
-    setHeaders: (res, filePath) => {
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      // res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-      res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
+      return callback(null, true);
+      if (allowedOrigins.includes(origin) || origin == null)
+        return callback(null, true);
+      callback(new Error('IP BLOCKED'));
     },
+    credentials: true,
   })
 );
-// ================== middleware =================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -71,24 +80,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 app.get('/api/health', (_req, res) => res.json({ status: 'OK' }));
-//===================== allow list ======================
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.SSLCOMMERZ_URL,
-  process.env.SSLCOMMERZ_URL_POST,
-];
-
-// ✅ Global CORS setup
-
+// ✅ Serve static files (PDF, images, etc.) with CORRECT CORS headers
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      console.log(origin);
-      if (!origin) return callback(null, true); // e.g. Postman or server-to-server
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      callback(new Error('IP BLOCKED'));
+  '/file',
+  express.static(path.join(__dirname, './uploads'), {
+    setHeaders: (res, filePath) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      // res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
     },
-    credentials: true,
   })
 );
 
@@ -100,7 +100,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ✅ Security headers
-app.use(helmet());
+// app.use(helmet());
 
 //==================== all routes ==============================
 app.use('/api/v1', sslcommerz_route);
