@@ -5,8 +5,7 @@ RUN npm install
 COPY . .
 RUN npx prisma generate
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma db push && node server.js"]
-
+CMD ["node", "server.js"]
 
 # build : docker build -t protigga-backend .
 # run : docker run -p 4000:4000 --name protigga-container protigga-backend
