@@ -1,3 +1,4 @@
+const prisma = require('../../config/db');
 const update_book_order = require('../book/order/utils/update_book_order');
 const update_enrollment_property = require('../course/utils/update_enrollment_property');
 
@@ -12,7 +13,7 @@ const ipn_controller = async (req, res) => {
       store_amount,
       card_category,
     } = req.body;
-
+    const meterial_type = req.query.meterial_type || '';
     const { status, val_id } = req.sslValidated;
     // =============== find payment details
     const payment_details = await prisma.payment.findUnique({
@@ -50,7 +51,7 @@ const ipn_controller = async (req, res) => {
         );
       } else if (String(meterial_type).toLowerCase() === 'course') {
         await update_enrollment_property(
-          { enrollment_id },
+          { enrollment_id: payment_details.enrollment_id },
           { enrollment_status: 'confirmed' },
           {
             tran_date,
