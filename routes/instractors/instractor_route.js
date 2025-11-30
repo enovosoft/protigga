@@ -1,6 +1,7 @@
 const instractor_route = require('express').Router();
 const add_instractor_controller = require('../../controllers/instractors/add_instractor_controller');
 const delete_instractor_controller = require('../../controllers/instractors/delete_instractor_controller');
+const get_all_instractor_controller = require('../../controllers/instractors/get_all_instractor_controller');
 const update_instractor_controller = require('../../controllers/instractors/update_instractor_controller');
 const auth_middleware = require('../../middlewares/auth_middleware');
 const check_verified_user = require('../../middlewares/check_verified_user');
@@ -11,6 +12,7 @@ const add_instractor_validation = require('../../validators/instractors/add_inst
 const update_instractor_validation = require('../../validators/instractors/update_instractor_validation');
 const validate = require('../../validators/utils/validate');
 
+instractor_route.get('/intructors', get_all_instractor_controller);
 instractor_route.post(
   '/instractor',
   validate(add_instractor_validation),
