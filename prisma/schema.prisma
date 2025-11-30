@@ -92,6 +92,7 @@ model Course{
   course_details Course_details?
   createdAt DateTime @default(now())
   related_books  Book[]   @relation("CourseBooks")  // link books
+  instractors Instractor[] @relation("CourseInstractors")
   enrollments Enrollment[]
   exams Exam[]
   announcements Announcement[]
@@ -359,6 +360,19 @@ model Live_class{
   join_url String
   course_id String
   course Course? @relation(fields: [course_id],references: [course_id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Instractor{
+  id Int @id @default(autoincrement())
+  instractor_id String @unique
+  name String
+  designation String
+  teaching_experience String
+  student_count String
+  academy String
+  image String
+  courses   Course[] @relation("CourseInstractors") 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

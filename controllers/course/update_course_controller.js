@@ -19,6 +19,7 @@ const update_course_controller = async (req, res, next) => {
       skill_level,
       expired_date,
       is_featured,
+      instractors,
     } = req.body || {};
     // ================
     const { slug: slug_ } = req.params || {};
@@ -45,6 +46,7 @@ const update_course_controller = async (req, res, next) => {
       const result = await find_course_by_slug({ slug: new_slug });
       slugExists = result.exist;
     }
+    // --------------- valid books
     let validBooks = [];
     if (related_books_?.length) {
       const existingBooks = await prisma.book.findMany({
@@ -52,6 +54,18 @@ const update_course_controller = async (req, res, next) => {
         select: { book_id: true },
       });
       validBooks = existingBooks.map((b) => ({ book_id: b.book_id }));
+    }
+    // --------------- - valid instractor
+    let validInstructors = [];
+    if (instractors?.length) {
+      const existingInstructors = await prisma.instractor.findMany({
+        where: { instractor_id: { in: instractors } },
+        select: { instractor_id: true },
+      });
+
+      validInstructors = existingInstructors.map((i) => ({
+        instractor_id: i.instractor_id,
+      }));
     }
 
     // ------------- update part
@@ -66,6 +80,7 @@ const update_course_controller = async (req, res, next) => {
         price,
         thumbnail,
         related_books: { set: validBooks },
+        instractors: { set: validInstructors },
         is_featured,
         course_details: {
           update: {
@@ -81,6 +96,7 @@ const update_course_controller = async (req, res, next) => {
       },
       include: {
         related_books: true,
+        instractors: true,
       },
     });
     //     ============ if : not updated

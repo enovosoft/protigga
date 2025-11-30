@@ -19,6 +19,7 @@ const add_course_controller = async (req, res, next) => {
       assessment,
       skill_level,
       is_featured,
+      instractors,
     } = req.body || {};
     // =============== generate slug
     let slug = slug_generator(course_title);
@@ -35,6 +36,18 @@ const add_course_controller = async (req, res, next) => {
       });
       validBooks = existingBooks.map((b) => ({ book_id: b.book_id }));
     }
+    // --------------- - valid instractor
+    let validInstructors = [];
+    if (instractors?.length) {
+      const existingInstructors = await prisma.instractor.findMany({
+        where: { instractor_id: { in: instractors } },
+        select: { instractor_id: true },
+      });
+
+      validInstructors = existingInstructors.map((i) => ({
+        instractor_id: i.instractor_id,
+      }));
+    }
     // ===================== create course.
     const created_course = await prisma.course.create({
       data: {
@@ -46,6 +59,9 @@ const add_course_controller = async (req, res, next) => {
         thumbnail,
         is_featured,
         related_books: validBooks.length ? { connect: validBooks } : undefined,
+        instractors: validInstructors.length
+          ? { connect: validInstructors }
+          : undefined,
         course_details: {
           create: {
             slug,
@@ -63,6 +79,7 @@ const add_course_controller = async (req, res, next) => {
       },
       include: {
         related_books: true,
+        instractors: true,
       },
     });
     //     ============ if : not created
