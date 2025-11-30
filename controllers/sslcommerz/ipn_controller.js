@@ -11,7 +11,7 @@ const ipn_controller = async (req, res) => {
     } = req.body;
 
     const { status, val_id } = req.sslValidated;
-
+    // =============== find payment details
     const payment_details = await prisma.payment.findUnique({
       where: {
         Txn_ID: tran_id,
@@ -21,15 +21,17 @@ const ipn_controller = async (req, res) => {
         course_enrollment: true,
       },
     });
+
+    // if payment not found (redirect)
     if (!payment_details?.Txn_ID)
       return res.redirect(
         `${process.env.FRONTEND_URL}/payment/fail?message=invalid payment information`
       );
 
+    // =================== if payment valid
     if (!payment_details.val_id && status === 'VALID') {
       if (String(meterial_type).toLowerCase() === 'book') {
         // ============= confirm: book order
-        //=========== check: check and update status and confiremed property also save payment info
         await update_book_order(
           { order_id: payment_details.book_order_id },
           { status: 'confirmed', confirmed: true },
@@ -43,29 +45,23 @@ const ipn_controller = async (req, res) => {
             val_id,
           }
         );
-      }
-    } else if (String(meterial_type).toLowerCase() === 'course') {
-      if (enrollment_id == 'undefined') {
-        return res.redirect(
-          `${process.env.FRONTEND_URL}/payment/fail?message=Warning for rules break. Please follow our website rules, don't missuse it`
+      } else if (String(meterial_type).toLowerCase() === 'course') {
+        await update_enrollment_property(
+          { enrollment_id },
+          { enrollment_status: 'confirmed' },
+          {
+            tran_date,
+            card_type,
+            card_issuer,
+            currency,
+            store_amount,
+            card_category,
+            val_id,
+          }
         );
       }
-
-      //=========== check: check and update status and confiremed property also save payment info
-      await update_enrollment_property(
-        { enrollment_id },
-        { enrollment_status: 'confirmed' },
-        {
-          tran_date,
-          card_type,
-          card_issuer,
-          currency,
-          store_amount,
-          card_category,
-          val_id,
-        }
-      );
     }
+
     return res.status(200).json({ message: 'IPN received', validation });
   } catch (err) {
     return res.status(400).json({ error: err.message });
