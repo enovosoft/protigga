@@ -45,6 +45,17 @@ const get_single_course_controller = async (req, res, next) => {
               },
             }
           : false,
+        instractors: {
+          select: {
+            instractor_id: true,
+            name: true,
+            designation: true,
+            teaching_experience: true,
+            student_count: true,
+            academy: true,
+            image: true,
+          },
+        },
         related_books: {
           select: {
             slug: true,
