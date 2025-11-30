@@ -47,15 +47,10 @@ const cancel_sslcommerz_controller = async (req, res) => {
     }
     // ============= cencelled: course enrollment
     if (String(meterial_type).toLowerCase() === 'course') {
-      if (enrollment_id == 'undefined') {
-        return res.send(
-          `<h1 style="text-align:center">Warning for rules break</h1><br/><h3 style="color:red; text-align:center">Please follow our website rules, don't misuse it</h3>`
-        );
-      }
       if (payment_details?.Txn_ID) {
         //=========== check: check and update status and confiremed property also save payment info
         await update_enrollment_property(
-          { enrollment_id },
+          { enrollment_id: payment_details?.enrollment_id },
           { enrollment_status: 'cancelled' },
           {
             tran_date,
