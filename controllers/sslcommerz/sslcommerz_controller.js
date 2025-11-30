@@ -111,7 +111,7 @@ const createPayment = async (req, res, next) => {
       success_url: `${process.env.BASE_URL}/api/v1/payment/success?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
       fail_url: `${process.env.BASE_URL}/api/v1/payment/fail?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
       cancel_url: `${process.env.BASE_URL}/api/v1/payment/cancel?tran_id=${tran_id}&meterial_type=${meterial_type}&product_id=${meterial_details.product_id}&enrollment_id=${enrollment_id_}`,
-      ipn_url: `${process.env.BASE_URL}/api/v1/payment/ipn`,
+      ipn_url: `https://api.protigya.com/api/v1/payment/ipn`,
       shipping_method:
         String(meterial_type).toLowerCase() === 'book' ? 'COURIER' : 'NO',
       product_name: after_calulated_data.meterial_name,
