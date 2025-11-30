@@ -13,8 +13,8 @@ const ipn_controller = async (req, res) => {
       store_amount,
       card_category,
     } = req.body;
-    const meterial_type = req.query.meterial_type || '';
-    const { status, val_id } = req.sslValidated;
+    let meterial_type = undefined;
+    const { status, val_id } = req.sslValidated || {};
     // =============== find payment details
     const payment_details = await prisma.payment.findUnique({
       where: {
@@ -26,11 +26,14 @@ const ipn_controller = async (req, res) => {
       },
     });
 
-    // if payment not found (redirect)
-    if (!payment_details?.Txn_ID)
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/payment/fail?message=invalid Txn_ID payment information`
-      );
+    if (!payment_details) {
+      return res
+        .status(404)
+        .json({ message: 'Transaction ID not found in system' });
+    }
+
+    if (payment_details?.enrollment_id) meterial_type = 'course';
+    if (payment_details?.book_order_id) meterial_type = 'book';
 
     // =================== if payment valid
     if (!payment_details.val_id && status === 'VALID') {
@@ -38,7 +41,7 @@ const ipn_controller = async (req, res) => {
         // ============= confirm: book order
         await update_book_order(
           { order_id: payment_details.book_order_id },
-          { status: " 'confirmed'", confirmed: true },
+          { status: 'confirmed', confirmed: true },
           {
             tran_date,
             card_type,
@@ -146,7 +149,7 @@ const ipn_controller = async (req, res) => {
       }
     }
 
-    return res.status(200).json({ message: 'IPN received', validation });
+    return res.status(200).json({ message: 'IPN received' });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
