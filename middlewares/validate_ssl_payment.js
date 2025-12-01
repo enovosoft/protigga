@@ -2,7 +2,8 @@ const { validatePayment } = require('../utils/payment.utils');
 
 const validate_ssl_payment = async (req, res, next) => {
   try {
-    const { val_id } = req.body;
+    const { val_id, risk_level } = req.body || {};
+
     const validationResponse = await validatePayment(val_id);
     if (
       !validationResponse ||
@@ -15,7 +16,7 @@ const validate_ssl_payment = async (req, res, next) => {
     req.ssl_validation_response = validationResponse;
     const { status } = validationResponse;
 
-    if (status === 'VALID') {
+    if (status === 'VALID' && Number(risk_level) !== 1) {
       req.sslValidated = validationResponse;
       return next();
     }

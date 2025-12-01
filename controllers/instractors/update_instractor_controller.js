@@ -1,4 +1,4 @@
-const shortid = require('shortid');
+
 const prisma = require('../../config/db');
 const responseGenerator = require('../../utils/responseGenerator');
 
@@ -29,7 +29,7 @@ const update_instractor_controller = async (req, res, next) => {
 
     if (updated_instractor?.instractor_id) {
       return responseGenerator(201, res, {
-        message: 'Instractor added successfully',
+        message: 'Instractor updated successfully',
         success: true,
         error: false,
         errors: [],
@@ -37,7 +37,7 @@ const update_instractor_controller = async (req, res, next) => {
       });
     } else {
       return responseGenerator(400, res, {
-        message: 'Instractor not added',
+        message: 'Instractor not updated',
         success: false,
         error: true,
         errors: [],

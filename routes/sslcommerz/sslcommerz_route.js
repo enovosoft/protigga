@@ -36,12 +36,12 @@ sslcommerz_route.post(
 );
 sslcommerz_route.post(
   '/payment/fail',
-  // validate_ssl_payment,
+  validate_ssl_payment,
   failed_sslcommerz_controller
 );
 sslcommerz_route.post(
   '/payment/cancel',
-  // validate_ssl_payment,
+  validate_ssl_payment,
   cancel_sslcommerz_controller
 );
 

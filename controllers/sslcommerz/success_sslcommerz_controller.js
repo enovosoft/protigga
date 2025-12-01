@@ -24,12 +24,19 @@ const success_sslcommerz_controller = async (req, res, next) => {
     });
 
     // ================ check and response
-    if (!payment_details?.Txn_ID)
+    if (!payment_details?.Txn_ID || !payment_details)
       return res.redirect(
         `${process.env.FRONTEND_URL}/payment/fail?message=invalid payment information`
       );
-
-    if (!payment_details.val_id && status === 'VALID') {
+    // ---- set real value
+    if (payment_details?.enrollment_id) {
+      meterial_type = 'course';
+      enrollment_id = payment_details.enrollment_id;
+    }
+    if (payment_details?.book_order_id) meterial_type = 'book';
+    console.log(val_id, status);
+    // ----------------------- if payment valid or not updated before
+    if (!payment_details?.val_id && status === 'VALID') {
       // ====== check
       if (String(meterial_type).toLowerCase() === 'book') {
         // ============= confirm: book order
@@ -50,12 +57,6 @@ const success_sslcommerz_controller = async (req, res, next) => {
       }
       // ============= confirm: course enrollment
       else if (String(meterial_type).toLowerCase() === 'course') {
-        if (enrollment_id == 'undefined') {
-          return res.redirect(
-            `${process.env.FRONTEND_URL}/payment/fail?message=Warning for rules break. Please follow our website rules, don't missuse it`
-          );
-        }
-
         //=========== check: check and update status and confiremed property also save payment info
         await update_enrollment_property(
           { enrollment_id },
@@ -71,6 +72,9 @@ const success_sslcommerz_controller = async (req, res, next) => {
           }
         );
       }
+    }
+    // redirection
+    if (status === 'VALID') {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     } else {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/fail`);

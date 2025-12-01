@@ -14,8 +14,8 @@ const failed_sslcommerz_controller = async (req, res) => {
     status,
   } = req.body;
 
-  const meterial_type = req.query.meterial_type || '';
-
+  let meterial_type = null;
+  console.log('object');
   // ========== find: by tran_id
   const payment_details = await prisma.payment.findFirst({
     where: {
@@ -25,6 +25,15 @@ const failed_sslcommerz_controller = async (req, res) => {
       createdAt: 'desc',
     },
   });
+
+  if (!payment_details)
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/payment/fail?message= sorry invalid payment information`
+    );
+
+  if (payment_details?.enrollment_id) meterial_type = 'course';
+  if (payment_details?.book_order_id) meterial_type = 'book';
+
   if (!payment_details.val_id && status === 'FAILED') {
     if (String(meterial_type).toLowerCase() === 'book') {
       // ============= confirm: book order

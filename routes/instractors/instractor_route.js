@@ -12,7 +12,7 @@ const add_instractor_validation = require('../../validators/instractors/add_inst
 const update_instractor_validation = require('../../validators/instractors/update_instractor_validation');
 const validate = require('../../validators/utils/validate');
 
-instractor_route.get('/intructors', get_all_instractor_controller);
+instractor_route.get('/instructors', get_all_instractor_controller);
 instractor_route.post(
   '/instractor',
   validate(add_instractor_validation),
