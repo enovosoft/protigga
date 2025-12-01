@@ -49,7 +49,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // if (origin) return callback(null, true); // e.g. Postman or server-to-server
+      if (origin) return callback(null, true); // e.g. Postman or server-to-server
       if (allowedOrigins.includes(origin)) return callback(null, true);
       // callback(new Error('IP BLOCKED'));
     },
