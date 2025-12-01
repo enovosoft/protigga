@@ -35,6 +35,8 @@ const success_sslcommerz_controller = async (req, res, next) => {
     }
     if (payment_details?.book_order_id) meterial_type = 'book';
 
+    // redirection
+    res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     // ----------------------- if payment valid or not updated before
     if (!payment_details?.val_id && status === 'VALID') {
       // ====== check
@@ -72,12 +74,6 @@ const success_sslcommerz_controller = async (req, res, next) => {
           }
         );
       }
-    }
-    // redirection
-    if (status === 'VALID') {
-      res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
-    } else {
-      return res.redirect(`${process.env.FRONTEND_URL}/payment/fail`);
     }
   } catch (error) {
     return next(error);

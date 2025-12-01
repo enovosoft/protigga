@@ -34,6 +34,9 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
     // ============= find user role data
     const role_data = await prisma.role.findFirst({
       where: { user_id: decoded_user.user_id },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     // ============= if admin, allow directly
     if (
@@ -55,6 +58,9 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
         payment: true,
         course: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     // ============= check enrollment existence and expiry
@@ -66,7 +72,8 @@ const check_is_admin_enrollment_existance_and_expiry_date = async (
       });
     }
     // ============= check payment data
-
+    console.log(enrollmentData?.enrollment_status);
+    console.log(enrollmentData?.payment?.status);
     if (
       enrollmentData?.enrollment_status !== 'success' ||
       enrollmentData?.payment?.status !== 'SUCCESS'
