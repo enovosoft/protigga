@@ -12,7 +12,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
       currency,
       store_amount,
       card_category,
-    } = req.body;
+    } = req.body || {};
     const { status, val_id } = req.sslValidated || {};
     let meterial_type = req.query.meterial_type || '';
     let enrollment_id = req.query.enrollment_id || '';

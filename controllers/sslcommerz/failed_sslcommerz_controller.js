@@ -12,7 +12,7 @@ const failed_sslcommerz_controller = async (req, res) => {
     store_amount,
     card_category,
     status,
-  } = req.body;
+  } = req.body || {};
 
   let meterial_type = null;
 

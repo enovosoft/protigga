@@ -12,7 +12,8 @@ const cancel_sslcommerz_controller = async (req, res) => {
     store_amount,
     card_category,
     status,
-  } = req.body;
+  } = req.body || {};
+
   const meterial_type = req.query.meterial_type || '';
   const enrollment_id = req.query.enrollment_id || '';
 
@@ -25,7 +26,14 @@ const cancel_sslcommerz_controller = async (req, res) => {
       createdAt: 'desc',
     },
   });
-  if (!payment_details.val_id && status === 'CANCELLED') {
+
+  if (payment_details?.enrollment_id) {
+    meterial_type = 'course';
+    enrollment_id = payment_details.enrollment_id;
+  }
+  if (payment_details?.book_order_id) meterial_type = 'book';
+
+  if (!payment_details?.val_id && status === 'CANCELLED') {
     // ============= cancelled: book order
     if (String(meterial_type).toLowerCase() === 'book') {
       //=========== check: check and update status and confiremed property
