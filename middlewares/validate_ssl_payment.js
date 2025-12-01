@@ -5,6 +5,7 @@ const validate_ssl_payment = async (req, res, next) => {
     const { val_id, risk_level } = req.body || {};
 
     const validationResponse = await validatePayment(val_id);
+
     if (
       !validationResponse ||
       validationResponse.status === 'INVALID_TRANSACTION'

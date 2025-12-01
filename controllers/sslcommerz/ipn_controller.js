@@ -12,7 +12,7 @@ const ipn_controller = async (req, res) => {
       currency,
       store_amount,
       card_category,
-    } = req.body;
+    } = req.body || {};
     let meterial_type = undefined;
     const { status, val_id } = req.sslValidated || {};
     // =============== find payment details

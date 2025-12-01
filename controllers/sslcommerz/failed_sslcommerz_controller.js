@@ -15,7 +15,7 @@ const failed_sslcommerz_controller = async (req, res) => {
   } = req.body;
 
   let meterial_type = null;
-  console.log('object');
+
   // ========== find: by tran_id
   const payment_details = await prisma.payment.findFirst({
     where: {

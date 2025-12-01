@@ -13,9 +13,9 @@ const success_sslcommerz_controller = async (req, res, next) => {
       store_amount,
       card_category,
     } = req.body;
-    const { status, val_id } = req.sslValidated;
-    const meterial_type = req.query.meterial_type || '';
-    const enrollment_id = req.query.enrollment_id || '';
+    const { status, val_id } = req.sslValidated || {};
+    let meterial_type = req.query.meterial_type || '';
+    let enrollment_id = req.query.enrollment_id || '';
     // ========== find: by tran_id
     const payment_details = await prisma.payment.findUnique({
       where: {
@@ -34,7 +34,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
       enrollment_id = payment_details.enrollment_id;
     }
     if (payment_details?.book_order_id) meterial_type = 'book';
-    console.log(val_id, status);
+
     // ----------------------- if payment valid or not updated before
     if (!payment_details?.val_id && status === 'VALID') {
       // ====== check
@@ -75,7 +75,7 @@ const success_sslcommerz_controller = async (req, res, next) => {
     }
     // redirection
     if (status === 'VALID') {
-      return res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
+      res.redirect(`${process.env.FRONTEND_URL}/payment/success`);
     } else {
       return res.redirect(`${process.env.FRONTEND_URL}/payment/fail`);
     }

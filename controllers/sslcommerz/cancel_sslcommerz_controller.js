@@ -13,7 +13,6 @@ const cancel_sslcommerz_controller = async (req, res) => {
     card_category,
     status,
   } = req.body;
-
   const meterial_type = req.query.meterial_type || '';
   const enrollment_id = req.query.enrollment_id || '';
 
