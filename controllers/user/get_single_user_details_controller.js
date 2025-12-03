@@ -49,6 +49,7 @@ const get_single_user_details_controller = async (req, res, next) => {
           where: {
             status: 'active',
             enrollment_status: 'success',
+            course: { is_deleted: false },
           },
           orderBy: {
             createdAt: 'desc',

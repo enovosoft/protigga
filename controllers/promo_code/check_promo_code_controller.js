@@ -10,6 +10,7 @@ const check_promo_code_controller = async (req, res, next) => {
       where: {
         promo_code: promocode,
         // promocode_for,
+        is_deleted: false,
       },
       include: {
         book: true,
