@@ -57,7 +57,6 @@ const resend_otp_controller = async (req, res, next) => {
           message: 'OTP sended successfully',
           error: false,
           success: true,
-          otp,
         });
     }
   } catch (error) {

@@ -29,7 +29,7 @@ const send_reset_password_controller = async (req, res, next) => {
       });
       //  ============== response back
       return responseGenerator(200, res, {
-        message: `OTP sendedn to ${phone}. please check your message otp: ${otp}`,
+        message: `OTP sended to ${phone}. please check your phone message`,
         success: true,
         error: false,
       });
